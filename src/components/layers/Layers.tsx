@@ -11,6 +11,7 @@ import { Layers2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 import LayerImage from "./LayerImage";
+import LayerInfo from "./LayerInfo";
 
 export default function Layers() {
   const layers = useLayerStore((state) => state.layers);
@@ -39,12 +40,19 @@ export default function Layers() {
           <div
             className={cn(
               "cursor-pointer ease-in-out hover:bg-secondary border border-transparent",
-              { "animate-pulse": generating }
+              {
+                "animate-pulse": generating,
+                "border-primary": activeLayer.id === layer.id,
+              }
             )}
             key={layer.id}
+            onClick={() => {
+              if (generating) return;
+              else setActiveLayer(layer.id);
+            }}
           >
             <div>
-              <div>
+              <div className="flex items-center justify-between">
                 {!layer.url ? (
                   <p className="text-xs font-medium justofy-self-end">
                     {" "}
@@ -52,6 +60,7 @@ export default function Layers() {
                   </p>
                 ) : null}
                 <LayerImage layer={layer} />
+                <LayerInfo layer={layer} layerIndex={index} />
               </div>
             </div>
           </div>
