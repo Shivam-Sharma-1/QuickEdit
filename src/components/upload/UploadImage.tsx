@@ -5,8 +5,16 @@ import { useDropzone } from "react-dropzone";
 import { Card, CardContent } from "../ui/card";
 import { uploadImage } from "../../../server/upload-image";
 import { cn } from "@/lib/utils";
+import { useImageStore } from "@/lib/image-store";
+import { useLayerStore } from "@/lib/layer-store";
 
 function UploadImage() {
+  const setTags = useImageStore((state) => state.setTags);
+  const setGenerating = useImageStore((state) => state.setGenerating);
+  const activeLayer = useLayerStore((state) => state.activeLayer);
+  const updateLayer = useLayerStore((state) => state.updateLayer);
+  const setActiveLayer = useLayerStore((state) => state.setActiveLayer);
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     maxFiles: 1,
     accept: {
@@ -20,9 +28,41 @@ function UploadImage() {
         const formData = new FormData();
         formData.append("image", acceptFiles[0]);
         const objectUrl = URL.createObjectURL(acceptFiles[0]);
+        setGenerating(true);
+
+        updateLayer({
+          id: activeLayer.id,
+          url: objectUrl,
+          width: 0,
+          height: 0,
+          name: "uploading",
+          publicId: "",
+          format: "",
+          resourceType: "image",
+        });
+        setActiveLayer(activeLayer.id);
         const res = await uploadImage({ image: formData });
-        console.log(res);
-        console.log("uploading image");
+
+        if (res?.data?.success) {
+          updateLayer({
+            id: activeLayer.id,
+            url: res.data.success.url,
+            width: res.data.success.width,
+            height: res.data.success.height,
+            name: res.data.success.original_filename,
+            publicId: res.data.success.public_id,
+            format: res.data.success.format,
+            resourceType: res.data.success.resource_type,
+          });
+          setTags(res.data.success.tags);
+
+          setActiveLayer(activeLayer.id);
+          console.log(activeLayer);
+          setGenerating(false);
+        }
+        if (res?.data?.error) {
+          setGenerating(false);
+        }
       }
     },
   });
