@@ -4,6 +4,7 @@ import React from "react";
 import UploadImage from "./upload/UploadImage";
 import Layers from "./layers/Layers";
 import { ModeToggle } from "./theme/ModeToggle";
+import ActiveImage from "./ActiveImage";
 
 function Editor() {
   return (
@@ -14,6 +15,7 @@ function Editor() {
         </div>
       </div>
       <UploadImage />
+      <ActiveImage />
       <Layers />
     </div>
   );
