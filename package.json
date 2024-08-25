@@ -10,9 +10,11 @@
   },
   "dependencies": {
     "class-variance-authority": "^0.7.0",
+    "cloudinary": "^2.4.0",
     "clsx": "^2.1.1",
     "lucide-react": "^0.428.0",
     "next": "14.2.5",
+    "next-safe-action": "^7.7.0",
     "react": "^18",
     "react-dom": "^18",
     "react-dropzone": "^14.2.3",
