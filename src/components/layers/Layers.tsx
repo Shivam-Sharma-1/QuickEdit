@@ -10,6 +10,7 @@ import {
 import { Layers2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
+import LayerImage from "./LayerImage";
 
 export default function Layers() {
   const layers = useLayerStore((state) => state.layers);
@@ -50,6 +51,7 @@ export default function Layers() {
                     New Layer
                   </p>
                 ) : null}
+                <LayerImage layer={layer} />
               </div>
             </div>
           </div>
