@@ -22,6 +22,7 @@
     "next-safe-action": "^7.7.0",
     "next-themes": "^0.3.0",
     "react": "^18",
+    "react-compare-slider": "^3.1.0",
     "react-dom": "^18",
     "react-dropzone": "^14.2.3",
     "react-hook-form": "^7.52.2",
