@@ -3,6 +3,7 @@ import GenRemove from "./GenRemove";
 import BgRemove from "./BgRemove";
 import BgReplace from "./BgReplace";
 import GenFill from "./GenFill";
+import ExtractPart from "./ExtractPart";
 
 function ImageTools() {
   return (
@@ -11,6 +12,7 @@ function ImageTools() {
       <BgRemove />
       <BgReplace />
       <GenFill />
+      <ExtractPart />
     </>
   );
 }
