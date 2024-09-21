@@ -5,7 +5,7 @@ import { useLayerStore } from "@/lib/layer-store";
 import React, { useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
-import { Scissors } from "lucide-react";
+import { ChevronRight, Scissors, Sparkles } from "lucide-react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { extractPart } from "../../../server/extract-part";
@@ -34,6 +34,34 @@ function ExtractPart() {
     setPrompts(newPrompts);
   };
 
+  const handleExtract = async () => {
+    setGenerating(true);
+    const res = await extractPart({
+      prompts: prompts.filter((p) => p.trim() !== ""),
+      activeImage: activeLayer.url!,
+      format: activeLayer.format!,
+      multiple,
+      mode: mode as "default" | "mask",
+      invert,
+    });
+
+    if (res?.data?.success) {
+      const newLayerId = crypto.randomUUID();
+      addLayer({
+        id: newLayerId,
+        name: "extracted-" + activeLayer.name,
+        format: ".png",
+        height: activeLayer.height,
+        width: activeLayer.width,
+        url: res.data.success,
+        publicId: activeLayer.publicId,
+        resourceType: "image",
+      });
+      setGenerating(false);
+      setActiveLayer(newLayerId);
+    }
+  };
+
   return (
     <Popover>
       <PopoverTrigger disabled={!activeLayer?.url} asChild>
@@ -44,7 +72,7 @@ function ExtractPart() {
           </span>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-full">
+      <PopoverContent className="w-full p-6" side="right" sideOffset={16}>
         <div className="grid gap-4">
           <div className="space-y-2">
             <h4 className="font-medium leading-none">AI Extract</h4>
@@ -54,8 +82,11 @@ function ExtractPart() {
           </div>
           <div className="grid gap-2">
             {prompts.map((prompt, index) => (
-              <div key={index} className="grid grid-cols-3 items-center gap-4">
-                <Label htmlFor={`prompt-${index}`}>Prompt {index + 1}</Label>
+              <div
+                key={index}
+                className="flex flex-col justify-center-center gap-4"
+              >
+                <Label htmlFor={`prompt-${index}`}>Prompt {index + 1} :</Label>
                 <Input
                   id={`prompt-${index}`}
                   value={prompt}
@@ -65,8 +96,13 @@ function ExtractPart() {
                 />
               </div>
             ))}
-            <Button onClick={addPrompt} size="sm">
+            <Button
+              onClick={addPrompt}
+              size="sm"
+              className="flex justify-center items-center gap-2"
+            >
               Add Prompt
+              <ChevronRight size={16} />
             </Button>
 
             <div className="flex items-center space-x-2">
@@ -107,36 +143,11 @@ function ExtractPart() {
             generating ||
             prompts.every((p) => p.trim() === "")
           }
-          className="w-full mt-4"
-          onClick={async () => {
-            setGenerating(true);
-            const res = await extractPart({
-              prompts: prompts.filter((p) => p.trim() !== ""),
-              activeImage: activeLayer.url!,
-              format: activeLayer.format!,
-              multiple,
-              mode: mode as "default" | "mask",
-              invert,
-            });
-
-            if (res?.data?.success) {
-              const newLayerId = crypto.randomUUID();
-              addLayer({
-                id: newLayerId,
-                name: "extracted-" + activeLayer.name,
-                format: ".png",
-                height: activeLayer.height,
-                width: activeLayer.width,
-                url: res.data.success,
-                publicId: activeLayer.publicId,
-                resourceType: "image",
-              });
-              setGenerating(false);
-              setActiveLayer(newLayerId);
-            }
-          }}
+          className="w-full mt-4 flex items-center justify-center gap-2"
+          onClick={handleExtract}
         >
-          {generating ? "Extracting..." : "Extract"}
+          {generating ? "Extracting..." : "Extract Object"}
+          <Sparkles size={16} />
         </Button>
       </PopoverContent>
     </Popover>
