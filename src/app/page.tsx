@@ -21,7 +21,11 @@ export default function Home() {
       }}
     >
       <ImageStore.Provider
-        initialValue={{ generating: false, activeTag: "all" }}
+        initialValue={{
+          activeTag: "all",
+          generating: false,
+          activeColor: "green",
+        }}
       >
         <main className="h-full">
           <Editor />
