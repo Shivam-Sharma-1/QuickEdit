@@ -14,7 +14,7 @@ function ImageTools() {
       <BgReplace />
       <GenFill />
       <ExtractPart />
-      <ExportAsset />
+      <ExportAsset resource="image" />
     </>
   );
 }

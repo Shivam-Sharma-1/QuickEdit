@@ -12,7 +12,7 @@ export default function VideoTools() {
       <>
         <VideoTranscription />
         <SmartCrop />
-        <ExportAsset />
+        <ExportAsset resource="video" />
       </>
     );
 }
