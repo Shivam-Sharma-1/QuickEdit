@@ -5,17 +5,40 @@ import { useLayerStore } from "@/lib/layer-store";
 import React from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
-import { Image } from "lucide-react";
+import { Image, Sparkles } from "lucide-react";
 import { bgRemove } from "../../../server/bg-remove";
 
 function BgRemove() {
-  const tags = useImageStore((state) => state.tags);
   const generating = useImageStore((state) => state.generating);
-  const activeColor = useImageStore((state) => state.activeColor);
   const setGenerating = useImageStore((state) => state.setGenerating);
   const activeLayer = useLayerStore((state) => state.activeLayer);
   const addLayer = useLayerStore((state) => state.addLayer);
   const setActiveLayer = useLayerStore((state) => state.setActiveLayer);
+
+  const handleRemove = async () => {
+    setGenerating(true);
+    const res = await bgRemove({
+      activeImage: activeLayer.url!,
+      format: activeLayer.format!,
+    });
+    if (res?.data?.success) {
+      setGenerating(false);
+
+      const newLayerId = crypto.randomUUID();
+      addLayer({
+        id: newLayerId,
+        url: res.data.success,
+        format: "png",
+        height: activeLayer.height,
+        width: activeLayer.width,
+        name: "bgRemoved" + activeLayer.name,
+        publicId: activeLayer.publicId,
+        resourceType: "image",
+      });
+      setActiveLayer(newLayerId);
+    }
+    if (res?.serverError) setGenerating(false);
+  };
 
   return (
     <Popover>
@@ -26,7 +49,7 @@ function BgRemove() {
           </span>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-full">
+      <PopoverContent className="w-full p-6" side="right" sideOffset={16}>
         <div className="grid gap-4">
           <div className="space-y-2">
             <h4 className="font-medium leading-none">BG Removal</h4>
@@ -36,34 +59,12 @@ function BgRemove() {
           </div>
         </div>
         <Button
-          className="w-full mt-4"
+          className="w-full mt-4 flex items-center justify-center gap-2"
           disabled={!activeLayer?.url || generating}
-          onClick={async () => {
-            setGenerating(true);
-            const res = await bgRemove({
-              activeImage: activeLayer.url!,
-              format: activeLayer.format!,
-            });
-            if (res?.data?.success) {
-              setGenerating(false);
-
-              const newLayerId = crypto.randomUUID();
-              addLayer({
-                id: newLayerId,
-                url: res.data.success,
-                format: "png",
-                height: activeLayer.height,
-                width: activeLayer.width,
-                name: "bgRemoved" + activeLayer.name,
-                publicId: activeLayer.publicId,
-                resourceType: "image",
-              });
-              setActiveLayer(newLayerId);
-            }
-            if (res?.serverError) setGenerating(false);
-          }}
+          onClick={handleRemove}
         >
           {generating ? "Removing..." : "Remove Background"}
+          <Sparkles size={16} />
         </Button>
       </PopoverContent>
     </Popover>
