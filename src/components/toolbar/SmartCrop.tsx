@@ -5,7 +5,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Crop, ScanFace, Square } from "lucide-react";
+import { Crop, ScanFace, Sparkles, Square } from "lucide-react";
 import { useLayerStore } from "@/lib/layer-store";
 import { toast } from "sonner";
 import {
@@ -25,8 +25,6 @@ export default function SmartCrop() {
   const setGenerating = useImageStore((state) => state.setGenerating);
   const activeLayer = useLayerStore((state) => state.activeLayer);
   const addLayer = useLayerStore((state) => state.addLayer);
-  const [height, setHeight] = useState(0);
-  const [width, setWidth] = useState(0);
   const generating = useImageStore((state) => state.generating);
   const setActiveLayer = useLayerStore((state) => state.setActiveLayer);
   const [aspectRatio, setAspectRatio] = useState("16:9");
@@ -40,7 +38,6 @@ export default function SmartCrop() {
     });
 
     if (res?.data?.success) {
-      console.log(res.data.success);
       setGenerating(false);
       const newLayerId = crypto.randomUUID();
       const thumbnailUrl = res.data.success.replace(/\.[^/.]+$/, ".jpg");
@@ -48,8 +45,8 @@ export default function SmartCrop() {
         id: newLayerId,
         name: "cropped " + activeLayer.name,
         format: activeLayer.format,
-        height: height + activeLayer.height!,
-        width: width + activeLayer.width!,
+        height: activeLayer.height!,
+        width: activeLayer.width!,
         url: res.data.success,
         publicId: activeLayer.publicId,
         resourceType: "video",
@@ -74,7 +71,7 @@ export default function SmartCrop() {
           </span>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-full">
+      <PopoverContent className="w-full p-6" side="right" sideOffset={16}>
         <div className="flex flex-col h-full">
           <div className="space-y-2 pb-4">
             <h3 className="font-medium text-center py-2 leading-none">
@@ -137,12 +134,12 @@ export default function SmartCrop() {
           </div>
 
           <Button
-            onClick={() => handleGenCrop()}
-            className="w-full mt-4"
-            variant={"outline"}
+            onClick={handleGenCrop}
+            className="w-full mt-4 flex items-center justify-center gap-2"
             disabled={!activeLayer.url || generating}
           >
-            {generating ? "Cropping..." : "Smart Crop 🎨"}
+            {generating ? "Cropping..." : "Smart Crop"}
+            <Sparkles size={16} />
           </Button>
         </div>
       </PopoverContent>
