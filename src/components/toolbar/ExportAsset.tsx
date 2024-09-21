@@ -134,8 +134,11 @@ export default function ExportAsset({ resource }: { resource: string }) {
             </Card>
           </div>
         </div>
-        <Button onClick={handleDownload} className="mt-2">
-          Download {selected} {resource}
+        <Button
+          onClick={handleDownload}
+          className="mt-2 flex justify-center items-center gap-2"
+        >
+          Download {selected} {resource} <Download size={18} />
         </Button>
       </DialogContent>
     </Dialog>
