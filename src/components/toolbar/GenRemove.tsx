@@ -61,8 +61,9 @@ function GenRemove() {
               ))}
             </div>
             <div className="grid grid-cols-3 items-center gap-4">
-              <Label htmlFor="width">Selection</Label>
+              <Label htmlFor="tag">Selection</Label>
               <Input
+                id="tag"
                 className="col-span-2 h-8"
                 value={activeTag}
                 name="tag"
