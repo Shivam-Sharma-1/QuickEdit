@@ -63,10 +63,15 @@ export default function ExportAsset({ resource }: { resource: string }) {
         </Button>
       </DialogTrigger>
       <DialogContent>
-        <div>
-          <h3 className="text-center text-2xl font-medium pb-4">
-            Export the {resource}
-          </h3>
+        <div className="flex flex-col gap-6">
+          <div>
+            <h3 className="text-center text-2xl font-medium">
+              Export the {resource}
+            </h3>
+            <p className="text-sm text-muted-foreground text-center">
+              Export assets efficiently for use in your projects.
+            </p>
+          </div>
           <div className="flex justify-center gap-4">
             <Card
               onClick={() => setSelected("original")}
@@ -129,7 +134,7 @@ export default function ExportAsset({ resource }: { resource: string }) {
             </Card>
           </div>
         </div>
-        <Button onClick={handleDownload}>
+        <Button onClick={handleDownload} className="mt-2">
           Download {selected} {resource}
         </Button>
       </DialogContent>
