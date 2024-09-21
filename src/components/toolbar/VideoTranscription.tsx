@@ -60,7 +60,7 @@ export default function VideoTranscription() {
       {!activeLayer.transcriptionURL && (
         <Button
           className="py-8 w-full"
-          onClick={() => handleTranscribe()}
+          onClick={handleTranscribe}
           disabled={transcribing || activeLayer.resourceType !== "video"}
           variant={"outline"}
         >
