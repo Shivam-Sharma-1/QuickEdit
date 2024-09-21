@@ -2,6 +2,7 @@
 
 import { useLayerStore } from "@/lib/layer-store";
 import VideoTranscription from "./VideoTranscription";
+import SmartCrop from "./SmartCrop";
 
 export default function VideoTools() {
   const activeLayer = useLayerStore((state) => state.activeLayer);
@@ -9,6 +10,7 @@ export default function VideoTools() {
     return (
       <>
         <VideoTranscription />
+        <SmartCrop />
       </>
     );
 }
