@@ -150,11 +150,16 @@ function GenFill() {
       <PopoverContent className="w-full p-6" side="right" sideOffset={16}>
         <div className="flex flex-col h-full">
           <div className="space-y-2">
-            <h4 className="font-medium text-center py-2 leading-none">
-              Generative Fill
-            </h4>
+            <div className="text-center">
+              <h4 className="font-medium text-center py-2 leading-none">
+                Generative Fill
+              </h4>
+              <p className="text-sm text-muted-foreground">
+                Generatively fill and resize the image with AI.
+              </p>
+            </div>
             {activeLayer.width && activeLayer.height ? (
-              <div className="flex gap-20 justify-center">
+              <div className="flex gap-24 justify-center">
                 <div className="flex flex-col items-center">
                   <span className="text-xs">Current Size:</span>
                   <p className="text-sm text-primary font-bold">
@@ -170,7 +175,7 @@ function GenFill() {
               </div>
             ) : null}
           </div>
-          <div className="flex gap-2 items-center justify-center">
+          <div className="flex gap-4 items-center justify-center">
             <div className="text-center">
               <Label htmlFor="width">Modify Width</Label>
               <Slider
