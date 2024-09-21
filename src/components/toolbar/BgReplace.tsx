@@ -5,7 +5,7 @@ import { useLayerStore } from "@/lib/layer-store";
 import React, { useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
-import { ImageOff } from "lucide-react";
+import { ImageOff, Sparkles } from "lucide-react";
 import { bgReplace } from "../../../server/bg-replace";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
@@ -19,6 +19,31 @@ function BgReplace() {
 
   const [prompt, setPrompt] = useState("");
 
+  const handleReplace = async () => {
+    setGenerating(true);
+    const res = await bgReplace({
+      activeImage: activeLayer.url!,
+      prompt: prompt,
+    });
+    if (res?.data?.success) {
+      setGenerating(false);
+
+      const newLayerId = crypto.randomUUID();
+      addLayer({
+        id: newLayerId,
+        url: res.data.success,
+        format: activeLayer.format,
+        height: activeLayer.height,
+        width: activeLayer.width,
+        name: "bgReplaced" + activeLayer.name,
+        publicId: activeLayer.publicId,
+        resourceType: "image",
+      });
+      setActiveLayer(newLayerId);
+    }
+    if (res?.serverError) setGenerating(false);
+  };
+
   return (
     <Popover>
       <PopoverTrigger disabled={!activeLayer?.url} asChild>
@@ -28,7 +53,7 @@ function BgReplace() {
           </span>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-full">
+      <PopoverContent className="w-full p-6" side="right" sideOffset={16}>
         <div className="grid gap-4">
           <div className="space-y-2">
             <h4 className="font-medium leading-none">
@@ -39,7 +64,7 @@ function BgReplace() {
             </p>
           </div>
           <div className="grid gap-2">
-            <div className="grid grid-cols-3 items-center gap-4">
+            <div className="flex flex-col justify-center gap-3">
               <Label htmlFor="prompt">Prompt</Label>
               <Input
                 id="prompt"
@@ -47,43 +72,19 @@ function BgReplace() {
                 value={prompt}
                 name="prompt"
                 placeholder="Describe the new background"
-                onChange={(e) => {
-                  setPrompt(e.target.value);
-                }}
+                onChange={(e) => setPrompt(e.target.value)}
               />
             </div>
           </div>
         </div>
 
         <Button
-          className="w-full mt-4"
+          className="w-full mt-4 flex items-center justify-center gap-2"
           disabled={!activeLayer?.url || generating}
-          onClick={async () => {
-            setGenerating(true);
-            const res = await bgReplace({
-              activeImage: activeLayer.url!,
-              prompt: prompt,
-            });
-            if (res?.data?.success) {
-              setGenerating(false);
-
-              const newLayerId = crypto.randomUUID();
-              addLayer({
-                id: newLayerId,
-                url: res.data.success,
-                format: activeLayer.format,
-                height: activeLayer.height,
-                width: activeLayer.width,
-                name: "bgReplaced" + activeLayer.name,
-                publicId: activeLayer.publicId,
-                resourceType: "image",
-              });
-              setActiveLayer(newLayerId);
-            }
-            if (res?.serverError) setGenerating(false);
-          }}
+          onClick={handleReplace}
         >
           {generating ? "Generating..." : "Replace Background"}
+          <Sparkles size={16} />
         </Button>
       </PopoverContent>
     </Popover>
