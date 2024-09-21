@@ -5,12 +5,13 @@ import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import { Download } from "lucide-react";
 import { Card, CardContent, CardDescription, CardTitle } from "../ui/card";
-import { act, useState } from "react";
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 
-export default function ExportAsset() {
+export default function ExportAsset({ resource }: { resource: string }) {
   const activeLayer = useLayerStore((state) => state.activeLayer);
   const [selected, setSelected] = useState("original");
+
   const handleDownload = async () => {
     if (activeLayer?.publicId) {
       try {
@@ -63,19 +64,21 @@ export default function ExportAsset() {
       </DialogTrigger>
       <DialogContent>
         <div>
-          <h3 className="text-center text-2xl font-medium pb-4">Export</h3>
-          <div className="flex flex-col gap-4">
+          <h3 className="text-center text-2xl font-medium pb-4">
+            Export the {resource}
+          </h3>
+          <div className="flex justify-center gap-4">
             <Card
               onClick={() => setSelected("original")}
               className={cn(
                 selected === "original" ? "border-primary" : null,
-                "p-4 cursor-pointer"
+                "p-4 cursor-pointer text-center"
               )}
             >
               <CardContent className="p-0">
                 <CardTitle className="text-md">Original</CardTitle>
                 <CardDescription>
-                  {activeLayer.width}X{activeLayer.height}
+                  {activeLayer.width} X {activeLayer.height}
                 </CardDescription>
               </CardContent>
             </Card>
@@ -83,13 +86,13 @@ export default function ExportAsset() {
               onClick={() => setSelected("large")}
               className={cn(
                 selected === "large" ? "border-primary" : null,
-                "p-4 cursor-pointer"
+                "p-4 cursor-pointer text-center"
               )}
             >
               <CardContent className="p-0">
                 <CardTitle className="text-md">Large</CardTitle>
                 <CardDescription>
-                  {(activeLayer.width! * 0.7).toFixed(0)}X
+                  {(activeLayer.width! * 0.7).toFixed(0)} X{" "}
                   {(activeLayer.height! * 0.7).toFixed(0)}
                 </CardDescription>
               </CardContent>
@@ -98,13 +101,13 @@ export default function ExportAsset() {
               onClick={() => setSelected("medium")}
               className={cn(
                 selected === "medium" ? "border-primary" : null,
-                "p-4 cursor-pointer"
+                "p-4 cursor-pointer text-center"
               )}
             >
               <CardContent className="p-0">
                 <CardTitle className="text-md">Medium</CardTitle>
                 <CardDescription>
-                  {(activeLayer.width! * 0.5).toFixed(0)}X
+                  {(activeLayer.width! * 0.5).toFixed(0)} X{" "}
                   {(activeLayer.height! * 0.5).toFixed(0)}
                 </CardDescription>
               </CardContent>
@@ -112,14 +115,14 @@ export default function ExportAsset() {
             <Card
               className={cn(
                 selected === "small" ? "border-primary" : null,
-                "p-4 cursor-pointer"
+                "p-4 cursor-pointer text-center"
               )}
               onClick={() => setSelected("small")}
             >
               <CardContent className="p-0">
                 <CardTitle className="text-md">Small</CardTitle>
                 <CardDescription>
-                  {(activeLayer.width! * 0.3).toFixed(0)}X
+                  {(activeLayer.width! * 0.3).toFixed(0)} X{" "}
                   {(activeLayer.height! * 0.3).toFixed(0)}
                 </CardDescription>
               </CardContent>
@@ -127,7 +130,7 @@ export default function ExportAsset() {
           </div>
         </div>
         <Button onClick={handleDownload}>
-          Download {selected} {activeLayer?.format}
+          Download {selected} {resource}
         </Button>
       </DialogContent>
     </Dialog>
