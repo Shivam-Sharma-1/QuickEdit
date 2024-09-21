@@ -5,7 +5,7 @@ import { useLayerStore } from "@/lib/layer-store";
 import React from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
-import { Badge, Eraser } from "lucide-react";
+import { Badge, Eraser, Sparkles } from "lucide-react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { cn } from "@/lib/utils";
@@ -22,6 +22,30 @@ function GenRemove() {
   const addLayer = useLayerStore((state) => state.addLayer);
   const setActiveLayer = useLayerStore((state) => state.setActiveLayer);
 
+  const handleRemove = async () => {
+    setGenerating(true);
+    const res = await genRemove({
+      activeImage: activeLayer.url!,
+      prompt: activeTag,
+    });
+    if (res?.data?.success) {
+      setGenerating(false);
+
+      const newLayerId = crypto.randomUUID();
+      addLayer({
+        id: newLayerId,
+        url: res.data.success,
+        format: activeLayer.format,
+        height: activeLayer.height,
+        width: activeLayer.width,
+        name: activeLayer.name,
+        publicId: activeLayer.publicId,
+        resourceType: "image",
+      });
+      setActiveLayer(newLayerId);
+    }
+  };
+
   return (
     <Popover>
       <PopoverTrigger disabled={!activeLayer?.url} asChild>
@@ -31,12 +55,12 @@ function GenRemove() {
           </span>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-full">
+      <PopoverContent className="w-full p-6" side="right" sideOffset={16}>
         <div className="grid gap-4">
           <div className="space-y-2">
-            <h4 className="font-medium leading-none">Smart AI Remove</h4>
+            <h4 className="font-medium leading-none">AI Object Removal</h4>
             <p className="text-sm text-muted-foreground">
-              Generative Remove any part of the image
+              Generatively remove any element from the image.
             </p>
           </div>
           <div className="grid gap-2">
@@ -60,7 +84,7 @@ function GenRemove() {
                 </Badge>
               ))}
             </div>
-            <div className="grid grid-cols-3 items-center gap-4">
+            <div className="flex flex-col justify-center gap-3">
               <Label htmlFor="tag">Selection</Label>
               <Input
                 id="tag"
@@ -70,40 +94,20 @@ function GenRemove() {
                 onChange={(e) => {
                   setActiveTag(e.target.value);
                 }}
+                placeholder="Select an element to remove"
               />
             </div>
           </div>
         </div>
         <Button
-          className="w-full mt-4"
+          className="w-full mt-4 flex items-center justify-center gap-2"
           disabled={
             !activeTag || !activeColor || !activeLayer.url || generating
           }
-          onClick={async () => {
-            setGenerating(true);
-            const res = await genRemove({
-              activeImage: activeLayer.url!,
-              prompt: activeTag,
-            });
-            if (res?.data?.success) {
-              setGenerating(false);
-
-              const newLayerId = crypto.randomUUID();
-              addLayer({
-                id: newLayerId,
-                url: res.data.success,
-                format: activeLayer.format,
-                height: activeLayer.height,
-                width: activeLayer.width,
-                name: activeLayer.name,
-                publicId: activeLayer.publicId,
-                resourceType: "image",
-              });
-              setActiveLayer(newLayerId);
-            }
-          }}
+          onClick={handleRemove}
         >
-          Magic Remove 🎨
+          {generating ? "Removing..." : "Object Remove"}
+          <Sparkles size={16} />
         </Button>
       </PopoverContent>
     </Popover>
