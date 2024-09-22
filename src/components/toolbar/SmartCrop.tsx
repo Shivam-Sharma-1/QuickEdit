@@ -35,20 +35,23 @@ export default function SmartCrop() {
       height: activeLayer.height!.toString(),
       aspect: aspectRatio,
       activeVideo: activeLayer.url!,
+      activeVideoName: activeLayer.name!,
     });
 
     if (res?.data?.success) {
       setGenerating(false);
       const newLayerId = crypto.randomUUID();
-      const thumbnailUrl = res.data.success.replace(/\.[^/.]+$/, ".jpg");
+      const { secure_url, public_id } = await res.data.success;
+      const thumbnailUrl = secure_url.replace(/\.[^/.]+$/, ".jpg");
+
       addLayer({
         id: newLayerId,
-        name: "cropped " + activeLayer.name,
+        name: "cropped-" + activeLayer.name,
         format: activeLayer.format,
         height: activeLayer.height!,
         width: activeLayer.width!,
-        url: res.data.success,
-        publicId: activeLayer.publicId,
+        url: thumbnailUrl,
+        publicId: public_id,
         resourceType: "video",
         poster: thumbnailUrl,
       });

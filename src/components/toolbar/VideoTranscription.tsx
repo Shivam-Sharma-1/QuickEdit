@@ -27,15 +27,15 @@ export default function VideoTranscription() {
     try {
       const result = await initiateTranscription({
         publicId: activeLayer.publicId,
+        activeVideoName: activeLayer.name!,
       });
 
       if (result) {
         if (result.data && "success" in result.data) {
-          toast.success(result.data.success);
-          if (result.data.subtitledVideoUrl) {
+          if (result.data.url) {
             updateLayer({
               ...activeLayer,
-              transcriptionURL: result.data.subtitledVideoUrl,
+              transcriptionURL: result.data.url,
             });
             setActiveLayer(activeLayer.id);
             toast.success("Video transcripted successfully");
