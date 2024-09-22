@@ -49,9 +49,21 @@ export default function Layers() {
     [layerComparisonMode, layers]
   );
 
+  const handleAddLayer = () => {
+    addLayer({
+      id: crypto.randomUUID(),
+      url: "",
+      height: 0,
+      width: 0,
+      publicId: "",
+      name: "",
+      format: "",
+    });
+  };
+
   return (
     <Card className="basis-[360px] shrink-0 scrollbar-thin scrollbar-track-secondary overflow-y-scroll scrollbar-thumb-primary scrollbar-thumb-rounded-full scrollbar-track-rounded-full overflow-x-hidden relative flex flex-col shadow-2xl ">
-      <CardHeader className="sticky top-0 z-50 p-6 flex flex-col gap-4 min-h-28 bg-card shadow-sm">
+      <CardHeader className="sticky top-0 z-50 p-6 flex flex-col gap-4 bg-card shadow-sm">
         {" "}
         <div className="flex flex-col gap-1 ">
           <CardTitle className="text-md">
@@ -124,17 +136,7 @@ export default function Layers() {
 
       <CardContent className="sticky bottom-0 bg-card flex gap-2 shrink-0 p-4">
         <Button
-          onClick={() => {
-            addLayer({
-              id: crypto.randomUUID(),
-              url: "",
-              height: 0,
-              width: 0,
-              publicId: "",
-              name: "",
-              format: "",
-            });
-          }}
+          onClick={handleAddLayer}
           variant="outline"
           className="w-full flex gap-2"
         >
