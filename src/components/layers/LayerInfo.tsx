@@ -23,8 +23,10 @@ export default function LayerInfo({
           <Ellipsis size={18} />
         </Button>
       </DialogTrigger>
-      <DialogContent className="flex flex-col gap-6 justify-center">
-        <h3 className="text-[1.2rem] font-medium mt-2">Layer {layer.id}</h3>
+      <DialogContent className="flex flex-col gap-6 justify-center leading-8">
+        <h3 className="text-[1.2rem] font-medium mt-2 w-full">
+          Layer: {layer.name}
+        </h3>
         <div className="flex flex-col gap-3">
           <p className="text-[1rem]">
             <span className="font-bold">Filename:</span> {layer.name}
@@ -33,7 +35,7 @@ export default function LayerInfo({
             <span className="font-bold">Format:</span> {layer.format}
           </p>
           <p className="text-[1rem]">
-            <span className="font-bold"> Size:</span> {layer.width} X{" "}
+            <span className="font-bold">Size:</span> {layer.width} X{" "}
             {layer.height}
           </p>
         </div>
