@@ -37,12 +37,12 @@ function UploadImage() {
           url: objectUrl,
           width: 0,
           height: 0,
-          name: "uploading",
+          name: "Uploading ...",
           publicId: "",
           format: "",
           resourceType: "image",
         });
-        setActiveLayer(activeLayer.id);
+
         const res = await uploadImage({ image: formData });
 
         if (res?.data?.success) {
@@ -57,7 +57,6 @@ function UploadImage() {
             resourceType: res.data.success.resource_type,
           });
           setTags(res.data.success.tags);
-
           setActiveLayer(activeLayer.id);
           console.log(activeLayer);
           setGenerating(false);
@@ -65,6 +64,10 @@ function UploadImage() {
         if (res?.data?.error) {
           setGenerating(false);
         }
+      }
+
+      if (fileRejections.length) {
+        console.log("rejected");
       }
     },
   });
@@ -87,7 +90,7 @@ function UploadImage() {
               : "Start by uploading an image"}
           </p>
           <p className="text-muted-foreground">
-            Supported formats .jpeg .jpg .webp . png
+            Supported formats .jpeg .jpg .webp .png
           </p>
         </div>
       </CardContent>
