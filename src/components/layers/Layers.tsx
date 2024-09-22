@@ -50,24 +50,35 @@ export default function Layers() {
   );
 
   return (
-    <Card className="basis-[360px] shrink-0  scrollbar-thin scrollbar-track-secondary overflow-y-scroll scrollbar-thumb-primary scrollbar-thumb-rounded-full scrollbar-track-rounded-full overflow-x-hidden relative flex flex-col shadow-2xl">
-      <CardHeader className="sticky top-0 z-50 px-4 py-6  min-h-28 bg-card shadow-sm">
+    <Card className="basis-[360px] shrink-0 scrollbar-thin scrollbar-track-secondary overflow-y-scroll scrollbar-thumb-primary scrollbar-thumb-rounded-full scrollbar-track-rounded-full overflow-x-hidden relative flex flex-col shadow-2xl ">
+      <CardHeader className="sticky top-0 z-50 p-6 flex flex-col gap-4 min-h-28 bg-card shadow-sm">
+        {" "}
+        <div className="flex flex-col gap-1 ">
+          <CardTitle className="text-md">
+            {activeLayer.name || "Layers"}
+          </CardTitle>
+          {activeLayer.width && activeLayer.height ? (
+            <CardDescription className="text-xs">
+              {activeLayer.width} X {activeLayer.height}
+            </CardDescription>
+          ) : null}
+        </div>
         {layerComparisonMode && (
           <div className="flex flex-col gap-1 ">
             <CardTitle className="text-sm pb-2">Comparing...</CardTitle>
             <CardDescription className="flex gap-2 items-center">
               <Image
                 src={getLayerName(comparedLayers[0]) as string}
-                width={32}
-                height={32}
+                width={60}
+                height={60}
                 alt="Layer 1"
               />
               {comparedLayers.length > 0 && <ArrowRight />}
               {comparedLayers.length > 1 ? (
                 <Image
                   src={getLayerName(comparedLayers[1]) as string}
-                  width={32}
-                  height={32}
+                  width={60}
+                  height={60}
                   alt="Layer 2"
                 />
               ) : (
@@ -76,23 +87,13 @@ export default function Layers() {
             </CardDescription>
           </div>
         )}
-        <div className="flex flex-col gap-1 ">
-          <CardTitle className="text-sm ">
-            {activeLayer.name || "Layers"}
-          </CardTitle>
-          {activeLayer.width && activeLayer.height ? (
-            <CardDescription className="text-xs">
-              {activeLayer.width}X{activeLayer.height}
-            </CardDescription>
-          ) : null}
-        </div>
       </CardHeader>
 
-      <CardContent className="flex-1 flex flex-col">
+      <CardContent className="flex-1 flex flex-col gap-2 w-full">
         {visibleLayers.map((layer, index) => (
           <div
             className={cn(
-              "cursor-pointer ease-in-out hover:bg-secondary border border-transparent",
+              "cursor-pointer ease-in-out hover:bg-secondary border border-transparent w-full p-1",
               {
                 "animate-pulse": generating,
                 "border-primary": layerComparisonMode
@@ -107,17 +108,15 @@ export default function Layers() {
               else setActiveLayer(layer.id);
             }}
           >
-            <div>
-              <div className="flex items-center justify-between">
-                {!layer.url ? (
-                  <p className="text-xs font-medium justofy-self-end">
-                    {" "}
-                    New Layer
-                  </p>
-                ) : null}
-                <LayerImage layer={layer} />
-                <LayerInfo layer={layer} layerIndex={index} />
-              </div>
+            <div className="flex w-full items-center justify-between">
+              {!layer.url ? (
+                <p className="text-xs font-medium justify-self-end pl-3">
+                  {" "}
+                  New Layer
+                </p>
+              ) : null}
+              <LayerImage layer={layer} />
+              <LayerInfo layer={layer} layerIndex={index} />
             </div>
           </div>
         ))}
