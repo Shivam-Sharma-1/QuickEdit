@@ -4,6 +4,9 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "../ui/button";
 import { Ellipsis, Trash } from "lucide-react";
 import { Layer, useLayerStore } from "@/lib/layer-store";
+import { deleteResource } from "../../../server/delete-resource";
+import { toast } from "sonner";
+import { useImageStore } from "@/lib/image-store";
 
 export default function LayerInfo({
   layer,
@@ -15,6 +18,7 @@ export default function LayerInfo({
   const layers = useLayerStore((state) => state.layers);
   const setActiveLayer = useLayerStore((state) => state.setActiveLayer);
   const removeLayer = useLayerStore((state) => state.removeLayer);
+  const setGenerating = useImageStore((state) => state.setGenerating);
 
   return (
     <Dialog>
@@ -24,10 +28,10 @@ export default function LayerInfo({
         </Button>
       </DialogTrigger>
       <DialogContent className="flex flex-col gap-6 justify-center leading-8">
-        <h3 className="text-[1.2rem] font-medium mt-2 w-full">
+        <h3 className="text-[1.2rem] font-medium mt-2 w-full text-wrap overflow-hidden">
           Layer: {layer.name}
         </h3>
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-3 text-wrap w-full">
           <p className="text-[1rem]">
             <span className="font-bold">Filename:</span> {layer.name}
           </p>
@@ -41,9 +45,23 @@ export default function LayerInfo({
         </div>
         <Button
           onClick={(e) => {
+            setGenerating(true);
             e.stopPropagation();
-            setActiveLayer(layerIndex === 0 ? layers[1].id : layers[0].id);
+            setActiveLayer(layers[0].id);
             removeLayer(layer.id);
+            try {
+              console.log(layer.publicId!);
+              deleteResource({
+                publicId: layer.publicId!,
+                resourceType: layer.resourceType as "image" | "video",
+              });
+              toast.success("Layer deleted successfully");
+            } catch (error) {
+              toast.error("Layer deletion failed");
+              console.error("Error in Layer Deletion process:", error);
+            } finally {
+              setGenerating(false);
+            }
           }}
           variant={"destructive"}
           className="flex items-center gap-2 w-full"
