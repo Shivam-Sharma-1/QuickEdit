@@ -22,7 +22,9 @@ function LoadingScreen() {
     <Dialog open={generating} onOpenChange={setGenerating}>
       <DialogContent className="sm:max-w-[425px] flex flex-col items-center">
         <DialogHeader>
-          <DialogTitle>Editing {activeLayer.name}</DialogTitle>
+          <DialogTitle className="leading-8">
+            Editing {activeLayer.name}
+          </DialogTitle>
           <DialogDescription>
             Please note that this operation might take up to a couple of
             seconds.
