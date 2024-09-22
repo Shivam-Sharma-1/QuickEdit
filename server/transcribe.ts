@@ -3,6 +3,7 @@
 import { actionClient } from "@/lib/safe-action";
 import { v2 as cloudinary } from "cloudinary";
 import z from "zod";
+import { uploadModifiedVideo } from "./upload-video";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_NAME,
@@ -12,6 +13,7 @@ cloudinary.config({
 
 const transcriptionData = z.object({
   publicId: z.string(),
+  activeVideoName: z.string(),
 });
 
 async function checkTranscriptionStatus(publicId: string): Promise<string> {
@@ -50,7 +52,7 @@ function generateSubtitledVideoUrl(publicId: string): string {
 
 export const initiateTranscription = actionClient
   .schema(transcriptionData)
-  .action(async ({ parsedInput: { publicId } }) => {
+  .action(async ({ parsedInput: { publicId, activeVideoName } }) => {
     console.log("Initiating transcription for:", publicId);
     try {
       // Initiate transcription
@@ -69,9 +71,17 @@ export const initiateTranscription = actionClient
         console.log(`Attempt ${attempt + 1}: Transcription status - ${status}`);
 
         if (status === "complete") {
-          console.log("inside complete");
           const subtitledVideoUrl = generateSubtitledVideoUrl(publicId);
-          return { success: "Transcription completed", subtitledVideoUrl };
+
+          const uploadResult = await uploadModifiedVideo({
+            activeVideoName: "transcribed-" + activeVideoName,
+            removeUrl: subtitledVideoUrl,
+          });
+
+          return {
+            success: uploadResult?.data?.result,
+            url: subtitledVideoUrl,
+          };
         } else if (status === "failed") {
           return { error: "Transcription failed" };
         }

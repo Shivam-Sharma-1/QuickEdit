@@ -4,6 +4,7 @@ import checkImageProcessing from "@/lib/check-processing";
 import { actionClient } from "@/lib/safe-action";
 import { v2 as cloudinary } from "cloudinary";
 import z from "zod";
+import { uploadModifiedVideo } from "./upload-video";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_NAME,
@@ -15,29 +16,46 @@ const genFillSchema = z.object({
   activeVideo: z.string(),
   aspect: z.string(),
   height: z.string(),
+  activeVideoName: z.string(),
 });
 
 export const genCrop = actionClient
   .schema(genFillSchema)
-  .action(async ({ parsedInput: { activeVideo, aspect, height } }) => {
-    const parts = activeVideo.split("/upload/");
-    const fillUrl = `${parts[0]}/upload/ar_${aspect},c_fill,g_auto,h_${height}/${parts[1]}`;
+  .action(
+    async ({
+      parsedInput: { activeVideo, aspect, height, activeVideoName },
+    }) => {
+      try {
+        const parts = activeVideo.split("/upload/");
+        const fillUrl = `${parts[0]}/upload/ar_${aspect},c_fill,g_auto,h_${height}/${parts[1]}`;
 
-    let isProcessed = false;
-    const maxAttempts = 20;
-    const delay = 1000;
+        let isProcessed = false;
+        const maxAttempts = 20;
+        const delay = 1000;
 
-    for (let attempt = 0; attempt < maxAttempts; attempt++) {
-      isProcessed = await checkImageProcessing(fillUrl);
-      if (isProcessed) {
-        break;
+        for (let attempt = 0; attempt < maxAttempts; attempt++) {
+          isProcessed = await checkImageProcessing(fillUrl);
+          if (isProcessed) {
+            break;
+          }
+          await new Promise((resolve) => setTimeout(resolve, delay));
+        }
+
+        if (!isProcessed) throw new Error("Video processing failed");
+
+        const uploadResult = await uploadModifiedVideo({
+          activeVideoName: "cropped-" + activeVideoName,
+          removeUrl: fillUrl,
+        });
+
+        return { success: uploadResult?.data?.result };
+      } catch (error) {
+        console.error("Error in video cropping process:", error);
+        return {
+          error:
+            "Error in video cropping process: " +
+            String((error as any).error.message),
+        };
       }
-      await new Promise((resolve) => setTimeout(resolve, delay));
     }
-
-    if (!isProcessed) {
-      console.log("Video not processed");
-      return { error: "Video processing failed" };
-    }
-    return { success: fillUrl };
-  });
+  );
