@@ -19,21 +19,30 @@ const bgRemoveSchema = z.object({
 export const bgRemove = actionClient
   .schema(bgRemoveSchema)
   .action(async ({ parsedInput: { activeImage, format } }) => {
-    const form = activeImage.split(format);
-    const pngConvert = form[0] + "png";
-    const parts = pngConvert.split("/upload/");
-    const removeUrl = `${parts[0]}/upload/e_background_removal/${parts[1]}`;
+    try {
+      const form = activeImage.split(format);
+      const pngConvert = form[0] + "png";
+      const parts = pngConvert.split("/upload/");
+      const removeUrl = `${parts[0]}/upload/e_background_removal/${parts[1]}`;
 
-    let isProcessed = false;
-    const maxAttempts = 20;
-    const delay = 1000;
+      let isProcessed = false;
+      const maxAttempts = 20;
+      const delay = 1000;
 
-    for (let attempt = 0; attempt < maxAttempts; attempt++) {
-      isProcessed = await checkImageProcessing(removeUrl);
-      if (isProcessed) break;
-      await new Promise((resolve) => setTimeout(resolve, delay));
+      for (let attempt = 0; attempt < maxAttempts; attempt++) {
+        isProcessed = await checkImageProcessing(removeUrl);
+        if (isProcessed) break;
+        await new Promise((resolve) => setTimeout(resolve, delay));
+      }
+
+      if (!isProcessed) throw new Error("Image processing timeout out");
+      return { success: removeUrl };
+    } catch (error) {
+      console.error("Error in Background Removal process:", error);
+      return {
+        error:
+          "Error in Background Removal process: " +
+          String((error as any).error.message),
+      };
     }
-
-    if (!isProcessed) throw new Error("image processing timeout out");
-    return { success: removeUrl };
   });
