@@ -35,11 +35,16 @@ export const uploadImage = actionClient
         const uploadStream = cloudinary.uploader.upload_stream(
           {
             upload_preset: process.env.CLOUDINARY_UPLOAD_PRESET,
+            use_filename: true,
+            unique_filename: false,
+            filename_override: file.name,
           },
           (error, result) => {
             if (error || !result) {
-              reject({ error: "Upload failed" });
+              console.error("Upload failed:", error);
+              reject({ error: "Upload failed:" });
             } else {
+              console.log("Upload successful:", result);
               resolve({ success: result });
             }
           }
@@ -47,6 +52,7 @@ export const uploadImage = actionClient
         uploadStream.end(buffer);
       });
     } catch (error) {
+      console.error("Error processing file:", error);
       return { error: "Upload failed: " + error };
     }
   });
