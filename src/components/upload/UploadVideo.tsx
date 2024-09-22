@@ -34,7 +34,6 @@ export default function UploadVideo() {
         if (res?.data?.success) {
           const videoUrl = res.data.success.url;
           const thumbnailUrl = videoUrl.replace(/\.[^/.]+$/, ".jpg");
-          console.log(res.data.success);
           updateLayer({
             id: activeLayer.id,
             url: res.data.success.url,
