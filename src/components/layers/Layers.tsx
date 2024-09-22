@@ -130,7 +130,9 @@ export default function Layers() {
                 </p>
               ) : null}
               <LayerImage layer={layer} />
-              <p className="text-xs text-center w-[170px] overflow-auto text-wrap">{`${layer.name}.${layer.format}`}</p>
+              {layer.url && (
+                <p className="text-xs text-center w-[170px] overflow-hidden text-wrap">{`${layer.name}.${layer.format}`}</p>
+              )}
               <LayerInfo layer={layer} layerIndex={index} />
             </div>
           </div>
