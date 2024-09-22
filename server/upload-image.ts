@@ -14,6 +14,11 @@ const formData = z.object({
   image: z.instanceof(FormData),
 });
 
+const uploadModifiedImageSchema = z.object({
+  activeImageName: z.string(),
+  removeUrl: z.string(),
+});
+
 type UploadResult =
   | { success: UploadApiResponse; error?: never }
   | { success?: never; error: string };
@@ -36,8 +41,9 @@ export const uploadImage = actionClient
           {
             upload_preset: process.env.CLOUDINARY_UPLOAD_PRESET,
             use_filename: true,
-            unique_filename: false,
+            unique_filename: true,
             filename_override: file.name,
+            secure: true,
           },
           (error, result) => {
             if (error || !result) {
@@ -55,4 +61,18 @@ export const uploadImage = actionClient
       console.error("Error processing file:", error);
       return { error: "Upload failed: " + error };
     }
+  });
+
+export const uploadModifiedImage = actionClient
+  .schema(uploadModifiedImageSchema)
+  .action(async ({ parsedInput: { activeImageName, removeUrl } }) => {
+    const result = await cloudinary.uploader.upload(removeUrl, {
+      upload_preset: process.env.CLOUDINARY_UPLOAD_PRESET,
+      use_filename: true,
+      unique_filename: true,
+      filename_override: activeImageName,
+      secure: true,
+    });
+
+    return { result };
   });
