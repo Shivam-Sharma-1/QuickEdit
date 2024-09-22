@@ -14,6 +14,11 @@ const formData = z.object({
   video: z.instanceof(FormData),
 });
 
+const uploadModifiedImageVideo = z.object({
+  activeVideoName: z.string(),
+  removeUrl: z.string(),
+});
+
 type UploadResult =
   | { success: UploadApiResponse; error?: never }
   | { error: string; success?: never };
@@ -38,8 +43,9 @@ export const uploadVideo = actionClient
             resource_type: "video",
             upload_preset: process.env.CLOUDINARY_UPLOAD_PRESET,
             use_filename: true,
-            unique_filename: false,
+            unique_filename: true,
             filename_override: file.name,
+            secure: true,
           },
           (error, result) => {
             if (error || !result) {
@@ -57,5 +63,24 @@ export const uploadVideo = actionClient
     } catch (error) {
       console.error("Error processing file:", error);
       return { error: "Error processing file" };
+    }
+  });
+
+export const uploadModifiedVideo = actionClient
+  .schema(uploadModifiedImageVideo)
+  .action(async ({ parsedInput: { activeVideoName, removeUrl } }) => {
+    try {
+      const result = await cloudinary.uploader.upload(removeUrl, {
+        upload_preset: process.env.CLOUDINARY_UPLOAD_PRESET,
+        use_filename: true,
+        unique_filename: true,
+        filename_override: activeVideoName,
+        resource_type: "video",
+        secure: true,
+      });
+
+      return { result };
+    } catch (error) {
+      console.error("Error smatrcrop uploading modified video:", error);
     }
   });
