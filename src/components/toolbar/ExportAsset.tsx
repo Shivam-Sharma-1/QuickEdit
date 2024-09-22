@@ -7,6 +7,7 @@ import { Download } from "lucide-react";
 import { Card, CardContent, CardDescription, CardTitle } from "../ui/card";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 export default function ExportAsset({ resource }: { resource: string }) {
   const activeLayer = useLayerStore((state) => state.activeLayer);
@@ -45,9 +46,10 @@ export default function ExportAsset({ resource }: { resource: string }) {
 
         // Clean up the object URL
         URL.revokeObjectURL(downloadUrl);
+        toast.success("Downloaded successfully");
       } catch (error) {
-        console.error("Download failed:", error);
-        // Here you could show an error message to the user
+        toast.error("Download failed");
+        console.error("Download failed: ", error);
       }
     }
   };

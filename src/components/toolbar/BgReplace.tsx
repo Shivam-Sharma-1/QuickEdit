@@ -9,6 +9,7 @@ import { ImageOff, Sparkles } from "lucide-react";
 import { bgReplace } from "../../../server/bg-replace";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
+import { toast } from "sonner";
 
 function BgReplace() {
   const generating = useImageStore((state) => state.generating);
@@ -40,8 +41,13 @@ function BgReplace() {
         resourceType: "image",
       });
       setActiveLayer(newLayerId);
+      toast.success("Background replace successfully");
     }
-    if (res?.serverError) setGenerating(false);
+    if (res?.serverError) {
+      setGenerating(false);
+      toast.error("Background replace failed");
+      console.error("Error in Background Removal process:", res.serverError);
+    }
   };
 
   return (

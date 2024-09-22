@@ -7,6 +7,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
 import { Image, Sparkles } from "lucide-react";
 import { bgRemove } from "../../../server/bg-remove";
+import { toast } from "sonner";
 
 function BgRemove() {
   const generating = useImageStore((state) => state.generating);
@@ -36,8 +37,13 @@ function BgRemove() {
         resourceType: "image",
       });
       setActiveLayer(newLayerId);
+      toast.success("Background removed successfully");
     }
-    if (res?.serverError) setGenerating(false);
+    if (res?.serverError) {
+      setGenerating(false);
+      toast.error("Background removal failed");
+      console.error("Error in Background Removal process:", res.serverError);
+    }
   };
 
   return (

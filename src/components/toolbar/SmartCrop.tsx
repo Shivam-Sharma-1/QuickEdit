@@ -52,12 +52,13 @@ export default function SmartCrop() {
         resourceType: "video",
         poster: thumbnailUrl,
       });
-      toast.success(res.data.success);
+      toast.success("Video cropped successfully");
       setActiveLayer(newLayerId);
     }
     if (res?.data?.error) {
-      toast.error(res.data.error);
       setGenerating(false);
+      toast.error("Video cropped failed");
+      console.error("Error in Video crop process:", res.serverError);
     }
   };
 

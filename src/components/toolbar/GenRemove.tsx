@@ -10,6 +10,7 @@ import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { cn } from "@/lib/utils";
 import { genRemove } from "../../../server/gen-remove";
+import { toast } from "sonner";
 
 function GenRemove() {
   const tags = useImageStore((state) => state.tags);
@@ -43,6 +44,12 @@ function GenRemove() {
         resourceType: "image",
       });
       setActiveLayer(newLayerId);
+      toast.success("Object removed successfully");
+    }
+    if (res?.serverError) {
+      setGenerating(false);
+      toast.error("Object removal failed");
+      console.error("Error in Object Removal process:", res.serverError);
     }
   };
 

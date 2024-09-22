@@ -38,6 +38,7 @@ export default function VideoTranscription() {
               transcriptionURL: result.data.subtitledVideoUrl,
             });
             setActiveLayer(activeLayer.id);
+            toast.success("Video transcripted successfully");
           }
         } else if (result.data && "error" in result.data) {
           console.log("Error: ", result.data.error);

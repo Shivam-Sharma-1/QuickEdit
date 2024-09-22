@@ -11,6 +11,7 @@ import { Input } from "../ui/input";
 import { extractPart } from "../../../server/extract-part";
 import { Checkbox } from "../ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
+import { toast } from "sonner";
 
 function ExtractPart() {
   const generating = useImageStore((state) => state.generating);
@@ -59,6 +60,13 @@ function ExtractPart() {
       });
       setGenerating(false);
       setActiveLayer(newLayerId);
+      setActiveLayer(newLayerId);
+      toast.success("Object extracted successfully");
+    }
+    if (res?.serverError) {
+      setGenerating(false);
+      toast.error("Object extraction failed");
+      console.error("Error in Background Removal process:", res.serverError);
     }
   };
 

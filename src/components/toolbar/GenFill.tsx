@@ -9,6 +9,7 @@ import { Crop, Sparkles } from "lucide-react";
 import { Label } from "../ui/label";
 import { genFill } from "../../../server/gen-fill";
 import { Slider } from "../ui/slider";
+import { toast } from "sonner";
 
 const PREVIEW_SIZE = 250;
 const EXPANSION_THRESHOLD = 250;
@@ -94,11 +95,13 @@ function GenFill() {
         resourceType: "image",
       });
       setActiveLayer(newLayerId);
+      toast.success("Generative filled successfully");
     }
 
     if (res?.serverError) {
-      console.log(res.serverError);
       setGenerating(false);
+      toast.error("Generative filled failed");
+      console.error("Error in Generative fill process:", res.serverError);
     }
   };
 
