@@ -44,6 +44,7 @@ function ExtractPart() {
       multiple,
       mode: mode as "default" | "mask",
       invert,
+      activeImageName: activeLayer.name!,
     });
 
     if (res?.data?.success) {
@@ -54,8 +55,8 @@ function ExtractPart() {
         format: ".png",
         height: activeLayer.height,
         width: activeLayer.width,
-        url: res.data.success,
-        publicId: activeLayer.publicId,
+        url: res.data.success.secure_url,
+        publicId: res.data.success.public_id,
         resourceType: "image",
       });
       setGenerating(false);

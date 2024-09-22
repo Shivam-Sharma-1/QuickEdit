@@ -27,6 +27,7 @@ function GenRemove() {
     setGenerating(true);
     const res = await genRemove({
       activeImage: activeLayer.url!,
+      activeImageName: activeLayer.name!,
       prompt: activeTag,
     });
     if (res?.data?.success) {
@@ -35,12 +36,12 @@ function GenRemove() {
       const newLayerId = crypto.randomUUID();
       addLayer({
         id: newLayerId,
-        url: res.data.success,
+        url: res.data.success.secure_url,
         format: activeLayer.format,
         height: activeLayer.height,
         width: activeLayer.width,
-        name: activeLayer.name,
-        publicId: activeLayer.publicId,
+        name: "genremove-" + activeLayer.name,
+        publicId: res.data.success.public_id,
         resourceType: "image",
       });
       setActiveLayer(newLayerId);

@@ -21,19 +21,20 @@ function BgRemove() {
     const res = await bgRemove({
       activeImage: activeLayer.url!,
       format: activeLayer.format!,
+      activeImageName: activeLayer.name!,
     });
+
     if (res?.data?.success) {
       setGenerating(false);
-
       const newLayerId = crypto.randomUUID();
       addLayer({
         id: newLayerId,
-        url: res.data.success,
+        url: res.data.success.secure_url,
         format: "png",
         height: activeLayer.height,
         width: activeLayer.width,
-        name: "bgRemoved" + activeLayer.name,
-        publicId: activeLayer.publicId,
+        name: "bgremoved-" + activeLayer.name,
+        publicId: res.data.success.public_id,
         resourceType: "image",
       });
       setActiveLayer(newLayerId);

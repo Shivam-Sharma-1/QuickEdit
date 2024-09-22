@@ -78,20 +78,20 @@ function GenFill() {
       height: (height + activeLayer.height!).toString(),
       aspect: "1:1",
       activeImage: activeLayer.url!,
+      activeImageName: activeLayer.name!,
     });
 
     if (res?.data?.success) {
-      console.log(res.data.success);
       setGenerating(false);
       const newLayerId = crypto.randomUUID();
       addLayer({
         id: newLayerId,
-        name: "generative-fill" + activeLayer.name,
+        name: "genfill-" + activeLayer.name,
         format: activeLayer.format,
-        height: height + activeLayer.height!,
-        width: width + activeLayer.width!,
-        url: res.data.success,
-        publicId: activeLayer.publicId,
+        height: res.data.success.height,
+        width: res.data.success.width,
+        url: res.data.success.secure_url,
+        publicId: res.data.success.public_id,
         resourceType: "image",
       });
       setActiveLayer(newLayerId);

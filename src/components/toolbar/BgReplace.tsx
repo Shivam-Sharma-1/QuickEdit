@@ -25,6 +25,7 @@ function BgReplace() {
     const res = await bgReplace({
       activeImage: activeLayer.url!,
       prompt: prompt,
+      activeImageName: activeLayer.name!,
     });
     if (res?.data?.success) {
       setGenerating(false);
@@ -32,12 +33,12 @@ function BgReplace() {
       const newLayerId = crypto.randomUUID();
       addLayer({
         id: newLayerId,
-        url: res.data.success,
+        url: res.data.success.secure_url,
         format: activeLayer.format,
         height: activeLayer.height,
         width: activeLayer.width,
-        name: "bgReplaced" + activeLayer.name,
-        publicId: activeLayer.publicId,
+        name: "bgreplaced-" + activeLayer.name,
+        publicId: res.data.success.public_id,
         resourceType: "image",
       });
       setActiveLayer(newLayerId);
