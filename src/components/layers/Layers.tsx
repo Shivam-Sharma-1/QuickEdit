@@ -110,7 +110,7 @@ export default function Layers() {
           >
             <div className="flex w-full items-center justify-between">
               {!layer.url ? (
-                <p className="text-xs font-medium justify-self-end pl-3">
+                <p className="text-xs font-medium justify-self-end pl-2">
                   {" "}
                   New Layer
                 </p>
