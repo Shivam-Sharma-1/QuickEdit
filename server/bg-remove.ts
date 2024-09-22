@@ -4,6 +4,7 @@ import checkImageProcessing from "@/lib/check-processing";
 import { actionClient } from "@/lib/safe-action";
 import { v2 as cloudinary } from "cloudinary";
 import { z } from "zod";
+import { uploadModifiedImage } from "./upload-image";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_NAME,
@@ -14,11 +15,12 @@ cloudinary.config({
 const bgRemoveSchema = z.object({
   activeImage: z.string(),
   format: z.string(),
+  activeImageName: z.string(),
 });
 
 export const bgRemove = actionClient
   .schema(bgRemoveSchema)
-  .action(async ({ parsedInput: { activeImage, format } }) => {
+  .action(async ({ parsedInput: { activeImage, format, activeImageName } }) => {
     try {
       const form = activeImage.split(format);
       const pngConvert = form[0] + "png";
@@ -36,7 +38,13 @@ export const bgRemove = actionClient
       }
 
       if (!isProcessed) throw new Error("Image processing timeout out");
-      return { success: removeUrl };
+
+      const uploadResult = await uploadModifiedImage({
+        activeImageName: "bgremoved-" + activeImageName,
+        removeUrl: removeUrl,
+      });
+
+      return { success: uploadResult?.data?.result };
     } catch (error) {
       console.error("Error in Background Removal process:", error);
       return {

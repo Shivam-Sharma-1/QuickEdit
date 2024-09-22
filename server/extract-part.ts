@@ -4,6 +4,7 @@ import checkImageProcessing from "@/lib/check-processing";
 import { actionClient } from "@/lib/safe-action";
 import { v2 as cloudinary } from "cloudinary";
 import { z } from "zod";
+import { uploadModifiedImage } from "./upload-image";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_NAME,
@@ -18,38 +19,62 @@ const extractPartSchema = z.object({
   mode: z.enum(["default", "mask"]).optional(),
   invert: z.boolean().optional(),
   format: z.string(),
+  activeImageName: z.string(),
 });
 
 export const extractPart = actionClient
   .schema(extractPartSchema)
   .action(
     async ({
-      parsedInput: { activeImage, format, prompts, multiple, mode, invert },
+      parsedInput: {
+        activeImage,
+        format,
+        prompts,
+        multiple,
+        mode,
+        invert,
+        activeImageName,
+      },
     }) => {
-      const form = activeImage.split(format);
-      const pngConvert = form[0] + "png";
-      const parts = pngConvert.split("/upload/");
+      try {
+        const form = activeImage.split(format);
+        const pngConvert = form[0] + "png";
+        const parts = pngConvert.split("/upload/");
 
-      let extractParams = `prompt_(${prompts
-        .map((p) => encodeURIComponent(p))
-        .join(";")})`;
-      if (multiple) extractParams += ";multiple_true";
-      if (mode === "mask") extractParams += ";mode_mask";
-      if (invert) extractParams += ";invert_true";
+        let extractParams = `prompt_(${prompts
+          .map((p) => encodeURIComponent(p))
+          .join(";")})`;
+        if (multiple) extractParams += ";multiple_true";
+        if (mode === "mask") extractParams += ";mode_mask";
+        if (invert) extractParams += ";invert_true";
 
-      const extractUrl = `${parts[0]}/upload/e_extract:${extractParams}/${parts[1]}`;
+        const extractUrl = `${parts[0]}/upload/e_extract:${extractParams}/${parts[1]}`;
 
-      let isProcessed = false;
-      const maxAttempts = 20;
-      const delay = 1000;
+        let isProcessed = false;
+        const maxAttempts = 20;
+        const delay = 1000;
 
-      for (let attempt = 0; attempt < maxAttempts; attempt++) {
-        isProcessed = await checkImageProcessing(extractUrl);
-        if (isProcessed) break;
-        await new Promise((resolve) => setTimeout(resolve, delay));
+        for (let attempt = 0; attempt < maxAttempts; attempt++) {
+          isProcessed = await checkImageProcessing(extractUrl);
+          if (isProcessed) break;
+          await new Promise((resolve) => setTimeout(resolve, delay));
+        }
+
+        if (!isProcessed) throw new Error("Image processing timeout out");
+
+        const uploadResult = await uploadModifiedImage({
+          activeImageName: "extracted-" + activeImageName,
+          removeUrl: extractUrl,
+        });
+
+        return { success: uploadResult?.data?.result };
+      } catch (error) {
+        console.error("Error in Object Extraction process:", error);
+        return {
+          error:
+            "Error in Object Extraction process: " +
+            String((error as any).error.message),
+        };
       }
-
-      if (!isProcessed) throw new Error("image processing timeout out");
-      return { success: extractUrl };
     }
   );
