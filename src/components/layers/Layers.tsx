@@ -50,8 +50,9 @@ export default function Layers() {
   );
 
   const handleAddLayer = () => {
+    const newLayerId = crypto.randomUUID();
     addLayer({
-      id: crypto.randomUUID(),
+      id: newLayerId,
       url: "",
       height: 0,
       width: 0,
@@ -59,6 +60,7 @@ export default function Layers() {
       name: "",
       format: "",
     });
+    setActiveLayer(newLayerId);
   };
 
   return (
@@ -120,7 +122,7 @@ export default function Layers() {
               else setActiveLayer(layer.id);
             }}
           >
-            <div className="flex w-full items-center justify-between">
+            <div className="flex w-full gap-4 items-center justify-between">
               {!layer.url ? (
                 <p className="text-xs font-medium justify-self-end pl-2">
                   {" "}
@@ -128,6 +130,7 @@ export default function Layers() {
                 </p>
               ) : null}
               <LayerImage layer={layer} />
+              <p className="text-xs text-center w-[170px] overflow-auto text-wrap">{`${layer.name}.${layer.format}`}</p>
               <LayerInfo layer={layer} layerIndex={index} />
             </div>
           </div>
