@@ -72,7 +72,7 @@ function GenRemove() {
             </p>
           </div>
           <div className="grid gap-2">
-            <h3 className="text-xs">Suggested selections</h3>
+            {/* <h3 className="text-xs">Suggested selections</h3>
             <div className="flex gap-2">
               {tags.length === 0 && (
                 <p className="text-xs text-muted-foreground">
@@ -91,7 +91,7 @@ function GenRemove() {
                   {tag}
                 </Badge>
               ))}
-            </div>
+            </div> */}
             <div className="flex flex-col justify-center gap-3">
               <Label htmlFor="tag">Selection</Label>
               <Input
