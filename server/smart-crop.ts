@@ -1,10 +1,10 @@
 "use server";
 
-import checkImageProcessing from "@/lib/check-processing";
 import { actionClient } from "@/lib/safe-action";
 import { v2 as cloudinary } from "cloudinary";
 import z from "zod";
 import { uploadModifiedVideo } from "./upload-video";
+import { waitForProcessing } from "@/lib/wait-processing";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_NAME,
@@ -27,34 +27,29 @@ export const genCrop = actionClient
     }) => {
       try {
         const parts = activeVideo.split("/upload/");
-        const fillUrl = `${parts[0]}/upload/ar_${aspect},c_fill,g_auto,h_${height}/${parts[1]}`;
+        const cropUrl = `${parts[0]}/upload/ar_${aspect},c_fill,g_auto,h_${height}/${parts[1]}`;
 
-        let isProcessed = false;
-        const maxAttempts = 20;
-        const delay = 1000;
+        const isProcessed = await waitForProcessing(cropUrl);
 
-        for (let attempt = 0; attempt < maxAttempts; attempt++) {
-          isProcessed = await checkImageProcessing(fillUrl);
-          if (isProcessed) {
-            break;
-          }
-          await new Promise((resolve) => setTimeout(resolve, delay));
-        }
-
-        if (!isProcessed) throw new Error("Video processing failed");
+        if (!isProcessed)
+          throw new Error("Video processing timed out! Use a smaller video.");
 
         const uploadResult = await uploadModifiedVideo({
           activeVideoName: "cropped-" + activeVideoName,
-          removeUrl: fillUrl,
+          removeUrl: cropUrl,
         });
 
-        return { success: uploadResult?.data?.result };
+        if (!uploadResult) {
+          return { error: "Error in uploading modified video" };
+        }
+
+        return { success: uploadResult?.data?.result, cropUrl: cropUrl };
       } catch (error) {
         console.error("Error in video cropping process:", error);
         return {
           error:
             "Error in video cropping process: " +
-            String((error as any).error.message),
+            String((error as any).message),
         };
       }
     }
