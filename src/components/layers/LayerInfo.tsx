@@ -15,9 +15,11 @@ export default function LayerInfo({
   layer: Layer;
   layerIndex: number;
 }) {
-  const layers = useLayerStore((state) => state.layers);
-  const setActiveLayer = useLayerStore((state) => state.setActiveLayer);
-  const removeLayer = useLayerStore((state) => state.removeLayer);
+  const { layers, setActiveLayer, removeLayer } = useLayerStore((state) => ({
+    layers: state.layers,
+    setActiveLayer: state.setActiveLayer,
+    removeLayer: state.removeLayer,
+  }));
   const setGenerating = useImageStore((state) => state.setGenerating);
 
   return (
