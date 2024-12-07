@@ -13,15 +13,19 @@ import { genRemove } from "../../../server/gen-remove";
 import { toast } from "sonner";
 
 function GenRemove() {
-  const tags = useImageStore((state) => state.tags);
-  const setActiveTag = useImageStore((state) => state.setActiveTag);
-  const generating = useImageStore((state) => state.generating);
-  const activeTag = useImageStore((state) => state.activeTag);
-  const activeColor = useImageStore((state) => state.activeColor);
-  const setGenerating = useImageStore((state) => state.setGenerating);
-  const activeLayer = useLayerStore((state) => state.activeLayer);
-  const addLayer = useLayerStore((state) => state.addLayer);
-  const setActiveLayer = useLayerStore((state) => state.setActiveLayer);
+  const { setActiveTag, generating, activeTag, activeColor, setGenerating } =
+    useImageStore((state) => ({
+      setActiveTag: state.setActiveTag,
+      generating: state.generating,
+      activeTag: state.activeTag,
+      activeColor: state.activeColor,
+      setGenerating: state.setGenerating,
+    }));
+  const { activeLayer, addLayer, setActiveLayer } = useLayerStore((state) => ({
+    activeLayer: state.activeLayer,
+    addLayer: state.addLayer,
+    setActiveLayer: state.setActiveLayer,
+  }));
 
   const handleRemove = async () => {
     setGenerating(true);
@@ -31,8 +35,6 @@ function GenRemove() {
       prompt: activeTag,
     });
     if (res?.data?.success) {
-      setGenerating(false);
-
       const newLayerId = crypto.randomUUID();
       addLayer({
         id: newLayerId,
@@ -48,10 +50,10 @@ function GenRemove() {
       toast.success("Object removed successfully");
     }
     if (res?.serverError) {
-      setGenerating(false);
       toast.error("Object removal failed");
       console.error("Error in Object Removal process:", res.serverError);
     }
+    setGenerating(false);
   };
 
   return (

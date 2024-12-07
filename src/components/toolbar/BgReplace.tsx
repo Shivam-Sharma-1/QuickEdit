@@ -12,11 +12,15 @@ import { Input } from "../ui/input";
 import { toast } from "sonner";
 
 function BgReplace() {
-  const generating = useImageStore((state) => state.generating);
-  const setGenerating = useImageStore((state) => state.setGenerating);
-  const activeLayer = useLayerStore((state) => state.activeLayer);
-  const addLayer = useLayerStore((state) => state.addLayer);
-  const setActiveLayer = useLayerStore((state) => state.setActiveLayer);
+  const { generating, setGenerating } = useImageStore((state) => ({
+    generating: state.generating,
+    setGenerating: state.setGenerating,
+  }));
+  const { activeLayer, addLayer, setActiveLayer } = useLayerStore((state) => ({
+    activeLayer: state.activeLayer,
+    addLayer: state.addLayer,
+    setActiveLayer: state.setActiveLayer,
+  }));
 
   const [prompt, setPrompt] = useState("");
 
@@ -27,9 +31,8 @@ function BgReplace() {
       prompt: prompt,
       activeImageName: activeLayer.name!,
     });
-    if (res?.data?.success) {
-      setGenerating(false);
 
+    if (res?.data?.success) {
       const newLayerId = crypto.randomUUID();
       addLayer({
         id: newLayerId,
@@ -45,10 +48,10 @@ function BgReplace() {
       toast.success("Background replace successfully");
     }
     if (res?.serverError) {
-      setGenerating(false);
       toast.error("Background replace failed");
       console.error("Error in Background Removal process:", res.serverError);
     }
+    setGenerating(false);
   };
 
   return (

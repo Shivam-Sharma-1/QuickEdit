@@ -10,11 +10,15 @@ import { bgRemove } from "../../../server/bg-remove";
 import { toast } from "sonner";
 
 function BgRemove() {
-  const generating = useImageStore((state) => state.generating);
-  const setGenerating = useImageStore((state) => state.setGenerating);
-  const activeLayer = useLayerStore((state) => state.activeLayer);
-  const addLayer = useLayerStore((state) => state.addLayer);
-  const setActiveLayer = useLayerStore((state) => state.setActiveLayer);
+  const { generating, setGenerating } = useImageStore((state) => ({
+    generating: state.generating,
+    setGenerating: state.setGenerating,
+  }));
+  const { activeLayer, addLayer, setActiveLayer } = useLayerStore((state) => ({
+    activeLayer: state.activeLayer,
+    addLayer: state.addLayer,
+    setActiveLayer: state.setActiveLayer,
+  }));
 
   const handleRemove = async () => {
     setGenerating(true);
@@ -25,26 +29,26 @@ function BgRemove() {
     });
 
     if (res?.data?.success) {
-      setGenerating(false);
       const newLayerId = crypto.randomUUID();
+      const newData = res.data.success;
       addLayer({
         id: newLayerId,
         url: res.data.success.secure_url,
         format: "png",
-        height: activeLayer.height,
-        width: activeLayer.width,
+        height: newData.height,
+        width: newData.width,
         name: "bgremoved-" + activeLayer.name,
-        publicId: res.data.success.public_id,
+        publicId: newData.public_id,
         resourceType: "image",
       });
       setActiveLayer(newLayerId);
       toast.success("Background removed successfully");
     }
     if (res?.serverError) {
-      setGenerating(false);
       toast.error("Background removal failed");
       console.error("Error in Background Removal process:", res.serverError);
     }
+    setGenerating(false);
   };
 
   return (
@@ -52,7 +56,8 @@ function BgRemove() {
       <PopoverTrigger disabled={!activeLayer?.url} asChild>
         <Button variant="outline" className="p-8">
           <span className="flex gap-1 items-center justify-center flex-col text-xs font-medium">
-            BG Removal <Image size={20} />
+            BG Removal
+            <Image size={20} />
           </span>
         </Button>
       </PopoverTrigger>

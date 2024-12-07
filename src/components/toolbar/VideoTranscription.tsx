@@ -9,11 +9,15 @@ import { toast } from "sonner";
 import { initiateTranscription } from "../../../server/transcribe";
 
 export default function VideoTranscription() {
-  const activeLayer = useLayerStore((state) => state.activeLayer);
-  const updateLayer = useLayerStore((state) => state.updateLayer);
-  const [transcribing, setTranscribing] = useState(false);
+  const { activeLayer, updateLayer, setActiveLayer } = useLayerStore(
+    (state) => ({
+      activeLayer: state.activeLayer,
+      updateLayer: state.updateLayer,
+      setActiveLayer: state.setActiveLayer,
+    })
+  );
   const setGenerating = useImageStore((state) => state.setGenerating);
-  const setActiveLayer = useLayerStore((state) => state.setActiveLayer);
+  const [transcribing, setTranscribing] = useState(false);
 
   const handleTranscribe = async () => {
     if (!activeLayer.publicId || activeLayer.resourceType !== "video") {

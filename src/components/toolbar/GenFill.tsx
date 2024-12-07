@@ -15,11 +15,15 @@ const PREVIEW_SIZE = 250;
 const EXPANSION_THRESHOLD = 250;
 
 function GenFill() {
-  const generating = useImageStore((state) => state.generating);
-  const setGenerating = useImageStore((state) => state.setGenerating);
-  const activeLayer = useLayerStore((state) => state.activeLayer);
-  const addLayer = useLayerStore((state) => state.addLayer);
-  const setActiveLayer = useLayerStore((state) => state.setActiveLayer);
+  const { generating, setGenerating } = useImageStore((state) => ({
+    generating: state.generating,
+    setGenerating: state.setGenerating,
+  }));
+  const { activeLayer, addLayer, setActiveLayer } = useLayerStore((state) => ({
+    activeLayer: state.activeLayer,
+    addLayer: state.addLayer,
+    setActiveLayer: state.setActiveLayer,
+  }));
 
   const [height, setHeight] = useState(0);
   const [width, setWidth] = useState(0);
@@ -82,7 +86,6 @@ function GenFill() {
     });
 
     if (res?.data?.success) {
-      setGenerating(false);
       const newLayerId = crypto.randomUUID();
       addLayer({
         id: newLayerId,
@@ -99,10 +102,10 @@ function GenFill() {
     }
 
     if (res?.serverError) {
-      setGenerating(false);
       toast.error("Generative filled failed");
       console.error("Error in Generative fill process:", res.serverError);
     }
+    setGenerating(false);
   };
 
   const ExpansionIndicator = ({

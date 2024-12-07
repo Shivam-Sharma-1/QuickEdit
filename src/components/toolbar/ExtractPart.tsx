@@ -14,11 +14,15 @@ import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { toast } from "sonner";
 
 function ExtractPart() {
-  const generating = useImageStore((state) => state.generating);
-  const setGenerating = useImageStore((state) => state.setGenerating);
-  const activeLayer = useLayerStore((state) => state.activeLayer);
-  const addLayer = useLayerStore((state) => state.addLayer);
-  const setActiveLayer = useLayerStore((state) => state.setActiveLayer);
+  const { generating, setGenerating } = useImageStore((state) => ({
+    generating: state.generating,
+    setGenerating: state.setGenerating,
+  }));
+  const { activeLayer, addLayer, setActiveLayer } = useLayerStore((state) => ({
+    activeLayer: state.activeLayer,
+    addLayer: state.addLayer,
+    setActiveLayer: state.setActiveLayer,
+  }));
 
   const [prompts, setPrompts] = useState([""]);
   const [multiple, setMultiple] = useState(false);
@@ -49,26 +53,26 @@ function ExtractPart() {
 
     if (res?.data?.success) {
       const newLayerId = crypto.randomUUID();
+      const newData = res.data.success;
       addLayer({
         id: newLayerId,
         name: "extracted-" + activeLayer.name,
-        format: ".png",
+        format: "png",
         height: activeLayer.height,
         width: activeLayer.width,
-        url: res.data.success.secure_url,
-        publicId: res.data.success.public_id,
+        url: newData.secure_url,
+        publicId: newData.public_id,
         resourceType: "image",
       });
-      setGenerating(false);
       setActiveLayer(newLayerId);
       setActiveLayer(newLayerId);
       toast.success("Object extracted successfully");
     }
     if (res?.serverError) {
-      setGenerating(false);
       toast.error("Object extraction failed");
       console.error("Error in Background Removal process:", res.serverError);
     }
+    setGenerating(false);
   };
 
   return (
