@@ -16,22 +16,30 @@ import { useMemo } from "react";
 import Image from "next/image";
 
 export default function Layers() {
-  const layers = useLayerStore((state) => state.layers);
-  const activeLayer = useLayerStore((state) => state.activeLayer);
-  const setActiveLayer = useLayerStore((state) => state.setActiveLayer);
-  const addLayer = useLayerStore((state) => state.addLayer);
-  const generating = useImageStore((state) => state.generating);
-  const layerComparisonMode = useLayerStore(
-    (state) => state.layerComparisonMode
-  );
-  const setLayerComparisonMode = useLayerStore(
-    (state) => state.setLayerComparisonMode
-  );
-  const comparedLayers = useLayerStore((state) => state.comparedLayers);
-  const toggleComparedLayer = useLayerStore(
-    (state) => state.toggleComparedLayer
-  );
-  const setComparedLayers = useLayerStore((state) => state.setComparedLayers);
+  const {
+    layers,
+    activeLayer,
+    setActiveLayer,
+    addLayer,
+    layerComparisonMode,
+    setLayerComparisonMode,
+    comparedLayers,
+    toggleComparedLayer,
+    setComparedLayers,
+  } = useLayerStore((state) => ({
+    layers: state.layers,
+    activeLayer: state.activeLayer,
+    setActiveLayer: state.setActiveLayer,
+    addLayer: state.addLayer,
+    layerComparisonMode: state.layerComparisonMode,
+    setLayerComparisonMode: state.setLayerComparisonMode,
+    comparedLayers: state.comparedLayers,
+    toggleComparedLayer: state.toggleComparedLayer,
+    setComparedLayers: state.setComparedLayers,
+  }));
+  const { generating } = useImageStore((state) => ({
+    generating: state.generating,
+  }));
 
   const getLayerName = useMemo(
     () => (id: string) => {
@@ -66,7 +74,6 @@ export default function Layers() {
   return (
     <Card className="basis-[360px] shrink-0 scrollbar-thin scrollbar-track-secondary overflow-y-scroll scrollbar-thumb-primary scrollbar-thumb-rounded-full scrollbar-track-rounded-full overflow-x-hidden relative flex flex-col shadow-2xl ">
       <CardHeader className="sticky top-0 z-50 p-6 flex flex-col gap-4 bg-card shadow-sm">
-        {" "}
         <div className="flex flex-col gap-1 ">
           <CardTitle className="text-md">
             {activeLayer.name || "Layers"}
@@ -125,7 +132,6 @@ export default function Layers() {
             <div className="flex w-full gap-4 items-center justify-between">
               {!layer.url ? (
                 <p className="text-xs font-medium justify-self-end pl-2">
-                  {" "}
                   New Layer
                 </p>
               ) : null}
