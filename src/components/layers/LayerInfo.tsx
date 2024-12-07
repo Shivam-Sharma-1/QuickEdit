@@ -50,7 +50,6 @@ export default function LayerInfo({
             setActiveLayer(layers[0].id);
             removeLayer(layer.id);
             try {
-              console.log(layer.publicId!);
               deleteResource({
                 publicId: layer.publicId!,
                 resourceType: layer.resourceType as "image" | "video",
