@@ -20,7 +20,10 @@ function LoadingScreen() {
 
   return (
     <Dialog open={generating} onOpenChange={setGenerating}>
-      <DialogContent className="sm:max-w-[425px] flex flex-col items-center">
+      <DialogContent
+        className="sm:max-w-[425px] flex flex-col items-center"
+        setGenerating={setGenerating}
+      >
         <DialogHeader>
           <DialogTitle className="leading-8">
             Editing {activeLayer.name}
