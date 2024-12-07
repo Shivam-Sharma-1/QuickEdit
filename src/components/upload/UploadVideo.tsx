@@ -47,7 +47,6 @@ export default function UploadVideo() {
           });
           setTags(res.data.success.tags);
           setActiveLayer(activeLayer.id);
-          console.log(res.data.success);
           setGenerating(false);
         }
         if (res?.data?.error) {
