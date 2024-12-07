@@ -68,6 +68,7 @@ function UploadImage() {
 
       if (fileRejections.length) {
         console.log("rejected");
+        setGenerating(false);
       }
     },
   });
