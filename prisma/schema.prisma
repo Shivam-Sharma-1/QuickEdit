@@ -7,6 +7,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Plan {
+  FREE
+  PREMIUM
+}
+
 model User {
   id            String          @id @default(auto()) @map("_id") @db.ObjectId
   name          String?
@@ -15,6 +20,8 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  plan          Plan            @default(FREE)
+  credits       Int             @default(20)
   // Optional for WebAuthn support
   Authenticator Authenticator[]
 
@@ -78,4 +85,10 @@ model Authenticator {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, credentialID])
+}
+
+model ImgBgRemoval {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  isAvailable Boolean
+  disabledAt  DateTime?
 }
