@@ -1,8 +1,5 @@
-"use client";
-
 import { useImageStore } from "@/lib/image-store";
 import { useLayerStore } from "@/lib/layer-store";
-import React from "react";
 import {
   Dialog,
   DialogContent,
@@ -10,8 +7,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "./ui/dialog";
-import Lottie from "lottie-react";
+
+const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 import * as loadingAnimation from "../../public/animations/loading.json";
+import dynamic from "next/dynamic";
 
 function LoadingScreen() {
   const generating = useImageStore((state) => state.generating);
