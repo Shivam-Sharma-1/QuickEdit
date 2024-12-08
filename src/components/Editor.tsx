@@ -41,6 +41,7 @@ function Editor() {
   const { name, image, email } = session?.user || {};
 
   const [user, setUser] = useState<User | null>(null);
+  const [isProfileOpen, setIsProfileOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -50,7 +51,7 @@ function Editor() {
       }
     };
     fetchUser();
-  }, [email]);
+  }, [email, isProfileOpen]);
 
   return (
     <div className="flex h-full">
@@ -66,7 +67,7 @@ function Editor() {
             {name || "No"}
           </Button>
 
-          <Sheet>
+          <Sheet open={isProfileOpen} onOpenChange={setIsProfileOpen}>
             <SheetTrigger>
               <Image
                 className="h-6 w-6"
@@ -86,7 +87,7 @@ function Editor() {
                     height={24}
                     alt="Avatar"
                   />
-                  <h2>{name}</h2>
+                  <h3>{name}</h3>
                   <p>{email}</p>
                 </SheetTitle>
                 <SheetDescription>
