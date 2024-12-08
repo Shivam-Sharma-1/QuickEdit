@@ -145,7 +145,7 @@ export default function Layers() {
         ))}
       </CardContent>
 
-      <CardContent className="sticky bottom-0 bg-card flex gap-2 shrink-0 p-4">
+      <CardContent className="sticky bottom-0 bg-card flex gap-2 shrink-0 p-4 z-20">
         <Button
           onClick={handleAddLayer}
           variant="outline"
