@@ -8,6 +8,9 @@ import { Button } from "../ui/button";
 import { Image, Sparkles } from "lucide-react";
 import { bgRemove } from "../../../server/bg-remove";
 import { toast } from "sonner";
+import { useSession } from "next-auth/react";
+import decreaseCredits from "../../../server/decrease-credits";
+import checkBgRemoval from "../../../server/check-bgRemoval";
 
 function BgRemove() {
   const { generating, setGenerating } = useImageStore((state) => ({
@@ -19,36 +22,45 @@ function BgRemove() {
     addLayer: state.addLayer,
     setActiveLayer: state.setActiveLayer,
   }));
+  const { data: session } = useSession();
 
   const handleRemove = async () => {
     setGenerating(true);
-    const res = await bgRemove({
-      activeImage: activeLayer.url!,
-      format: activeLayer.format!,
-      activeImageName: activeLayer.name!,
-    });
 
-    if (res?.data?.success) {
-      const newLayerId = crypto.randomUUID();
-      const newData = res.data.success;
-      addLayer({
-        id: newLayerId,
-        url: res.data.success.secure_url,
-        format: "png",
-        height: newData.height,
-        width: newData.width,
-        name: "bgremoved-" + activeLayer.name,
-        publicId: newData.public_id,
-        resourceType: "image",
+    try {
+      const quotaExisting = await checkBgRemoval();
+      if (quotaExisting) await decreaseCredits(12, session?.user?.email!);
+
+      const res = await bgRemove({
+        activeImage: activeLayer.url!,
+        format: activeLayer.format!,
+        activeImageName: activeLayer.name!,
       });
-      setActiveLayer(newLayerId);
-      toast.success("Background removed successfully");
+
+      if (res?.data?.success) {
+        const newLayerId = crypto.randomUUID();
+        const newData = res.data.success;
+        addLayer({
+          id: newLayerId,
+          url: res.data.success.secure_url,
+          format: "png",
+          height: newData.height,
+          width: newData.width,
+          name: "bgremoved-" + activeLayer.name,
+          publicId: newData.public_id,
+          resourceType: "image",
+        });
+        setActiveLayer(newLayerId);
+        toast.success("Background removed successfully");
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(`Background removal failed, ${error.message}`);
+        console.error("Error in Background Removal process:", error.message);
+      }
+    } finally {
+      setGenerating(false);
     }
-    if (res?.serverError) {
-      toast.error("Background removal failed");
-      console.error("Error in Background Removal process:", res.serverError);
-    }
-    setGenerating(false);
   };
 
   return (
