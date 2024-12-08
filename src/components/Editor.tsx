@@ -8,8 +8,8 @@ function Editor() {
   return (
     <div className="flex h-full">
       <LoadingScreen />
-      <UploadForm />
       <Toolbar />
+      <UploadForm />
       <ActiveImage />
       <Layers />
     </div>
