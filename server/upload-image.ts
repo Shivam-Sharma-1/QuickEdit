@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth";
 import { actionClient } from "@/lib/safe-action";
 import { v2 as cloudinary, UploadApiResponse } from "cloudinary";
 import { z } from "zod";
+import { prisma } from "../prisma/prisma";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_NAME,
@@ -47,7 +48,7 @@ export const uploadImage = actionClient
             unique_filename: true,
             filename_override: file.name,
             secure: true,
-            folder: `quickedit/${session?.user?.email}`,
+            folder: `quickedit/${session?.user?.id}`,
           },
           (error, result) => {
             if (error || !result) {
@@ -62,7 +63,7 @@ export const uploadImage = actionClient
         uploadStream.end(buffer);
       });
     } catch (error) {
-      console.error("Error processing file:", error);
+      console.error("Error uploading file:", error);
       return { error: "Upload failed: " + error };
     }
   });
@@ -78,8 +79,61 @@ export const uploadModifiedImage = actionClient
       unique_filename: true,
       filename_override: activeImageName,
       secure: true,
-      folder: `quickedit/${session?.user?.email}/modified`,
+      folder: `quickedit/${session?.user?.id}/modified`,
     });
 
     return { result };
   });
+
+interface NewData {
+  public_id: string;
+  format: string;
+  resource_type: string;
+  url: string;
+  width: number;
+  height: number;
+  original_filename: string;
+}
+
+interface UploadImageToDBParams {
+  newData: NewData;
+  layerId: string;
+}
+
+export const uploadImageToDB = async ({
+  newData,
+  layerId,
+}: UploadImageToDBParams): Promise<void> => {
+  try {
+    const session = await auth();
+
+    await prisma.layer.upsert({
+      where: {
+        layerId: layerId,
+      },
+      update: {
+        userId: session?.user?.id!,
+        publicId: newData.public_id,
+        format: newData.format,
+        resourceType: newData.resource_type,
+        url: newData.url,
+        width: newData.width,
+        height: newData.height,
+        name: newData.original_filename,
+      },
+      create: {
+        userId: session?.user?.id!,
+        publicId: newData.public_id,
+        format: newData.format,
+        resourceType: newData.resource_type,
+        url: newData.url,
+        width: newData.width,
+        height: newData.height,
+        name: newData.original_filename,
+        layerId: layerId,
+      },
+    });
+  } catch (error) {
+    console.error("Error uploading image to DB:", error);
+  }
+};
