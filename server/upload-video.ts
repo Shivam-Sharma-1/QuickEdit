@@ -48,7 +48,7 @@ export const uploadVideo = actionClient
             unique_filename: true,
             filename_override: file.name,
             secure: true,
-            folder: `quickedit/${session?.user?.email}`,
+            folder: `quickedit/${session?.user?.id}`,
           },
           (error, result) => {
             if (error || !result) {
@@ -82,7 +82,7 @@ export const uploadModifiedVideo = actionClient
         filename_override: activeVideoName,
         resource_type: "video",
         secure: true,
-        folder: `quickedit/${session?.user?.email}/modified`,
+        folder: `quickedit/${session?.user?.id}/modified`,
       });
 
       return { result };
