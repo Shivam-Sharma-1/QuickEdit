@@ -8,6 +8,12 @@ import { Card, CardContent, CardDescription, CardTitle } from "../ui/card";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default function ExportAsset({ resource }: { resource: string }) {
   const activeLayer = useLayerStore((state) => state.activeLayer);
@@ -55,94 +61,100 @@ export default function ExportAsset({ resource }: { resource: string }) {
   };
 
   return (
-    <Dialog>
-      <DialogTrigger disabled={!activeLayer?.url} asChild>
-        <Button variant="outline" className="py-8">
-          <span className="flex gap-1 items-center justify-center flex-col text-xs font-medium">
+    <TooltipProvider delayDuration={0}>
+      <Tooltip>
+        <Dialog>
+          <TooltipTrigger>
+            <DialogTrigger disabled={!activeLayer?.url} asChild>
+              <Button variant="ghost" className="p-3 h-fit w-min">
+                <Download size={18} />
+              </Button>
+            </DialogTrigger>
+          </TooltipTrigger>
+          <TooltipContent side="right" sideOffset={10}>
             Export
-            <Download size={18} />
-          </span>
-        </Button>
-      </DialogTrigger>
-      <DialogContent>
-        <div className="flex flex-col gap-6">
-          <div>
-            <h3 className="text-center text-2xl font-medium">
-              Export the {resource}
-            </h3>
-            <p className="text-sm text-muted-foreground text-center">
-              Export assets efficiently for use in your projects.
-            </p>
-          </div>
-          <div className="flex justify-center gap-4">
-            <Card
-              onClick={() => setSelected("original")}
-              className={cn(
-                selected === "original" ? "border-primary" : null,
-                "p-4 cursor-pointer text-center"
-              )}
+          </TooltipContent>
+          <DialogContent>
+            <div className="flex flex-col gap-6">
+              <div>
+                <h3 className="text-center text-2xl font-medium">
+                  Export the {resource}
+                </h3>
+                <p className="text-sm text-muted-foreground text-center">
+                  Export assets efficiently for use in your projects.
+                </p>
+              </div>
+              <div className="flex justify-center gap-4">
+                <Card
+                  onClick={() => setSelected("original")}
+                  className={cn(
+                    selected === "original" ? "border-primary" : null,
+                    "p-4 cursor-pointer text-center"
+                  )}
+                >
+                  <CardContent className="p-0">
+                    <CardTitle className="text-md">Original</CardTitle>
+                    <CardDescription>
+                      {activeLayer.width} X {activeLayer.height}
+                    </CardDescription>
+                  </CardContent>
+                </Card>
+                <Card
+                  onClick={() => setSelected("large")}
+                  className={cn(
+                    selected === "large" ? "border-primary" : null,
+                    "p-4 cursor-pointer text-center"
+                  )}
+                >
+                  <CardContent className="p-0">
+                    <CardTitle className="text-md">Large</CardTitle>
+                    <CardDescription>
+                      {(activeLayer.width! * 0.7).toFixed(0)} X{" "}
+                      {(activeLayer.height! * 0.7).toFixed(0)}
+                    </CardDescription>
+                  </CardContent>
+                </Card>
+                <Card
+                  onClick={() => setSelected("medium")}
+                  className={cn(
+                    selected === "medium" ? "border-primary" : null,
+                    "p-4 cursor-pointer text-center"
+                  )}
+                >
+                  <CardContent className="p-0">
+                    <CardTitle className="text-md">Medium</CardTitle>
+                    <CardDescription>
+                      {(activeLayer.width! * 0.5).toFixed(0)} X{" "}
+                      {(activeLayer.height! * 0.5).toFixed(0)}
+                    </CardDescription>
+                  </CardContent>
+                </Card>
+                <Card
+                  className={cn(
+                    selected === "small" ? "border-primary" : null,
+                    "p-4 cursor-pointer text-center"
+                  )}
+                  onClick={() => setSelected("small")}
+                >
+                  <CardContent className="p-0">
+                    <CardTitle className="text-md">Small</CardTitle>
+                    <CardDescription>
+                      {(activeLayer.width! * 0.3).toFixed(0)} X{" "}
+                      {(activeLayer.height! * 0.3).toFixed(0)}
+                    </CardDescription>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+            <Button
+              onClick={handleDownload}
+              className="mt-2 flex justify-center items-center gap-2"
             >
-              <CardContent className="p-0">
-                <CardTitle className="text-md">Original</CardTitle>
-                <CardDescription>
-                  {activeLayer.width} X {activeLayer.height}
-                </CardDescription>
-              </CardContent>
-            </Card>
-            <Card
-              onClick={() => setSelected("large")}
-              className={cn(
-                selected === "large" ? "border-primary" : null,
-                "p-4 cursor-pointer text-center"
-              )}
-            >
-              <CardContent className="p-0">
-                <CardTitle className="text-md">Large</CardTitle>
-                <CardDescription>
-                  {(activeLayer.width! * 0.7).toFixed(0)} X{" "}
-                  {(activeLayer.height! * 0.7).toFixed(0)}
-                </CardDescription>
-              </CardContent>
-            </Card>
-            <Card
-              onClick={() => setSelected("medium")}
-              className={cn(
-                selected === "medium" ? "border-primary" : null,
-                "p-4 cursor-pointer text-center"
-              )}
-            >
-              <CardContent className="p-0">
-                <CardTitle className="text-md">Medium</CardTitle>
-                <CardDescription>
-                  {(activeLayer.width! * 0.5).toFixed(0)} X{" "}
-                  {(activeLayer.height! * 0.5).toFixed(0)}
-                </CardDescription>
-              </CardContent>
-            </Card>
-            <Card
-              className={cn(
-                selected === "small" ? "border-primary" : null,
-                "p-4 cursor-pointer text-center"
-              )}
-              onClick={() => setSelected("small")}
-            >
-              <CardContent className="p-0">
-                <CardTitle className="text-md">Small</CardTitle>
-                <CardDescription>
-                  {(activeLayer.width! * 0.3).toFixed(0)} X{" "}
-                  {(activeLayer.height! * 0.3).toFixed(0)}
-                </CardDescription>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-        <Button
-          onClick={handleDownload}
-          className="mt-2 flex justify-center items-center gap-2"
-        >
-          Download {selected} {resource} <Download size={18} />
-        </Button>
-      </DialogContent>
-    </Dialog>
+              Download {selected} {resource} <Download size={18} />
+            </Button>
+          </DialogContent>
+        </Dialog>
+      </Tooltip>
+    </TooltipProvider>
   );
 }

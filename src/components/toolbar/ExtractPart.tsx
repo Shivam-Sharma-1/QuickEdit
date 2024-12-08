@@ -5,7 +5,7 @@ import { useLayerStore } from "@/lib/layer-store";
 import React, { useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
-import { ChevronRight, Scissors, Sparkles } from "lucide-react";
+import { ChevronRight, Scissors, Sparkles, WandSparkles } from "lucide-react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { extractPart } from "../../../server/extract-part";
@@ -14,6 +14,12 @@ import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";
 import decreaseCredits from "../../../server/decrease-credits";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 function ExtractPart() {
   const { generating, setGenerating } = useImageStore((state) => ({
@@ -86,94 +92,107 @@ function ExtractPart() {
   };
 
   return (
-    <Popover>
-      <PopoverTrigger disabled={!activeLayer?.url} asChild>
-        <Button variant="outline" className="py-8">
-          <span className="flex gap-1 items-center justify-center flex-col text-xs font-medium">
+    <TooltipProvider delayDuration={0}>
+      <Tooltip>
+        <Popover>
+          <TooltipTrigger>
+            <PopoverTrigger disabled={!activeLayer?.url} asChild>
+              <Button variant="ghost" className="p-3 h-fit w-min">
+                <Scissors size={18} />
+              </Button>
+            </PopoverTrigger>
+          </TooltipTrigger>
+          <TooltipContent side="right" sideOffset={10}>
             AI Extract
-            <Scissors size={18} />
-          </span>
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-full p-6" side="right" sideOffset={16}>
-        <div className="grid gap-4">
-          <div className="space-y-2">
-            <h4 className="font-medium leading-none">AI Extract</h4>
-            <p className="text-sm text-muted-foreground">
-              Extract specific areas or objects from your image using AI.
-            </p>
-          </div>
-          <div className="grid gap-2">
-            {prompts.map((prompt, index) => (
-              <div
-                key={index}
-                className="flex flex-col justify-center-center gap-4"
-              >
-                <Label htmlFor={`prompt-${index}`}>Prompt {index + 1} :</Label>
-                <Input
-                  id={`prompt-${index}`}
-                  value={prompt}
-                  onChange={(e) => updatePrompt(index, e.target.value)}
-                  placeholder="Describe what to extract"
-                  className="col-span-2 h-8"
-                />
+          </TooltipContent>
+          <PopoverContent className="w-full p-6" side="right" sideOffset={16}>
+            <div className="grid gap-4">
+              <div className="space-y-2">
+                <h4 className="font-medium leading-none">AI Extract</h4>
+                <p className="text-sm text-muted-foreground">
+                  Extract specific areas or objects from your image using AI.
+                </p>
               </div>
-            ))}
+              <div className="grid gap-2">
+                {prompts.map((prompt, index) => (
+                  <div
+                    key={index}
+                    className="flex flex-col justify-center-center gap-4"
+                  >
+                    <Label htmlFor={`prompt-${index}`}>
+                      Prompt {index + 1} :
+                    </Label>
+                    <Input
+                      id={`prompt-${index}`}
+                      value={prompt}
+                      onChange={(e) => updatePrompt(index, e.target.value)}
+                      placeholder="Describe what to extract"
+                      className="col-span-2 h-8"
+                    />
+                  </div>
+                ))}
+                <Button
+                  onClick={addPrompt}
+                  size="sm"
+                  className="flex justify-center items-center gap-2"
+                >
+                  Add Prompt
+                  <ChevronRight size={16} />
+                </Button>
+
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="multiple"
+                    checked={multiple}
+                    onCheckedChange={(checked) =>
+                      setMultiple(checked as boolean)
+                    }
+                  />
+                  <Label htmlFor="multiple">Extract multiple objects</Label>
+                </div>
+
+                <RadioGroup value={mode} onValueChange={setMode}>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="default" id="mode-default" />
+                    <Label htmlFor="mode-default">
+                      Default (transparent background)
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="mask" id="mode-mask" />
+                    <Label htmlFor="mode-mask">Mask</Label>
+                  </div>
+                </RadioGroup>
+
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="invert"
+                    checked={invert}
+                    onCheckedChange={(checked) => setInvert(checked as boolean)}
+                  />
+                  <Label htmlFor="invert">Invert (keep background)</Label>
+                </div>
+              </div>
+              <p className="text-xs flex  items-center gap-1">
+                Costs: 5 Credits <Sparkles size={14} />
+              </p>
+            </div>
             <Button
-              onClick={addPrompt}
-              size="sm"
-              className="flex justify-center items-center gap-2"
+              disabled={
+                !activeLayer?.url ||
+                generating ||
+                prompts.every((p) => p.trim() === "")
+              }
+              className="w-full mt-2 flex items-center justify-center gap-2"
+              onClick={handleExtract}
             >
-              Add Prompt
-              <ChevronRight size={16} />
+              {generating ? "Extracting..." : "Extract Object"}
+              <WandSparkles size={16} />
             </Button>
-
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="multiple"
-                checked={multiple}
-                onCheckedChange={(checked) => setMultiple(checked as boolean)}
-              />
-              <Label htmlFor="multiple">Extract multiple objects</Label>
-            </div>
-
-            <RadioGroup value={mode} onValueChange={setMode}>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="default" id="mode-default" />
-                <Label htmlFor="mode-default">
-                  Default (transparent background)
-                </Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="mask" id="mode-mask" />
-                <Label htmlFor="mode-mask">Mask</Label>
-              </div>
-            </RadioGroup>
-
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="invert"
-                checked={invert}
-                onCheckedChange={(checked) => setInvert(checked as boolean)}
-              />
-              <Label htmlFor="invert">Invert (keep background)</Label>
-            </div>
-          </div>
-        </div>
-        <Button
-          disabled={
-            !activeLayer?.url ||
-            generating ||
-            prompts.every((p) => p.trim() === "")
-          }
-          className="w-full mt-4 flex items-center justify-center gap-2"
-          onClick={handleExtract}
-        >
-          {generating ? "Extracting..." : "Extract Object"}
-          <Sparkles size={16} />
-        </Button>
-      </PopoverContent>
-    </Popover>
+          </PopoverContent>
+        </Popover>
+      </Tooltip>
+    </TooltipProvider>
   );
 }
 
