@@ -3,6 +3,7 @@
 import { actionClient } from "@/lib/safe-action";
 import { v2 as cloudinary } from "cloudinary";
 import { z } from "zod";
+import { prisma } from "../prisma/prisma";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_NAME,
@@ -42,3 +43,16 @@ export const deleteResource = actionClient
       };
     }
   });
+
+export const deleteImageFromDB = async (layerId: string) => {
+  try {
+    await prisma.layer.delete({
+      where: {
+        layerId,
+      },
+    });
+  } catch (error) {
+    console.error("Error in deleting image from DB:", error);
+    return { error: "Error in deleting image from DB" };
+  }
+};
