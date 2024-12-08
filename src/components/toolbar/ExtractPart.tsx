@@ -12,6 +12,8 @@ import { extractPart } from "../../../server/extract-part";
 import { Checkbox } from "../ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { toast } from "sonner";
+import { useSession } from "next-auth/react";
+import decreaseCredits from "../../../server/decrease-credits";
 
 function ExtractPart() {
   const { generating, setGenerating } = useImageStore((state) => ({
@@ -23,6 +25,7 @@ function ExtractPart() {
     addLayer: state.addLayer,
     setActiveLayer: state.setActiveLayer,
   }));
+  const { data: session } = useSession();
 
   const [prompts, setPrompts] = useState([""]);
   const [multiple, setMultiple] = useState(false);
@@ -41,38 +44,45 @@ function ExtractPart() {
 
   const handleExtract = async () => {
     setGenerating(true);
-    const res = await extractPart({
-      prompts: prompts.filter((p) => p.trim() !== ""),
-      activeImage: activeLayer.url!,
-      format: activeLayer.format!,
-      multiple,
-      mode: mode as "default" | "mask",
-      invert,
-      activeImageName: activeLayer.name!,
-    });
 
-    if (res?.data?.success) {
-      const newLayerId = crypto.randomUUID();
-      const newData = res.data.success;
-      addLayer({
-        id: newLayerId,
-        name: "extracted-" + activeLayer.name,
-        format: "png",
-        height: activeLayer.height,
-        width: activeLayer.width,
-        url: newData.secure_url,
-        publicId: newData.public_id,
-        resourceType: "image",
+    try {
+      await decreaseCredits(5, session?.user?.email!);
+
+      const res = await extractPart({
+        prompts: prompts.filter((p) => p.trim() !== ""),
+        activeImage: activeLayer.url!,
+        format: activeLayer.format!,
+        multiple,
+        mode: mode as "default" | "mask",
+        invert,
+        activeImageName: activeLayer.name!,
       });
-      setActiveLayer(newLayerId);
-      setActiveLayer(newLayerId);
-      toast.success("Object extracted successfully");
+
+      if (res?.data?.success) {
+        const newLayerId = crypto.randomUUID();
+        const newData = res.data.success;
+        addLayer({
+          id: newLayerId,
+          name: "extracted-" + activeLayer.name,
+          format: "png",
+          height: activeLayer.height,
+          width: activeLayer.width,
+          url: newData.secure_url,
+          publicId: newData.public_id,
+          resourceType: "image",
+        });
+        setActiveLayer(newLayerId);
+        setActiveLayer(newLayerId);
+        toast.success("Object extracted successfully");
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(`Object extraction failed, ${error.message}`);
+        console.error("Error in Background Removal process:", error.message);
+      }
+    } finally {
+      setGenerating(false);
     }
-    if (res?.serverError) {
-      toast.error("Object extraction failed");
-      console.error("Error in Background Removal process:", res.serverError);
-    }
-    setGenerating(false);
   };
 
   return (

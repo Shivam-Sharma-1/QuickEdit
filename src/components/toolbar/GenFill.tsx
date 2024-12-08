@@ -10,6 +10,8 @@ import { Label } from "../ui/label";
 import { genFill } from "../../../server/gen-fill";
 import { Slider } from "../ui/slider";
 import { toast } from "sonner";
+import { useSession } from "next-auth/react";
+import decreaseCredits from "../../../server/decrease-credits";
 
 const PREVIEW_SIZE = 250;
 const EXPANSION_THRESHOLD = 250;
@@ -24,6 +26,7 @@ function GenFill() {
     addLayer: state.addLayer,
     setActiveLayer: state.setActiveLayer,
   }));
+  const { data: session } = useSession();
 
   const [height, setHeight] = useState(0);
   const [width, setWidth] = useState(0);
@@ -77,35 +80,41 @@ function GenFill() {
 
   const handleGenFill = async () => {
     setGenerating(true);
-    const res = await genFill({
-      width: (width + activeLayer.width!).toString(),
-      height: (height + activeLayer.height!).toString(),
-      aspect: "1:1",
-      activeImage: activeLayer.url!,
-      activeImageName: activeLayer.name!,
-    });
 
-    if (res?.data?.success) {
-      const newLayerId = crypto.randomUUID();
-      addLayer({
-        id: newLayerId,
-        name: "genfill-" + activeLayer.name,
-        format: activeLayer.format,
-        height: res.data.success.height,
-        width: res.data.success.width,
-        url: res.data.success.secure_url,
-        publicId: res.data.success.public_id,
-        resourceType: "image",
+    try {
+      await decreaseCredits(5, session?.user?.email!);
+
+      const res = await genFill({
+        width: (width + activeLayer.width!).toString(),
+        height: (height + activeLayer.height!).toString(),
+        aspect: "1:1",
+        activeImage: activeLayer.url!,
+        activeImageName: activeLayer.name!,
       });
-      setActiveLayer(newLayerId);
-      toast.success("Generative filled successfully");
-    }
 
-    if (res?.serverError) {
-      toast.error("Generative filled failed");
-      console.error("Error in Generative fill process:", res.serverError);
+      if (res?.data?.success) {
+        const newLayerId = crypto.randomUUID();
+        addLayer({
+          id: newLayerId,
+          name: "genfill-" + activeLayer.name,
+          format: activeLayer.format,
+          height: res.data.success.height,
+          width: res.data.success.width,
+          url: res.data.success.secure_url,
+          publicId: res.data.success.public_id,
+          resourceType: "image",
+        });
+        setActiveLayer(newLayerId);
+        toast.success("Generative filled successfully");
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(`Generative filled failed, ${error.message}`);
+        console.error("Error in Generative fill process:", error.message);
+      }
+    } finally {
+      setGenerating(false);
     }
-    setGenerating(false);
   };
 
   const ExpansionIndicator = ({

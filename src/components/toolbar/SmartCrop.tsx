@@ -20,6 +20,8 @@ import { useImageStore } from "@/lib/image-store";
 import Youtube from "../icons/Youtube";
 import TikTok from "../icons/TikTok";
 import { genCrop } from "../../../server/smart-crop";
+import { useSession } from "next-auth/react";
+import decreaseCredits from "../../../server/decrease-credits";
 
 export default function SmartCrop() {
   const { setGenerating, generating } = useImageStore((state) => ({
@@ -31,44 +33,53 @@ export default function SmartCrop() {
     addLayer: state.addLayer,
     setActiveLayer: state.setActiveLayer,
   }));
+  const { data: session } = useSession();
+
   const [aspectRatio, setAspectRatio] = useState("16:9");
 
   const handleGenCrop = async () => {
     setGenerating(true);
-    const res = await genCrop({
-      height: activeLayer.height!.toString(),
-      aspect: aspectRatio,
-      activeVideo: activeLayer.url!,
-      activeVideoName: activeLayer.name!,
-    });
 
-    if (res?.data?.success) {
-      const newLayerId = crypto.randomUUID();
-      // const { secure_url, public_id } = await res.data.success;
-      // const thumbnailUrl = secure_url.replace(/\.[^/.]+$/, ".jpg");
-      const newData = res?.data.success;
-      const videoUrl = res?.data.cropUrl;
-      const thumbnailUrl = res?.data.cropUrl.replace(/\.[^/.]+$/, ".jpg");
+    try {
+      await decreaseCredits(8, session?.user?.email!);
 
-      addLayer({
-        id: newLayerId,
-        name: "cropped-" + activeLayer.name,
-        format: activeLayer.format,
-        height: newData.height!,
-        width: newData.width!,
-        url: videoUrl,
-        publicId: newData.public_id,
-        resourceType: "video",
-        poster: thumbnailUrl,
+      const res = await genCrop({
+        height: activeLayer.height!.toString(),
+        aspect: aspectRatio,
+        activeVideo: activeLayer.url!,
+        activeVideoName: activeLayer.name!,
       });
-      toast.success("Video cropped successfully");
-      setActiveLayer(newLayerId);
+
+      if (res?.data?.success) {
+        const newLayerId = crypto.randomUUID();
+        // const { secure_url, public_id } = await res.data.success;
+        // const thumbnailUrl = secure_url.replace(/\.[^/.]+$/, ".jpg");
+        const newData = res?.data.success;
+        const videoUrl = res?.data.cropUrl;
+        const thumbnailUrl = res?.data.cropUrl.replace(/\.[^/.]+$/, ".jpg");
+
+        addLayer({
+          id: newLayerId,
+          name: "cropped-" + activeLayer.name,
+          format: activeLayer.format,
+          height: newData.height!,
+          width: newData.width!,
+          url: videoUrl,
+          publicId: newData.public_id,
+          resourceType: "video",
+          poster: thumbnailUrl,
+        });
+        toast.success("Video cropped successfully");
+        setActiveLayer(newLayerId);
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(`Video cropped failed, ${error.message}`);
+        console.error("Error in Video crop process:", error.message);
+      }
+    } finally {
+      setGenerating(false);
     }
-    if (res?.data?.error) {
-      toast.error("Video cropped failed");
-      console.error("Error in Video crop process:", res.serverError);
-    }
-    setGenerating(false);
   };
 
   return (

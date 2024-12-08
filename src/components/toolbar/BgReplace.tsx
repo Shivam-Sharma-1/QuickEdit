@@ -10,6 +10,8 @@ import { bgReplace } from "../../../server/bg-replace";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { toast } from "sonner";
+import decreaseCredits from "../../../server/decrease-credits";
+import { useSession } from "next-auth/react";
 
 function BgReplace() {
   const { generating, setGenerating } = useImageStore((state) => ({
@@ -21,37 +23,45 @@ function BgReplace() {
     addLayer: state.addLayer,
     setActiveLayer: state.setActiveLayer,
   }));
+  const { data: session } = useSession();
 
   const [prompt, setPrompt] = useState("");
 
   const handleReplace = async () => {
     setGenerating(true);
-    const res = await bgReplace({
-      activeImage: activeLayer.url!,
-      prompt: prompt,
-      activeImageName: activeLayer.name!,
-    });
 
-    if (res?.data?.success) {
-      const newLayerId = crypto.randomUUID();
-      addLayer({
-        id: newLayerId,
-        url: res.data.success.secure_url,
-        format: activeLayer.format,
-        height: activeLayer.height,
-        width: activeLayer.width,
-        name: "bgreplaced-" + activeLayer.name,
-        publicId: res.data.success.public_id,
-        resourceType: "image",
+    try {
+      await decreaseCredits(5, session?.user?.email!);
+
+      const res = await bgReplace({
+        activeImage: activeLayer.url!,
+        prompt: prompt,
+        activeImageName: activeLayer.name!,
       });
-      setActiveLayer(newLayerId);
-      toast.success("Background replace successfully");
+
+      if (res?.data?.success) {
+        const newLayerId = crypto.randomUUID();
+        addLayer({
+          id: newLayerId,
+          url: res.data.success.secure_url,
+          format: activeLayer.format,
+          height: activeLayer.height,
+          width: activeLayer.width,
+          name: "bgreplaced-" + activeLayer.name,
+          publicId: res.data.success.public_id,
+          resourceType: "image",
+        });
+        setActiveLayer(newLayerId);
+        toast.success("Background replace successfully");
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(`Background replace failed, ${error.message}`);
+        console.error("Error in Background Removal process:", error.message);
+      }
+    } finally {
+      setGenerating(false);
     }
-    if (res?.serverError) {
-      toast.error("Background replace failed");
-      console.error("Error in Background Removal process:", res.serverError);
-    }
-    setGenerating(false);
   };
 
   return (
@@ -93,7 +103,7 @@ function BgReplace() {
           disabled={!activeLayer?.url || generating}
           onClick={handleReplace}
         >
-          {generating ? "Generating..." : "Replace Background"}
+          {generating ? "Generating..." : "Replace Background Cost 5 Credits"}
           <Sparkles size={16} />
         </Button>
       </PopoverContent>

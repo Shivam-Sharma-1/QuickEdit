@@ -11,6 +11,8 @@ import { Input } from "../ui/input";
 import { cn } from "@/lib/utils";
 import { genRemove } from "../../../server/gen-remove";
 import { toast } from "sonner";
+import { useSession } from "next-auth/react";
+import decreaseCredits from "../../../server/decrease-credits";
 
 function GenRemove() {
   const { setActiveTag, generating, activeTag, activeColor, setGenerating } =
@@ -26,34 +28,42 @@ function GenRemove() {
     addLayer: state.addLayer,
     setActiveLayer: state.setActiveLayer,
   }));
+  const { data: session } = useSession();
 
   const handleRemove = async () => {
     setGenerating(true);
-    const res = await genRemove({
-      activeImage: activeLayer.url!,
-      activeImageName: activeLayer.name!,
-      prompt: activeTag,
-    });
-    if (res?.data?.success) {
-      const newLayerId = crypto.randomUUID();
-      addLayer({
-        id: newLayerId,
-        url: res.data.success.secure_url,
-        format: activeLayer.format,
-        height: activeLayer.height,
-        width: activeLayer.width,
-        name: "genremove-" + activeLayer.name,
-        publicId: res.data.success.public_id,
-        resourceType: "image",
+
+    try {
+      await decreaseCredits(5, session?.user?.email!);
+
+      const res = await genRemove({
+        activeImage: activeLayer.url!,
+        activeImageName: activeLayer.name!,
+        prompt: activeTag,
       });
-      setActiveLayer(newLayerId);
-      toast.success("Object removed successfully");
+      if (res?.data?.success) {
+        const newLayerId = crypto.randomUUID();
+        addLayer({
+          id: newLayerId,
+          url: res.data.success.secure_url,
+          format: activeLayer.format,
+          height: activeLayer.height,
+          width: activeLayer.width,
+          name: "genremove-" + activeLayer.name,
+          publicId: res.data.success.public_id,
+          resourceType: "image",
+        });
+        setActiveLayer(newLayerId);
+        toast.success("Object removed successfully");
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(`Object removal failed, ${error.message}`);
+        console.error("Error in Object Removal process:", error.message);
+      }
+    } finally {
+      setGenerating(false);
     }
-    if (res?.serverError) {
-      toast.error("Object removal failed");
-      console.error("Error in Object Removal process:", res.serverError);
-    }
-    setGenerating(false);
   };
 
   return (
