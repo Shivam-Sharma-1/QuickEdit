@@ -43,9 +43,13 @@ function Editor() {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    if (email) {
-      getUser(email).then((userData) => setUser(userData));
-    }
+    const fetchUser = async () => {
+      if (email) {
+        const userData = await getUser(email);
+        setUser(userData);
+      }
+    };
+    fetchUser();
   }, [email]);
 
   return (
@@ -86,7 +90,7 @@ function Editor() {
                   <p>{email}</p>
                 </SheetTitle>
                 <SheetDescription>
-                  Number of credits : {email && user?.credits}/20
+                  Number of credits : {user?.credits}/20
                 </SheetDescription>
               </SheetHeader>
             </SheetContent>
