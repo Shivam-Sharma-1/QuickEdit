@@ -8,7 +8,8 @@ import { cn } from "@/lib/utils";
 import { useImageStore } from "@/lib/image-store";
 import { useLayerStore } from "@/lib/layer-store";
 import * as imageAnimation from "../../../public/animations/image-upload.json";
-import Lottie from "lottie-react";
+import dynamic from "next/dynamic";
+const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 
 function UploadImage() {
   const setTags = useImageStore((state) => state.setTags);
@@ -67,7 +68,6 @@ function UploadImage() {
       }
 
       if (fileRejections.length) {
-        console.log("rejected");
         setGenerating(false);
       }
     },
