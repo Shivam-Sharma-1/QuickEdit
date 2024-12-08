@@ -3,7 +3,7 @@
 import React from "react";
 import { useDropzone } from "react-dropzone";
 import { Card, CardContent } from "../ui/card";
-import { uploadImage } from "../../../server/upload-image";
+import { uploadImage, uploadImageToDB } from "../../../server/upload-image";
 import { cn } from "@/lib/utils";
 import { useImageStore } from "@/lib/image-store";
 import { useLayerStore } from "@/lib/layer-store";
@@ -47,17 +47,20 @@ function UploadImage() {
         const res = await uploadImage({ image: formData });
 
         if (res?.data?.success) {
+          const newData = res?.data?.success;
+          await uploadImageToDB({ newData, layerId: activeLayer.id });
+
           updateLayer({
             id: activeLayer.id,
-            url: res.data.success.url,
-            width: res.data.success.width,
-            height: res.data.success.height,
-            name: res.data.success.original_filename,
-            publicId: res.data.success.public_id,
-            format: res.data.success.format,
-            resourceType: res.data.success.resource_type,
+            url: newData.url,
+            width: newData.width,
+            height: newData.height,
+            name: newData.original_filename,
+            publicId: newData.public_id,
+            format: newData.format,
+            resourceType: newData.resource_type,
           });
-          setTags(res.data.success.tags);
+          setTags(newData.tags);
           setActiveLayer(activeLayer.id);
           console.log(activeLayer);
           setGenerating(false);
