@@ -1,13 +1,14 @@
 "use client";
 
 import { useDropzone } from "react-dropzone";
-import Lottie from "lottie-react";
+const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 import { Card, CardContent } from "../ui/card";
 import { cn } from "@/lib/utils";
 import { useLayerStore } from "@/lib/layer-store";
 import * as videoAnimation from "../../../public/animations/video-upload.json";
 import { useImageStore } from "@/lib/image-store";
 import { uploadVideo } from "../../../server/upload-video";
+import dynamic from "next/dynamic";
 
 export default function UploadVideo() {
   const setTags = useImageStore((state) => state.setTags);
