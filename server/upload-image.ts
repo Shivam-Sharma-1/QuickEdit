@@ -1,5 +1,6 @@
 "use server";
 
+import { auth } from "@/lib/auth";
 import { actionClient } from "@/lib/safe-action";
 import { v2 as cloudinary, UploadApiResponse } from "cloudinary";
 import { z } from "zod";
@@ -26,6 +27,8 @@ type UploadResult =
 export const uploadImage = actionClient
   .schema(formData)
   .action(async ({ parsedInput: { image } }): Promise<UploadResult> => {
+    const session = await auth();
+
     const formImage = image.get("image");
 
     if (!formImage || !image) return { error: "No image provided" };
@@ -44,6 +47,7 @@ export const uploadImage = actionClient
             unique_filename: true,
             filename_override: file.name,
             secure: true,
+            folder: `quickedit/${session?.user?.email}`,
           },
           (error, result) => {
             if (error || !result) {
@@ -66,12 +70,15 @@ export const uploadImage = actionClient
 export const uploadModifiedImage = actionClient
   .schema(uploadModifiedImageSchema)
   .action(async ({ parsedInput: { activeImageName, removeUrl } }) => {
+    const session = await auth();
+
     const result = await cloudinary.uploader.upload(removeUrl, {
       upload_preset: process.env.CLOUDINARY_UPLOAD_PRESET,
       use_filename: true,
       unique_filename: true,
       filename_override: activeImageName,
       secure: true,
+      folder: `quickedit/${session?.user?.email}/modified`,
     });
 
     return { result };

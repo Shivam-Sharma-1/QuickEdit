@@ -1,5 +1,6 @@
 "use server";
 
+import { auth } from "@/lib/auth";
 import { actionClient } from "@/lib/safe-action";
 import { UploadApiResponse, v2 as cloudinary } from "cloudinary";
 import z from "zod";
@@ -34,6 +35,7 @@ export const uploadVideo = actionClient
     const file = formVideo as File;
 
     try {
+      const session = await auth();
       const arrayBuffer = await file.arrayBuffer();
       const buffer = Buffer.from(arrayBuffer);
 
@@ -46,6 +48,7 @@ export const uploadVideo = actionClient
             unique_filename: true,
             filename_override: file.name,
             secure: true,
+            folder: `quickedit/${session?.user?.email}`,
           },
           (error, result) => {
             if (error || !result) {
@@ -70,6 +73,8 @@ export const uploadModifiedVideo = actionClient
   .schema(uploadModifiedImageVideo)
   .action(async ({ parsedInput: { activeVideoName, removeUrl } }) => {
     try {
+      const session = await auth();
+
       const result = await cloudinary.uploader.upload(removeUrl, {
         upload_preset: process.env.CLOUDINARY_UPLOAD_PRESET,
         use_filename: true,
@@ -77,6 +82,7 @@ export const uploadModifiedVideo = actionClient
         filename_override: activeVideoName,
         resource_type: "video",
         secure: true,
+        folder: `quickedit/${session?.user?.email}/modified`,
       });
 
       return { result };
