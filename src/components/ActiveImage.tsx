@@ -46,14 +46,14 @@ export default function ActiveImage() {
       .filter(Boolean) as Layer[];
 
     return (
-      <div className="w-full relative h-svh p-24 bg-secondary flex flex-col items-center justify-center">
+      <div className="flex-1 relative h-svh p-24 bg-secondary flex flex-col items-center justify-center">
         <ImageComparison layers={comparisonLayers} />
       </div>
     );
   }
 
   return (
-    <div className="w-full relative h-svh p-24 bg-secondary flex flex-col items-center justify-center">
+    <div className="flex-1 relative h-svh p-24 bg-secondary flex flex-col items-center justify-center">
       {renderLayer(activeLayer)}
     </div>
   );
