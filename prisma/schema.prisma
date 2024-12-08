@@ -27,6 +27,25 @@ model User {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  Layers    Layer[]
+}
+
+model Layer {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  userId       String @db.ObjectId
+  name         String
+  publicId     String
+  format       String
+  resourceType String
+  url          String
+  width        Int
+  height       Int
+  layerId      String @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Account {
