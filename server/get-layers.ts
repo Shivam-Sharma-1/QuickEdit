@@ -4,19 +4,22 @@ import { auth } from "@/lib/auth";
 import { prisma } from "../prisma/prisma";
 
 const getLayers = async () => {
-  const session = await auth();
+  try {
+    const session = await auth();
 
-  if (!session) {
-    return { error: "Not authenticated" };
+    const layers = await prisma.layer.findMany({
+      where: {
+        userId: session?.user?.id,
+      },
+    });
+
+    return { layers };
+  } catch (error) {
+    console.error("Error in fetching layers:", error);
+    return {
+      error: "Error in fetching layers: " + String((error as any).message),
+    };
   }
-
-  const layers = await prisma.layer.findMany({
-    where: {
-      userId: session?.user?.id,
-    },
-  });
-
-  return { layers };
 };
 
 export default getLayers;
