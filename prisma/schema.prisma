@@ -34,14 +34,14 @@ model Layer {
   id           String  @id @default(auto()) @map("_id") @db.ObjectId
   userId       String  @db.ObjectId
   name         String
-  publicId     String
+  publicId     String  @unique
   format       String
   resourceType String
   url          String
   width        Int
   height       Int
   poster       String?
-  layerId      String  @unique
+  layerId      String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
