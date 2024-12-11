@@ -48,8 +48,8 @@ const getStore = (initialState: {
           })),
         setLayers: (layers: Layer[]) =>
           set(() => ({
-            layers,
-            activeLayer: layers[0] || initialState.layers[0],
+            layers: layers,
+            activeLayer: initialState.layers[0],
           })),
         removeLayer: (id: string) =>
           set((state) => ({
@@ -105,7 +105,7 @@ const getStore = (initialState: {
             };
           }),
       }),
-      { name: "layer-storage" }
+      { name: "layer-store" }
     )
   );
 };
