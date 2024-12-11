@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth";
 import { actionClient } from "@/lib/safe-action";
 import { UploadApiResponse, v2 as cloudinary } from "cloudinary";
 import z from "zod";
+import { prisma } from "../prisma/prisma";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_NAME,
@@ -90,3 +91,58 @@ export const uploadModifiedVideo = actionClient
       console.error("Error smatrcrop uploading modified video:", error);
     }
   });
+
+interface NewData {
+  public_id: string;
+  format: string;
+  resource_type: string;
+  url: string;
+  width: number;
+  height: number;
+  original_filename: string;
+}
+
+interface UploadVideoToDBParams {
+  newData: NewData;
+  layerId: string;
+  thumbnailUrl: string;
+  videoUrl: string;
+}
+
+export const uploadVideoToDB = async ({
+  newData,
+  layerId,
+  thumbnailUrl,
+  videoUrl,
+}: UploadVideoToDBParams): Promise<void> => {
+  const session = await auth();
+
+  await prisma.layer.upsert({
+    where: {
+      layerId: layerId,
+    },
+    update: {
+      userId: session?.user?.id!,
+      publicId: newData.public_id,
+      format: newData.format,
+      resourceType: newData.resource_type,
+      url: videoUrl,
+      poster: thumbnailUrl,
+      width: newData.width,
+      height: newData.height,
+      name: newData.original_filename,
+    },
+    create: {
+      userId: session?.user?.id!,
+      layerId: layerId,
+      publicId: newData.public_id,
+      format: newData.format,
+      resourceType: newData.resource_type,
+      url: videoUrl,
+      poster: thumbnailUrl,
+      width: newData.width,
+      height: newData.height,
+      name: newData.original_filename,
+    },
+  });
+};
