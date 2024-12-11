@@ -3,13 +3,20 @@
 import { prisma } from "../prisma/prisma";
 
 const getUser = async (email: string) => {
-  const user = await prisma.user.findUnique({
-    where: {
-      email: email,
-    },
-  });
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        email: email,
+      },
+    });
 
-  return user;
+    return user;
+  } catch (error) {
+    console.error("Error in fetching user:", error);
+    return {
+      error: "Error in fetching user: " + String((error as any).message),
+    };
+  }
 };
 
 export default getUser;
