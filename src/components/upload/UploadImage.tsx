@@ -9,6 +9,7 @@ import { useImageStore } from "@/lib/image-store";
 import { useLayerStore } from "@/lib/layer-store";
 import * as imageAnimation from "../../../public/animations/image-upload.json";
 import dynamic from "next/dynamic";
+import { toast } from "sonner";
 const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 
 function UploadImage() {
@@ -33,45 +34,50 @@ function UploadImage() {
         const objectUrl = URL.createObjectURL(acceptFiles[0]);
         setGenerating(true);
 
-        updateLayer({
-          id: activeLayer.id,
-          url: objectUrl,
-          width: 0,
-          height: 0,
-          name: "Uploading ...",
-          publicId: "",
-          format: "",
-          resourceType: "image",
-        });
+        try {
+          const res = await uploadImage({ image: formData });
 
-        const res = await uploadImage({ image: formData });
+          if (res?.data?.success) {
+            const newData = res?.data?.success;
+            await uploadImageToDB({ newData, layerId: activeLayer.id });
 
-        if (res?.data?.success) {
-          const newData = res?.data?.success;
-          await uploadImageToDB({ newData, layerId: activeLayer.id });
-
-          updateLayer({
-            id: activeLayer.id,
-            url: newData.url,
-            width: newData.width,
-            height: newData.height,
-            name: newData.original_filename,
-            publicId: newData.public_id,
-            format: newData.format,
-            resourceType: newData.resource_type,
-          });
-          setTags(newData.tags);
-          setActiveLayer(activeLayer.id);
-          console.log(activeLayer);
+            updateLayer({
+              id: activeLayer.id,
+              url: newData.url,
+              width: newData.width,
+              height: newData.height,
+              name: newData.original_filename,
+              publicId: newData.public_id,
+              format: newData.format,
+              resourceType: newData.resource_type,
+            });
+            setTags(newData.tags);
+            setActiveLayer(activeLayer.id);
+            setGenerating(false);
+          }
+        } catch (error) {
+          if (error instanceof Error) {
+            toast.error(`Image Upload failed, ${error.message}`);
+            console.error("Error in Image Upload process:", error.message);
+          }
+        } finally {
           setGenerating(false);
         }
-        if (res?.data?.error) {
-          setGenerating(false);
-        }
+
+        // updateLayer({
+        //   id: activeLayer.id,
+        //   url: objectUrl,
+        //   width: 0,
+        //   height: 0,
+        //   name: "Uploading ...",
+        //   publicId: "",
+        //   format: "",
+        //   resourceType: "image",
+        // });
       }
 
       if (fileRejections.length) {
-        setGenerating(false);
+        toast.error("Please upload a valid image file");
       }
     },
   });
