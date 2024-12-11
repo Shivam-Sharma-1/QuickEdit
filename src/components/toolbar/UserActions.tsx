@@ -13,6 +13,7 @@ import getUser from "../../../server/get-user";
 import { Plan } from "@prisma/client";
 import { Button } from "../ui/button";
 import { ModeToggle } from "../theme/ModeToggle";
+import { useLayerStore } from "@/lib/layer-store";
 
 interface User {
   name: string | null;
@@ -29,6 +30,7 @@ interface User {
 function UserActions() {
   const { data: session } = useSession();
   const { name, image, email } = session?.user || {};
+  const removeAllLayers = useLayerStore((state) => state.removeAllLayers);
 
   const [user, setUser] = useState<User | null>(null);
   const [isProfileOpen, setIsProfileOpen] = useState<boolean>(false);
@@ -42,6 +44,11 @@ function UserActions() {
     };
     fetchUser();
   }, [email, isProfileOpen]);
+
+  const handleSignOut = () => {
+    signOut({ redirectTo: "/auth" });
+    removeAllLayers();
+  };
 
   return (
     <div className="p-2 rounded-2xl text-center flex justify-center items-center gap-4 bg-background w-full">
@@ -70,11 +77,7 @@ function UserActions() {
             </SheetTitle>
             <SheetDescription>
               Number of credits : {user?.credits}/20
-              <Button
-                variant="ghost"
-                onClick={() => signOut({ redirectTo: "/auth" })}
-                className="px-2"
-              >
+              <Button variant="ghost" onClick={handleSignOut} className="px-2">
                 Log Out
               </Button>
             </SheetDescription>
