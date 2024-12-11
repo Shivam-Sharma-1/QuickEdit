@@ -1,19 +1,35 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Button } from "../ui/button";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { Layer, useLayerStore } from "@/lib/layer-store";
+import getLayers from "../../../server/get-layers";
 
 const AuthPage = () => {
   const { data: session } = useSession();
   const router = useRouter();
+  const setLayers = useLayerStore((state) => state.setLayers);
 
-  if (session && session.user && session.user.email) {
-    console.log("Unauthorized access");
-    router.push("/");
-  }
+  useEffect(() => {
+    if (session && session.user && session.user.email) {
+      console.log("Authorized access, redirecting");
+      router.push("/editor");
+    }
+  }, [session, router]);
+
+  const handleSignIn = async () => {
+    try {
+      const { layers } = await getLayers();
+      console.log("Layers fetched:", layers);
+      setLayers(layers as Layer[]);
+      await signIn("google");
+    } catch (error) {
+      console.error("Error during sign in:", error);
+    }
+  };
 
   return (
     <div className="w-full flex lg:grid grid-cols-2 justify-center h-screen">
@@ -31,7 +47,7 @@ const AuthPage = () => {
           </div>
           <div className="grid gap-4">
             <Button
-              onClick={() => signIn("google", { redirectTo: "/" })}
+              onClick={handleSignIn}
               variant="default"
               className="w-full flex flex-row gap-2"
             >
