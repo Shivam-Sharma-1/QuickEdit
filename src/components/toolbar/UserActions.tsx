@@ -32,14 +32,24 @@ function UserActions() {
   const { name, image, email } = session?.user || {};
   const removeAllLayers = useLayerStore((state) => state.removeAllLayers);
 
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User>();
   const [isProfileOpen, setIsProfileOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchUser = async () => {
-      if (email) {
-        const userData = await getUser(email);
-        setUser(userData);
+      try {
+        if (email) {
+          const userData = await getUser(email);
+          if (userData) {
+            if (!("error" in userData)) {
+              setUser(userData);
+            } else {
+              console.error("Error in fetching user:", userData.error);
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Error in fetching user:", error);
       }
     };
     fetchUser();
@@ -51,7 +61,15 @@ function UserActions() {
   };
 
   return (
-    <div className="p-2 rounded-2xl text-center flex justify-center items-center gap-4 bg-background w-full">
+    <div className="p-2 px-4 rounded-2xl text-center flex justify-center items-center gap-4 bg-background w-fit absolute top-4 z-10">
+      <Image
+        src="/logo-full.svg"
+        width={120}
+        height={36}
+        className="rounded-full object-cover shrink-0"
+        alt="logo-full"
+      />
+      <ModeToggle />
       <Sheet open={isProfileOpen} onOpenChange={setIsProfileOpen}>
         <SheetTrigger className="shrink-0">
           <Image
@@ -84,7 +102,6 @@ function UserActions() {
           </SheetHeader>
         </SheetContent>
       </Sheet>
-      <ModeToggle />
     </div>
   );
 }
