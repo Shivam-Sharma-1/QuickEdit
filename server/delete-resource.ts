@@ -44,15 +44,23 @@ export const deleteResource = actionClient
     }
   });
 
-export const deleteImageFromDB = async (layerId: string) => {
+interface DeleteResourceFromDBParams {
+  publicId: string;
+  resourceType: "image" | "video";
+}
+
+export const deleteResourceFromDB = async ({
+  publicId,
+  resourceType,
+}: DeleteResourceFromDBParams) => {
   try {
     await prisma.layer.delete({
       where: {
-        layerId,
+        publicId,
       },
     });
   } catch (error) {
-    console.error("Error in deleting image from DB:", error);
-    return { error: "Error in deleting image from DB" };
+    console.error(`Error in deleting ${resourceType} from DB:`, error);
+    return { error: `Error in deleting ${resourceType} from DB:` };
   }
 };
