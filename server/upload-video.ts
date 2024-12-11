@@ -119,7 +119,7 @@ export const uploadVideoToDB = async ({
 
   await prisma.layer.upsert({
     where: {
-      layerId: layerId,
+      publicId: newData.public_id,
     },
     update: {
       userId: session?.user?.id!,
