@@ -8,7 +8,7 @@ function Toolbar() {
   const activeLayer = useLayerStore((state) => state.activeLayer);
 
   return (
-    <div className="p-4 flex flex-col gap-2">
+    <div className="p-4 mt-16 flex flex-col gap-2">
       <UserActions />
       <div
         className={cn(
