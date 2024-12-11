@@ -14,6 +14,7 @@ import { Plan } from "@prisma/client";
 import { Button } from "../ui/button";
 import { ModeToggle } from "../theme/ModeToggle";
 import { useLayerStore } from "@/lib/layer-store";
+import { useTheme } from "next-themes";
 
 interface User {
   name: string | null;
@@ -31,6 +32,7 @@ function UserActions() {
   const { data: session } = useSession();
   const { name, image, email } = session?.user || {};
   const removeAllLayers = useLayerStore((state) => state.removeAllLayers);
+  const { theme } = useTheme();
 
   const [user, setUser] = useState<User>();
   const [isProfileOpen, setIsProfileOpen] = useState<boolean>(false);
@@ -63,10 +65,10 @@ function UserActions() {
   return (
     <div className="p-2 px-4 rounded-2xl text-center flex justify-center items-center gap-4 bg-background w-fit absolute top-4 z-10">
       <Image
-        src="/logo-full.svg"
+        src={theme === "dark" ? "/logo-full.svg" : "/logo-full-black.svg"}
         width={120}
         height={36}
-        className="rounded-full object-cover shrink-0"
+        className="rounded-full object-cover shrink-0 text-foreground"
         alt="logo-full"
       />
       <ModeToggle />
