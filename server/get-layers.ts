@@ -8,7 +8,7 @@ const getLayers = async () => {
     return { error: "Not authenticated" };
   }
 
-  const layers = prisma.layer.findMany({
+  const layers = await prisma.layer.findMany({
     where: {
       userId: session?.user?.id,
     },
