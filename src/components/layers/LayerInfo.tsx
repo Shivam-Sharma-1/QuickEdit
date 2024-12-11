@@ -4,7 +4,10 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "../ui/button";
 import { Ellipsis, Trash } from "lucide-react";
 import { Layer, useLayerStore } from "@/lib/layer-store";
-import { deleteResource } from "../../../server/delete-resource";
+import {
+  deleteResource,
+  deleteResourceFromDB,
+} from "../../../server/delete-resource";
 import { toast } from "sonner";
 import { useImageStore } from "@/lib/image-store";
 
@@ -21,6 +24,30 @@ export default function LayerInfo({
     removeLayer: state.removeLayer,
   }));
   const setGenerating = useImageStore((state) => state.setGenerating);
+
+  const handleDeleteLayer = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    setGenerating(true);
+    e.stopPropagation();
+
+    try {
+      await deleteResource({
+        publicId: layer.publicId!,
+        resourceType: layer.resourceType as "image" | "video",
+      });
+      await deleteResourceFromDB({
+        publicId: layer.publicId!,
+        resourceType: layer.resourceType as "image" | "video",
+      });
+      setActiveLayer(layers[0].id);
+      removeLayer(layer.id);
+      toast.success("Layer deleted successfully");
+    } catch (error) {
+      toast.error("Layer deletion failed");
+      console.error("Error in Layer Deletion process:", error);
+    } finally {
+      setGenerating(false);
+    }
+  };
 
   return (
     <Dialog>
@@ -46,24 +73,7 @@ export default function LayerInfo({
           </p>
         </div>
         <Button
-          onClick={(e) => {
-            setGenerating(true);
-            e.stopPropagation();
-            setActiveLayer(layers[0].id);
-            removeLayer(layer.id);
-            try {
-              deleteResource({
-                publicId: layer.publicId!,
-                resourceType: layer.resourceType as "image" | "video",
-              });
-              toast.success("Layer deleted successfully");
-            } catch (error) {
-              toast.error("Layer deletion failed");
-              console.error("Error in Layer Deletion process:", error);
-            } finally {
-              setGenerating(false);
-            }
-          }}
+          onClick={handleDeleteLayer}
           variant={"destructive"}
           className="flex items-center gap-2 w-full"
         >
