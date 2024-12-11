@@ -16,7 +16,7 @@ const AuthPage = () => {
   useEffect(() => {
     if (session && session.user && session.user.email) {
       console.log("Authorized access, redirecting");
-      router.push("/editor");
+      router.push("/");
     }
   }, [session, router]);
 
