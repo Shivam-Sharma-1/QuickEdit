@@ -25,7 +25,7 @@ function UploadForm() {
           onValueChange={(e) => {
             setSelectedType(e);
           }}
-          className="flex items-center justify-center gap-8 py-8"
+          className="flex items-center justify-center gap-8 pt-8"
         >
           <Card
             onClick={(e) => setSelectedType("image")}

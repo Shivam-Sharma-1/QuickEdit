@@ -7,6 +7,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import SparklesText from "../ui/sparkles-text";
+import { CardSpotlight } from "../ui/card-spotlight";
+import { cn } from "@/lib/utils";
 
 const tiers = [
   {
@@ -33,49 +36,61 @@ const tiers = [
 export default function Pricing() {
   return (
     <section id="pricing" className="py-24 px-6">
-      <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-center mb-12 bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-teal-400">
-        Simple, Transparent Pricing
-      </h2>
+      <SparklesText
+        text="Simple, Transparent Pricing"
+        className="text-3xl font-medium sm:text-4xl md:text-5xl text-center mb-12"
+      />
       <div className="grid gap-6 sm:grid-cols-2 lg:max-w-4xl lg:mx-auto">
         {tiers.map((tier, index) => (
           <Card
             key={index}
-            className={tier.name === "Premium" ? "border-primary" : ""}
+            className={cn(
+              "bg-card",
+              tier.name === "Premium" ? "border-primary" : "h-full"
+            )}
           >
-            <CardHeader>
-              <CardTitle>{tier.name}</CardTitle>
-              <CardDescription>{tier.description}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-4xl font-bold">{tier.price}</p>
-              <p className="text-sm text-gray-500">
-                {tier.name === "Premium" ? "per month" : ""}
-              </p>
-              <ul className="mt-4 space-y-2">
-                {tier.features.map((feature, index) => (
-                  <li key={index} className="flex items-center">
-                    <svg
-                      className="w-4 h-4 mr-2 text-green-500"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-            <CardFooter>
-              <Button className="w-full">{tier.cta}</Button>
-            </CardFooter>
+            <CardSpotlight className="w-full h-full flex flex-col bg-card">
+              <CardHeader>
+                <CardTitle className="z-20">{tier.name}</CardTitle>
+                <CardDescription className="z-20">
+                  {tier.description}
+                </CardDescription>
+              </CardHeader>
+              <div className="flex flex-col justify-between flex-1">
+                <CardContent className="flex-1">
+                  <p className="text-4xl font-bold z-20">
+                    <span className="z-30">{tier.price}</span>
+                  </p>
+                  <p className="text-sm text-gray-500 z-20">
+                    {tier.name === "Premium" ? "per month" : ""}
+                  </p>
+                  <ul className="mt-4 space-y-2 z-20">
+                    {tier.features.map((feature, index) => (
+                      <li key={index} className="flex items-center z-20">
+                        <svg
+                          className="w-4 h-4 mr-2 text-green-500 z-20"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M5 13l4 4L19 7"
+                          />
+                        </svg>
+                        <span className="z-20">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+                <CardFooter>
+                  <Button className="w-full z-20">{tier.cta}</Button>
+                </CardFooter>{" "}
+              </div>
+            </CardSpotlight>
           </Card>
         ))}
       </div>

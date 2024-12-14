@@ -15,6 +15,9 @@ import {
   FileText,
   Crop,
 } from "lucide-react";
+import SparklesText from "../ui/sparkles-text";
+import WordPullUp from "../ui/word-pull-up";
+import { CardBody, CardContainer, CardItem } from "../ui/3d-card";
 
 const imageFeatures = [
   {
@@ -64,41 +67,70 @@ const videoFeatures = [
 
 export default function Features() {
   return (
-    <section id="features" className="py-24 px-6">
-      <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-center mb-12 bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-teal-400">
-        Powerful AI Features
-      </h2>
+    <section id="features" className="pb-24 px-6">
+      <SparklesText
+        text="Powerful AI Features"
+        className="text-3xl font-medium sm:text-4xl md:text-5xl text-center mb-12"
+      />
 
-      <div className="mb-16">
-        <h3 className="text-2xl font-bold mb-8">Image Editing Tools</h3>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mb-16 px-16">
+        <WordPullUp
+          words="Image Editing Tools"
+          className="text-2xl font-bold mb-8 text-left"
+        />
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3 auto-cols-fr">
           {imageFeatures.map((feature, index) => (
-            <Card key={index}>
-              <CardHeader>
-                <feature.icon className="w-10 h-10 mb-2" />
-                <CardTitle>{feature.title}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>{feature.description}</CardDescription>
-              </CardContent>
-            </Card>
+            <CardContainer key={index} containerClassName="py-0 gap-4">
+              <CardBody className="bg-gray-50 relative group/card  dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1]  h-auto rounded-xl p-6 border">
+                <CardItem
+                  translateZ="50"
+                  className="text-xl font-bold text-neutral-600 dark:text-white"
+                >
+                  <feature.icon className="w-10 h-10 mb-2" />
+                </CardItem>
+                <CardItem
+                  translateZ="60"
+                  className="text-neutral-500 text-sm max-w-sm mt-3 dark:text-neutral-300"
+                >
+                  <CardTitle>{feature.title}</CardTitle>
+                </CardItem>
+
+                <CardItem translateZ="100" className="w-full mt-1">
+                  <CardDescription>{feature.description}</CardDescription>
+                </CardItem>
+              </CardBody>
+            </CardContainer>
           ))}
         </div>
       </div>
 
-      <div>
-        <h3 className="text-2xl font-bold mb-8">Video Editing Tools</h3>
+      <div className="px-16">
+        <WordPullUp
+          words="Video Editing Tools"
+          className="text-2xl font-bold mb-8 text-left"
+        />
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {videoFeatures.map((feature, index) => (
-            <Card key={index}>
-              <CardHeader>
-                <feature.icon className="w-10 h-10 mb-2" />
-                <CardTitle>{feature.title}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>{feature.description}</CardDescription>
-              </CardContent>
-            </Card>
+            <CardContainer key={index} containerClassName="py-0 gap-4">
+              <CardBody className="bg-gray-50 relative group/card  dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1]  h-auto rounded-xl p-6 border">
+                <CardItem
+                  translateZ="50"
+                  className="text-xl font-bold text-neutral-600 dark:text-white"
+                >
+                  <feature.icon className="w-10 h-10 mb-2" />
+                </CardItem>
+                <CardItem
+                  translateZ="60"
+                  className="text-neutral-500 text-sm max-w-sm mt-3 dark:text-neutral-300"
+                >
+                  <CardTitle>{feature.title}</CardTitle>
+                </CardItem>
+
+                <CardItem translateZ="100" className="w-full mt-1">
+                  <CardDescription>{feature.description}</CardDescription>
+                </CardItem>
+              </CardBody>
+            </CardContainer>
           ))}
         </div>
       </div>

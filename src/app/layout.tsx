@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { Toaster } from "sonner";
 import AuthContext from "@/components/auth/AuthContext";
 
-const inter = Inter({ subsets: ["latin"] });
+const plusJakartaSans = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "QuickEdit",
@@ -19,8 +22,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <Toaster richColors={true} position="bottom-left" />
+      <body className={plusJakartaSans.className}>
+        <Toaster position="bottom-center" />
         <AuthContext>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             {children}

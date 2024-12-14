@@ -14,7 +14,10 @@ export default function Footer() {
           <Link className="text-sm hover:underline underline-offset-4" href="#">
             Privacy Policy
           </Link>
-          <Link className="text-sm hover:underline underline-offset-4" href="#">
+          <Link
+            className="text-sm hover:underline underline-offset-4"
+            href="mailto:shivamsharma77607@gmail.com"
+          >
             Contact
           </Link>
         </nav>
