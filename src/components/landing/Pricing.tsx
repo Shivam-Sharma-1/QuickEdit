@@ -45,11 +45,12 @@ export default function Pricing() {
           <Card
             key={index}
             className={cn(
-              "bg-card",
-              tier.name === "Premium" ? "border-primary" : "h-full"
+              tier.name === "Premium"
+                ? "border-2 border-teal-900 bg-clip-border"
+                : "h-full"
             )}
           >
-            <CardSpotlight className="w-full h-full flex flex-col bg-card">
+            <CardSpotlight className="w-full h-full flex flex-col bg-gradient-to-br from-secondary to-secondary-dark">
               <CardHeader>
                 <CardTitle className="z-20">{tier.name}</CardTitle>
                 <CardDescription className="z-20">
