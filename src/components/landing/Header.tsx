@@ -14,20 +14,20 @@ export default function Header() {
     <header className="sticky top-8 w-[80%] mx-auto z-50 rounded-full">
       <ShineBorder
         borderRadius={999999}
-        className="bg-black text-white w-full justify-center flex flex-row items-center rounded-full px-12 py-4"
-        color={["#A07CFE", "#FE8FB5", "#FFBE7B"]}
+        className="bg-gradient-to-r from-black via-gray-900 to-black text-white w-full justify-center flex flex-row items-center rounded-full px-12 py-4"
+        color={["#7c9ffe", "#FE8FB5", "#FFBE7B"]}
       >
         <Logo className="flex-1" />
-        <nav className="space-x-4 flex-1 flex justify-center">
+        <nav className="space-x-6 flex-1 flex justify-center">
           <Link
             href="#features"
-            className="text-sm font-medium text-muted-foreground hover:text-primary"
+            className="text-md font-medium text-muted-foreground hover:text-primary transition-all duration-200 ease-in"
           >
             Features
           </Link>
           <Link
             href="#pricing"
-            className="text-sm font-medium text-muted-foreground hover:text-primary"
+            className="text-md font-medium text-muted-foreground hover:text-primary transition-all duration-200 ease-in"
           >
             Pricing
           </Link>
