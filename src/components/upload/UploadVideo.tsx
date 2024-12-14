@@ -80,7 +80,7 @@ export default function UploadVideo() {
     <Card
       {...getRootProps()}
       className={cn(
-        "hover:cursor-pointer hover:bg-secondary hover:border-primary transition-all ease-in-out",
+        "hover:cursor-pointer hover:bg-primary/[0.1] hover:border-primary transition-all ease-in-out",
         `${isDragActive ? "animate-pulse border-primary bg-secondary" : ""}`
       )}
     >
