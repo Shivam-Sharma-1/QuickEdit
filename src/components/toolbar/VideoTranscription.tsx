@@ -7,6 +7,12 @@ import { Captions } from "lucide-react";
 import { useImageStore } from "@/lib/image-store";
 import { toast } from "sonner";
 import { initiateTranscription } from "../../../server/transcribe";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default function VideoTranscription() {
   const { activeLayer, updateLayer, setActiveLayer } = useLayerStore(
@@ -63,17 +69,25 @@ export default function VideoTranscription() {
   return (
     <div className="flex items-center">
       {!activeLayer.transcriptionURL && (
-        <Button
-          className="py-8 w-full"
-          onClick={handleTranscribe}
-          disabled={transcribing || activeLayer.resourceType !== "video"}
-          variant={"outline"}
-        >
-          <span className="flex gap-1 items-center justify-center flex-col text-xs font-medium">
-            {transcribing ? "Transcribing..." : "Transcribe"}
-            <Captions size={18} />
-          </span>
-        </Button>
+        <TooltipProvider delayDuration={0}>
+          <Tooltip>
+            <TooltipTrigger>
+              <Button
+                variant="ghost"
+                className="p-3 h-fit w-min"
+                onClick={handleTranscribe}
+                disabled={transcribing || activeLayer.resourceType !== "video"}
+              >
+                <span className="flex gap-1 items-center justify-center flex-col text-xs font-medium">
+                  <Captions size={18} />
+                </span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="right" sideOffset={10}>
+              Video Transcription
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       )}
 
       {activeLayer.transcriptionURL && (

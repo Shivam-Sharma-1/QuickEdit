@@ -1,13 +1,15 @@
 "use client";
 
 import { useDropzone } from "react-dropzone";
-import Lottie from "lottie-react";
+const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 import { Card, CardContent } from "../ui/card";
 import { cn } from "@/lib/utils";
 import { useLayerStore } from "@/lib/layer-store";
 import * as videoAnimation from "../../../public/animations/video-upload.json";
 import { useImageStore } from "@/lib/image-store";
-import { uploadVideo } from "../../../server/upload-video";
+import { uploadVideo, uploadVideoToDB } from "../../../server/upload-video";
+import dynamic from "next/dynamic";
+import { toast } from "sonner";
 
 export default function UploadVideo() {
   const setTags = useImageStore((state) => state.setTags);
@@ -29,33 +31,47 @@ export default function UploadVideo() {
         const objectUrl = URL.createObjectURL(acceptedFiles[0]);
         setGenerating(true);
 
-        const res = await uploadVideo({ video: formData });
+        try {
+          const res = await uploadVideo({ video: formData });
 
-        if (res?.data?.success) {
-          const videoUrl = res.data.success.url;
-          const thumbnailUrl = videoUrl.replace(/\.[^/.]+$/, ".jpg");
-          updateLayer({
-            id: activeLayer.id,
-            url: res.data.success.url,
-            width: res.data.success.width,
-            height: res.data.success.height,
-            name: res.data.success.original_filename,
-            publicId: res.data.success.public_id,
-            format: res.data.success.format,
-            poster: thumbnailUrl,
-            resourceType: res.data.success.resource_type,
-          });
-          setTags(res.data.success.tags);
-          setActiveLayer(activeLayer.id);
-          setGenerating(false);
-        }
-        if (res?.data?.error) {
+          if (res?.data?.success) {
+            const newData = res?.data?.success;
+            const videoUrl = newData.url;
+            const thumbnailUrl = videoUrl.replace(/\.[^/.]+$/, ".jpg");
+            await uploadVideoToDB({
+              newData,
+              layerId: activeLayer.id,
+              thumbnailUrl,
+              videoUrl,
+            });
+
+            updateLayer({
+              id: activeLayer.id,
+              url: newData.url,
+              width: newData.width,
+              height: newData.height,
+              name: newData.original_filename,
+              publicId: newData.public_id,
+              format: newData.format,
+              poster: thumbnailUrl,
+              resourceType: newData.resource_type,
+            });
+            setTags(newData.tags);
+            setActiveLayer(activeLayer.id);
+            setGenerating(false);
+          }
+        } catch (error) {
+          if (error instanceof Error) {
+            toast.error(`Video Upload failed, ${error.message}`);
+            console.error("Error in Video Upload process:", error.message);
+          }
+        } finally {
           setGenerating(false);
         }
       }
 
       if (fileRejections.length) {
-        console.log("rejected");
+        toast.error("Please upload a valid video file");
       }
     },
   });

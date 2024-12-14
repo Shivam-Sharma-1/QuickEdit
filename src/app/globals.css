@@ -3,12 +3,10 @@
 @tailwind utilities;
 
 @layer base {
-  html {
-    height: 100%;
-  }
-
+  html,
   body {
     height: 100%;
+    scroll-behavior: smooth;
   }
 
   :root {
@@ -72,6 +70,26 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-secondary text-foreground;
   }
+}
+
+*::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+  width: 0px;
+  margin-block: 10px;
+}
+
+*::-webkit-scrollbar-track:hover {
+  background: #272c8c;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #4f4f4f;
+  border-radius: 100px;
 }

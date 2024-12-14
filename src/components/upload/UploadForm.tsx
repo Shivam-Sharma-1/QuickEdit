@@ -16,7 +16,7 @@ function UploadForm() {
   );
   if (!activeLayer.url && !layerComparisonMode)
     return (
-      <div className="w-full p-24 flex flex-col  justify-center  h-full">
+      <div className="flex-1 p-24 flex flex-col  justify-center  h-full">
         {selectedType === "image" ? <UploadImage /> : null}
         {selectedType === "video" ? <UploadVideo /> : null}
 
@@ -25,7 +25,7 @@ function UploadForm() {
           onValueChange={(e) => {
             setSelectedType(e);
           }}
-          className="flex items-center justify-center gap-8 py-8"
+          className="flex items-center justify-center gap-8 pt-8"
         >
           <Card
             onClick={(e) => setSelectedType("image")}

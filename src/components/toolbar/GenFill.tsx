@@ -5,11 +5,19 @@ import { useLayerStore } from "@/lib/layer-store";
 import React, { useMemo, useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
-import { Crop, Sparkles } from "lucide-react";
+import { Crop, Sparkles, WandSparkles } from "lucide-react";
 import { Label } from "../ui/label";
 import { genFill } from "../../../server/gen-fill";
 import { Slider } from "../ui/slider";
 import { toast } from "sonner";
+import { useSession } from "next-auth/react";
+import decreaseCredits from "../../../server/decrease-credits";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const PREVIEW_SIZE = 250;
 const EXPANSION_THRESHOLD = 250;
@@ -24,6 +32,7 @@ function GenFill() {
     addLayer: state.addLayer,
     setActiveLayer: state.setActiveLayer,
   }));
+  const { data: session } = useSession();
 
   const [height, setHeight] = useState(0);
   const [width, setWidth] = useState(0);
@@ -77,35 +86,41 @@ function GenFill() {
 
   const handleGenFill = async () => {
     setGenerating(true);
-    const res = await genFill({
-      width: (width + activeLayer.width!).toString(),
-      height: (height + activeLayer.height!).toString(),
-      aspect: "1:1",
-      activeImage: activeLayer.url!,
-      activeImageName: activeLayer.name!,
-    });
 
-    if (res?.data?.success) {
-      const newLayerId = crypto.randomUUID();
-      addLayer({
-        id: newLayerId,
-        name: "genfill-" + activeLayer.name,
-        format: activeLayer.format,
-        height: res.data.success.height,
-        width: res.data.success.width,
-        url: res.data.success.secure_url,
-        publicId: res.data.success.public_id,
-        resourceType: "image",
+    try {
+      await decreaseCredits(5, session?.user?.email!);
+
+      const res = await genFill({
+        width: (width + activeLayer.width!).toString(),
+        height: (height + activeLayer.height!).toString(),
+        aspect: "1:1",
+        activeImage: activeLayer.url!,
+        activeImageName: activeLayer.name!,
       });
-      setActiveLayer(newLayerId);
-      toast.success("Generative filled successfully");
-    }
 
-    if (res?.serverError) {
-      toast.error("Generative filled failed");
-      console.error("Error in Generative fill process:", res.serverError);
+      if (res?.data?.success) {
+        const newLayerId = crypto.randomUUID();
+        addLayer({
+          id: newLayerId,
+          name: "genfill-" + activeLayer.name,
+          format: activeLayer.format,
+          height: res.data.success.height,
+          width: res.data.success.width,
+          url: res.data.success.secure_url,
+          publicId: res.data.success.public_id,
+          resourceType: "image",
+        });
+        setActiveLayer(newLayerId);
+        toast.success("Generative filled successfully");
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(`Generative filled failed, ${error.message}`);
+        console.error("Error in Generative fill process:", error.message);
+      }
+    } finally {
+      setGenerating(false);
     }
-    setGenerating(false);
   };
 
   const ExpansionIndicator = ({
@@ -144,94 +159,107 @@ function GenFill() {
   };
 
   return (
-    <Popover>
-      <PopoverTrigger disabled={!activeLayer?.url} asChild>
-        <Button variant="outline" className="py-8">
-          <span className="flex gap-1 items-center justify-center flex-col text-xs font-medium">
+    <TooltipProvider delayDuration={0}>
+      <Tooltip>
+        <Popover>
+          <TooltipTrigger>
+            <PopoverTrigger disabled={!activeLayer?.url} asChild>
+              <Button variant="ghost" className="p-3 h-fit w-min">
+                <Crop size={18} />
+              </Button>
+            </PopoverTrigger>
+          </TooltipTrigger>
+          <TooltipContent side="right" sideOffset={10}>
             Generative Fill
-            <Crop size={18} />
-          </span>
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-full p-6" side="right" sideOffset={16}>
-        <div className="flex flex-col h-full">
-          <div className="space-y-2">
-            <div className="text-center">
-              <h4 className="font-medium text-center py-2 leading-none">
-                Generative Fill
-              </h4>
-              <p className="text-sm text-muted-foreground">
-                Generatively fill and resize the image with AI.
-              </p>
-            </div>
-            {activeLayer.width && activeLayer.height ? (
-              <div className="flex gap-24 justify-center">
-                <div className="flex flex-col items-center">
-                  <span className="text-xs">Current Size:</span>
-                  <p className="text-sm text-primary font-bold">
-                    {activeLayer.width} X {activeLayer.height}
+          </TooltipContent>
+          <PopoverContent className="w-full p-6" side="right" sideOffset={16}>
+            <div className="flex flex-col h-full">
+              <div className="space-y-2">
+                <div className="text-center">
+                  <h4 className="font-medium text-center py-2 leading-none">
+                    Generative Fill
+                  </h4>
+                  <p className="text-sm text-muted-foreground">
+                    Generatively fill and resize the image with AI.
                   </p>
                 </div>
-                <div className="flex flex-col items-center">
-                  <span className="text-xs">New Size:</span>
-                  <p className="text-sm text-primary font-bold">
-                    {activeLayer.width + width} X {activeLayer.height + height}
-                  </p>
+                {activeLayer.width && activeLayer.height ? (
+                  <div className="flex gap-24 justify-center">
+                    <div className="flex flex-col items-center">
+                      <span className="text-xs">Current Size:</span>
+                      <p className="text-sm text-primary font-bold">
+                        {activeLayer.width} X {activeLayer.height}
+                      </p>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <span className="text-xs">New Size:</span>
+                      <p className="text-sm text-primary font-bold">
+                        {activeLayer.width + width} X{" "}
+                        {activeLayer.height + height}
+                      </p>
+                    </div>
+                  </div>
+                ) : null}
+              </div>
+              <div className="flex gap-4 items-center justify-center">
+                <div className="text-center">
+                  <Label htmlFor="width">Modify Width</Label>
+                  <Slider
+                    name="width"
+                    min={-activeLayer.width! + 100}
+                    max={activeLayer.width! + 200}
+                    defaultValue={[width]}
+                    value={[width]}
+                    onValueChange={(value: number[]) => setWidth(value[0])}
+                    className="h-8 w-[160px]"
+                  />
+                </div>
+                <div className="text-center">
+                  <Label htmlFor="height">Modify Height</Label>
+                  <Slider
+                    name="height"
+                    min={-activeLayer.height! + 100}
+                    max={activeLayer.height! + 200}
+                    defaultValue={[height]}
+                    value={[height]}
+                    onValueChange={(value: number[]) => setHeight(value[0])}
+                    className="h-8 w-[160px]"
+                  />
                 </div>
               </div>
-            ) : null}
-          </div>
-          <div className="flex gap-4 items-center justify-center">
-            <div className="text-center">
-              <Label htmlFor="width">Modify Width</Label>
-              <Slider
-                name="width"
-                min={-activeLayer.width! + 100}
-                max={activeLayer.width! + 200}
-                defaultValue={[width]}
-                value={[width]}
-                onValueChange={(value: number[]) => setWidth(value[0])}
-                className="h-8 w-[160px]"
-              />
-            </div>
-            <div className="text-center">
-              <Label htmlFor="height">Modify Height</Label>
-              <Slider
-                name="height"
-                min={-activeLayer.height! + 100}
-                max={activeLayer.height! + 200}
-                defaultValue={[height]}
-                value={[height]}
-                onValueChange={(value: number[]) => setHeight(value[0])}
-                className="h-8 w-[160px]"
-              />
-            </div>
-          </div>
 
-          <div
-            className="preview-container flex justify-center items-center overflow-hidden m-auto flex-grow"
-            style={{
-              width: `${PREVIEW_SIZE}px`,
-              height: `${PREVIEW_SIZE}px`,
-            }}
-          >
-            <div style={previewStyle}>
-              <div className="animate-pulse" style={previewOverlayStyle}></div>
-              <ExpansionIndicator value={width} axis="x" />
-              <ExpansionIndicator value={height} axis="y" />
+              <div
+                className="preview-container flex justify-center items-center overflow-hidden m-auto flex-grow"
+                style={{
+                  width: `${PREVIEW_SIZE}px`,
+                  height: `${PREVIEW_SIZE}px`,
+                }}
+              >
+                <div style={previewStyle}>
+                  <div
+                    className="animate-pulse"
+                    style={previewOverlayStyle}
+                  ></div>
+                  <ExpansionIndicator value={width} axis="x" />
+                  <ExpansionIndicator value={height} axis="y" />
+                </div>
+              </div>
+              <p className="text-xs flex  items-center gap-1 mt-3">
+                Costs: 5 Credits <Sparkles size={14} />
+              </p>
+              <Button
+                className="w-full mt-2 flex items-center justify-center gap-2"
+                disabled={!activeLayer.url || (!width && !height) || generating}
+                onClick={handleGenFill}
+              >
+                {generating ? "Generating ..." : "Generative Fill"}
+                <WandSparkles size={16} />
+              </Button>
             </div>
-          </div>
-          <Button
-            className="w-full mt-4 flex items-center justify-center gap-2"
-            disabled={!activeLayer.url || (!width && !height) || generating}
-            onClick={handleGenFill}
-          >
-            {generating ? "Generating ..." : "Generative Fill"}
-            <Sparkles size={16} />
-          </Button>
-        </div>
-      </PopoverContent>
-    </Popover>
+          </PopoverContent>
+        </Popover>
+      </Tooltip>
+    </TooltipProvider>
   );
 }
 

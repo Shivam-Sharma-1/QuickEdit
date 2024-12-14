@@ -19,7 +19,9 @@ export type Layer = {
 type State = {
   layers: Layer[];
   addLayer: (layer: Layer) => void;
+  setLayers: (layers: Layer[]) => void;
   removeLayer: (id: string) => void;
+  removeAllLayers: () => void;
   setActiveLayer: (id: string) => void;
   activeLayer: Layer;
   updateLayer: (layer: Layer) => void;
@@ -44,9 +46,19 @@ const getStore = (initialState: {
           set((state) => ({
             layers: [...state.layers, { ...layer }],
           })),
+        setLayers: (layers: Layer[]) =>
+          set(() => ({
+            layers: layers,
+            activeLayer: initialState.layers[0],
+          })),
         removeLayer: (id: string) =>
           set((state) => ({
             layers: state.layers.filter((l) => l.id !== id),
+          })),
+        removeAllLayers: () =>
+          set(() => ({
+            layers: [],
+            activeLayer: initialState.layers[0],
           })),
         setActiveLayer: (id: string) =>
           set((state) => ({
@@ -93,7 +105,7 @@ const getStore = (initialState: {
             };
           }),
       }),
-      { name: "layer-storage" }
+      { name: "layer-store" }
     )
   );
 };
