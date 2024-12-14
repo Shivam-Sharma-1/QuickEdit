@@ -21,21 +21,21 @@ export default function Hero() {
   ];
 
   return (
-    <section className="pt-8 px-6 text-center relative">
+    <section className="pt-8 text-center relative">
       <LampContainer>
         <motion.div
-          className="mt-8 bg-gradient-to-b from-neutral-200 to-neutral-500 bg-clip-text text-center text-4xl font-medium tracking-tight text-transparent md:text-7xl"
+          className="mt-8 bg-gradient-to-b from-neutral-200 to-neutral-500 bg-clip-text text-center font-medium tracking-tight text-transparent"
           initial={{ opacity: 0, y: 100 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
         >
-          <h1 className="mb-8 mt-8 flex justify-center items-center">
+          <h1 className="mb-3 md:mb-8 mt-8 flex justify-center items-center">
             <TypewriterEffectSmooth
               words={words}
               className="text-4xl font-bold"
             />
           </h1>
-          <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400 tracking-normal">
+          <p className="mx-auto max-w-full text-wrap sm:max-w-[700px] text-gray-400 text-lg md:text-xl tracking-normal">
             Transform your content with QuickEdit&apos;s advanced AI tools. Edit
             images and videos with ease, powered by Cloudinary AI.
           </p>
@@ -57,7 +57,7 @@ export default function Hero() {
           </div>
         </motion.div>
       </LampContainer>
-      <div className="relative w-[900px] mx-auto -translate-y-44 z-10 rounded-2xl h-[420px] border-2 border-gray-400 box-content">
+      <div className="relative w-[350px] h-[160px] sm:w-[400px] sm:h-[180px] md:w-[600px] md:h-[280px] lg:w-[900px] lg:h-[420px] mx-auto -translate-y-44 z-10 rounded-2xl border-2 border-gray-400 box-content">
         <Image
           src="https://res.cloudinary.com/dqiqi75hm/image/upload/v1734187202/quickedit/dp6y8s8dstqfpq7svmj5.png"
           alt="Hero Image"
