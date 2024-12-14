@@ -10,6 +10,7 @@ import {
 import SparklesText from "../ui/sparkles-text";
 import { CardSpotlight } from "../ui/card-spotlight";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 const tiers = [
   {
@@ -35,7 +36,7 @@ const tiers = [
 
 export default function Pricing() {
   return (
-    <section id="pricing" className="py-24 px-6">
+    <section id="pricing" className="pb-24 sm:py-24 px-6">
       <SparklesText
         text="Simple, Transparent Pricing"
         className="text-3xl font-medium sm:text-4xl md:text-5xl text-center mb-12"
@@ -88,7 +89,13 @@ export default function Pricing() {
                   </ul>
                 </CardContent>
                 <CardFooter>
-                  <Button className="w-full z-20">{tier.cta}</Button>
+                  {tier.name === "Premium" ? (
+                    <Button className="w-full z-20">{tier.cta}</Button>
+                  ) : (
+                    <Link href="/editor" className="w-full z-20">
+                      <Button className="w-full">{tier.cta}</Button>
+                    </Link>
+                  )}
                 </CardFooter>{" "}
               </div>
             </CardSpotlight>
