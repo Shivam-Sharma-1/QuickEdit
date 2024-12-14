@@ -69,7 +69,7 @@ function UserActions() {
         src={theme === "light" ? "/logo-full-black.svg" : "/logo-full.svg"}
         width={120}
         height={36}
-        className="rounded-full object-cover shrink-0 text-foreground"
+        className="object-cover shrink-0"
         alt="logo-full"
       />
       <ModeToggle />
