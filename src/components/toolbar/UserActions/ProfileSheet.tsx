@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import {
+  SheetClose,
   SheetContent,
   SheetDescription,
   SheetHeader,
@@ -80,9 +81,11 @@ const ProfileSheet = ({
             </div>
           </div>
         </div>
-        <Button onClick={handleSignOut} className="font-semibold">
-          Log Out
-        </Button>
+        <SheetClose asChild>
+          <Button onClick={handleSignOut} className="font-semibold">
+            Log Out
+          </Button>
+        </SheetClose>
       </div>
     </SheetContent>
   );
