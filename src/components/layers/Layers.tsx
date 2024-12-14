@@ -81,7 +81,7 @@ export default function Layers() {
     <Card className="basis-[360px] my-4 mr-4 shrink-0 overflow-y-auto overflow-x-hidden relative flex flex-col shadow-2xl rounded-2xl">
       <CardHeader className="sticky top-0 z-20 p-6 pb-1 flex flex-col gap-4 bg-card shadow-sm">
         <div className="flex flex-col gap-1 ">
-          <CardTitle className="text-md">
+          <CardTitle className="text-xl">
             {activeLayer.name || "Select a Layer"}
           </CardTitle>
           {activeLayer.width && activeLayer.height ? (
@@ -94,7 +94,7 @@ export default function Layers() {
         {layerComparisonMode && (
           <div className="flex flex-col gap-1 ">
             <CardTitle className="text-sm pb-2">Comparing...</CardTitle>
-            <CardDescription className="flex gap-2 items-center">
+            <CardDescription className="flex gap-2 items-center mb-2">
               <Image
                 src={getLayerName(comparedLayers[0]) as string}
                 width={60}
@@ -142,7 +142,7 @@ export default function Layers() {
                   New Layer
                 </p>
               ) : null}
-              <LayerImage layer={layer} />
+              <LayerImage layer={layer} className="w-14 h-14" />
               {layer.url && (
                 <div className="flex-1 flex flex-col gap-1 w-min overflow-x-hidden">
                   <p className="text-xs overflow-hidden text-wrap">{`${layer.name}.${layer.format}`}</p>
