@@ -1,6 +1,6 @@
 import { auth } from "@/lib/auth";
 
-const publicRoutes = ["/auth", "/landing"];
+const publicRoutes = ["/auth", "/"];
 
 export default auth((req) => {
   const path = req.nextUrl.pathname;
