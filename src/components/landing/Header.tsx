@@ -35,12 +35,16 @@ export default function Header() {
         <div className="flex items-center justify-end space-x-4 flex-1">
           {session ? (
             <Link href="/editor">
-              <Button variant="default" size="sm">
+              <Button className="px-6 rounded-lg" size="sm">
                 Go to Editor
               </Button>
             </Link>
           ) : (
-            <Link href="/auth">Sign In</Link>
+            <Link href="/auth">
+              <Button className="px-6 rounded-lg" size="sm">
+                Sign In
+              </Button>
+            </Link>
           )}
         </div>
       </ShineBorder>
