@@ -14,6 +14,12 @@ import LayerImage from "./LayerImage";
 import LayerInfo from "./LayerInfo";
 import { useMemo } from "react";
 import Image from "next/image";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
 
 export default function Layers() {
   const {
@@ -72,17 +78,18 @@ export default function Layers() {
   };
 
   return (
-    <Card className="basis-[360px] shrink-0 scrollbar-thin scrollbar-track-secondary overflow-y-scroll scrollbar-thumb-primary scrollbar-thumb-rounded-full scrollbar-track-rounded-full overflow-x-hidden relative flex flex-col shadow-2xl ">
-      <CardHeader className="sticky top-0 z-50 p-6 flex flex-col gap-4 bg-card shadow-sm">
+    <Card className="basis-[360px] my-4 mr-4 shrink-0 overflow-y-auto overflow-x-hidden relative flex flex-col shadow-2xl rounded-2xl">
+      <CardHeader className="sticky top-0 z-20 p-6 pb-1 flex flex-col gap-4 bg-card shadow-sm">
         <div className="flex flex-col gap-1 ">
           <CardTitle className="text-md">
-            {activeLayer.name || "Layers"}
+            {activeLayer.name || "Select a Layer"}
           </CardTitle>
           {activeLayer.width && activeLayer.height ? (
             <CardDescription className="text-xs">
               {activeLayer.width} X {activeLayer.height}
             </CardDescription>
           ) : null}
+          <h4 className="mt-1 font-medium">Layers</h4>
         </div>
         {layerComparisonMode && (
           <div className="flex flex-col gap-1 ">
@@ -114,7 +121,7 @@ export default function Layers() {
         {visibleLayers.map((layer, index) => (
           <div
             className={cn(
-              "cursor-pointer ease-in-out hover:bg-secondary border border-transparent w-full p-1",
+              "cursor-pointer ease-in-out hover:bg-secondary border border-transparent w-full p-1 rounded-sm",
               {
                 "animate-pulse": generating,
                 "border-primary": layerComparisonMode
@@ -137,7 +144,12 @@ export default function Layers() {
               ) : null}
               <LayerImage layer={layer} />
               {layer.url && (
-                <p className="text-xs text-center w-[170px] overflow-hidden text-wrap">{`${layer.name}.${layer.format}`}</p>
+                <div className="flex-1 flex flex-col gap-1 w-min overflow-x-hidden">
+                  <p className="text-xs overflow-hidden text-wrap">{`${layer.name}.${layer.format}`}</p>
+                  <p className="text-[0.7rem] overflow-hidden text-wrap text-[#94a3b8]">
+                    {layer.width} X {layer.height}
+                  </p>
+                </div>
               )}
               <LayerInfo layer={layer} layerIndex={index} />
             </div>
@@ -146,17 +158,40 @@ export default function Layers() {
       </CardContent>
 
       <CardContent className="sticky bottom-0 bg-card flex gap-2 shrink-0 p-4 z-20">
+        {layers.length >= 10 ? (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div>
+                  <Button
+                    variant="outline"
+                    className="w-full flex gap-2"
+                    disabled
+                  >
+                    <span className="text-xs">Create Layer</span>
+                    <Layers2 className="text-secondary-foreground" size={18} />
+                  </Button>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="top" sideOffset={10}>
+                <p>Upgrade to Premium to add more layers</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        ) : (
+          <Button
+            onClick={handleAddLayer}
+            variant="outline"
+            className="w-full flex gap-2"
+          >
+            <span className="text-xs">Create Layer</span>
+            <Layers2 className="text-secondary-foreground" size={18} />
+          </Button>
+        )}
+
         <Button
-          onClick={handleAddLayer}
           variant="outline"
-          className="w-full flex gap-2"
-        >
-          <span className="text-xs">Create Layer</span>
-          <Layers2 className="text-secondary-foreground" size={18} />
-        </Button>
-        <Button
-          variant="outline"
-          className="w-full flex gap-2"
+          className="w-full flex gap-2 text-xs"
           disabled={!activeLayer.url || activeLayer.resourceType === "video"}
           onClick={() => {
             if (layerComparisonMode)
