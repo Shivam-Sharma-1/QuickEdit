@@ -1,12 +1,14 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { Button } from "../ui/button";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Layer, useLayerStore } from "@/lib/layer-store";
+import { FaGoogle } from "react-icons/fa";
+import Image from "next/image";
 import getLayers from "../../../server/get-layers";
+import { Button } from "@/components/ui/button";
 
 const AuthPage = () => {
   const { data: session } = useSession();
@@ -31,31 +33,33 @@ const AuthPage = () => {
   };
 
   return (
-    <div className="w-full flex lg:grid grid-cols-2 justify-center h-screen">
-      <div className="flex flex-col col-span-2 md:col-span-1 items-center justify-center py-12">
-        <Link href="/" className="mb-12">
-          Logo
-        </Link>
-
-        <div className="mx-auto grid w-[350px] gap-6">
+    <div
+      className="w-full flex justify-center items-center min-h-screen max-h-screen"
+      style={{
+        backgroundImage: "url('./../../public/logo.jpg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundColor: "transparent",
+      }}
+    >
+      <div className="flex flex-col items-center justify-center bg-background h-fit px-8 py-12 rounded-xl">
+        <div className="mx-auto grid w-[350px] gap-8">
           <div className="grid gap-2 text-center">
-            <h1 className="text-3xl font-bold">Login to your account</h1>
-            <p className="text-balance text-xs text-muted-foreground">
-              Continue with one of the OAuth Providers below
+            <h1 className="text-3xl font-bold">Sign in to your account</h1>
+            <p className="text-balance text-sm text-muted-foreground">
+              Continue with Google Sign In Below
             </p>
           </div>
-          <div className="grid gap-4">
-            <Button
-              onClick={handleSignIn}
-              variant="default"
-              className="w-full flex flex-row gap-2"
-            >
-              Sign In with Google
-            </Button>
-          </div>
+          <Button
+            onClick={handleSignIn}
+            variant="default"
+            className="w-full flex flex-row gap-2"
+          >
+            Sign In with Google
+            <FaGoogle />
+          </Button>
         </div>
       </div>
-      <div className="hidden md:col-span-1 bg-muted lg:block"></div>
     </div>
   );
 };
