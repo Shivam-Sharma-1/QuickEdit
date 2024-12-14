@@ -62,8 +62,7 @@ export default function Hero() {
           src="https://res.cloudinary.com/dqiqi75hm/image/upload/v1734187202/quickedit/dp6y8s8dstqfpq7svmj5.png"
           alt="Hero Image"
           layout="fill"
-          objectFit="cover"
-          className="rounded-[inherit]"
+          className="rounded-[inherit] object-cover"
         />
       </div>
       <Particles
