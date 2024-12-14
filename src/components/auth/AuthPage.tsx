@@ -35,7 +35,7 @@ const AuthPage = () => {
     <div
       className="w-full flex justify-center items-center min-h-screen max-h-screen"
       style={{
-        backgroundImage: "url('./../../public/logo.jpg')",
+        backgroundImage: "url('/images/logo.jpg')",
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundColor: "transparent",
@@ -45,7 +45,7 @@ const AuthPage = () => {
         <div className="mx-auto grid w-[350px] gap-8">
           <Link href="/">
             <Image
-              src={"/logo-full.svg"}
+              src={"/images/logo-full.svg"}
               width={120}
               height={36}
               className="object-cover shrink-0"

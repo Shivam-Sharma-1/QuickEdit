@@ -15,7 +15,11 @@ function Logo({ className }: LogoProps) {
   return (
     <Link href="/" className={className}>
       <Image
-        src={theme === "light" ? "/logo-full-black.svg" : "/logo-full.svg"}
+        src={
+          theme === "light"
+            ? "/images/logo-full-black.svg"
+            : "/images/logo-full.svg"
+        }
         width={120}
         height={36}
         className="object-cover shrink-0"

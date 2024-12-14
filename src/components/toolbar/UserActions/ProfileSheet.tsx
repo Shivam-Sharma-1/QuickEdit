@@ -10,6 +10,7 @@ import Image from "next/image";
 import { User } from ".";
 import { Gem } from "lucide-react";
 import Link from "next/link";
+import Logo from "@/components/Logo";
 
 interface ProfileSheetProps {
   user: User;
@@ -32,17 +33,7 @@ const ProfileSheet = ({
     <SheetContent className="flex flex-col gap-6">
       <SheetHeader>
         <SheetTitle>
-          <Link href="/">
-            <Image
-              src={
-                theme === "light" ? "/logo-full-black.svg" : "/logo-full.svg"
-              }
-              width={120}
-              height={36}
-              className="object-cover shrink-0"
-              alt="logo-full"
-            />
-          </Link>
+          <Logo />
         </SheetTitle>
       </SheetHeader>
       <div className="flex flex-col gap-4 flex-1 justify-between">
