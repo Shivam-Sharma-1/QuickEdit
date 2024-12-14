@@ -9,14 +9,15 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import Image from "next/image";
-import getUser from "../../../server/get-user";
+import getUser from "../../../../server/get-user";
 import { Plan } from "@prisma/client";
-import { Button } from "../ui/button";
-import { ModeToggle } from "../theme/ModeToggle";
+import { Button } from "../../ui/button";
+import { ModeToggle } from "../../theme/ModeToggle";
 import { useLayerStore } from "@/lib/layer-store";
 import { useTheme } from "next-themes";
+import ProfileSheet from "./ProfileSheet";
 
-interface User {
+export interface User {
   name: string | null;
   image: string | null;
   email: string | null;
@@ -82,27 +83,14 @@ function UserActions() {
             alt="Avatar"
           />
         </SheetTrigger>
-        <SheetContent>
-          <SheetHeader>
-            <SheetTitle>
-              <Image
-                className="h-6 w-6"
-                src={image || "/default-avatar.png"}
-                width={24}
-                height={24}
-                alt="Avatar"
-              />
-              <h3>{name}</h3>
-              <p>{email}</p>
-            </SheetTitle>
-            <SheetDescription>
-              Number of credits : {user?.credits}/20
-              <Button variant="ghost" onClick={handleSignOut} className="px-2">
-                Log Out
-              </Button>
-            </SheetDescription>
-          </SheetHeader>
-        </SheetContent>
+        <ProfileSheet
+          user={user!}
+          handleSignOut={handleSignOut}
+          name={name!}
+          image={image!}
+          email={email!}
+          theme={theme}
+        />
       </Sheet>
     </div>
   );
