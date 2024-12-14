@@ -52,7 +52,10 @@ export default function LayerInfo({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" className="border-0">
+        <Button
+          variant="ghost"
+          className="p-0 bg-transparent h-fit rounded-full pr-2 hover:bg-transparent"
+        >
           <Ellipsis size={18} />
         </Button>
       </DialogTrigger>
