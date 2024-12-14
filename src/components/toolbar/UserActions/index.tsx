@@ -16,6 +16,7 @@ import { ModeToggle } from "../../theme/ModeToggle";
 import { useLayerStore } from "@/lib/layer-store";
 import { useTheme } from "next-themes";
 import ProfileSheet from "./ProfileSheet";
+import Link from "next/link";
 
 export interface User {
   name: string | null;
@@ -65,13 +66,15 @@ function UserActions() {
 
   return (
     <div className="p-2 px-4 rounded-2xl text-center flex justify-center items-center gap-4 bg-background w-fit absolute top-4 z-10">
-      <Image
-        src={theme === "light" ? "/logo-full-black.svg" : "/logo-full.svg"}
-        width={120}
-        height={36}
-        className="object-cover shrink-0"
-        alt="logo-full"
-      />
+      <Link href="/">
+        <Image
+          src={theme === "light" ? "/logo-full-black.svg" : "/logo-full.svg"}
+          width={120}
+          height={36}
+          className="object-cover shrink-0"
+          alt="logo-full"
+        />
+      </Link>
       <ModeToggle />
       <Sheet open={isProfileOpen} onOpenChange={setIsProfileOpen}>
         <SheetTrigger className="shrink-0">
