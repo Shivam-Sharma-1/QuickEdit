@@ -1,10 +1,21 @@
 import Image from "next/image";
 import { Layer } from "@/lib/layer-store";
+import { cn } from "@/lib/utils";
 
-function LayerImage({ layer }: { layer: Layer }) {
+interface LayerImageProps {
+  layer: Layer;
+  className?: string;
+}
+
+function LayerImage({ layer, className }: LayerImageProps) {
   if (layer.url)
     return (
-      <div className="w-16 h-16 flex items-center justify-center relative shrink-0">
+      <div
+        className={cn(
+          "flex items-center justify-center relative shrink-0",
+          className
+        )}
+      >
         <Image
           className="w-full object-contain h-full rounded-sm z-10"
           alt={"layer"}
