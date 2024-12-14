@@ -81,7 +81,7 @@ export default function Features() {
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3 auto-cols-fr">
           {imageFeatures.map((feature, index) => (
             <CardContainer key={index} containerClassName="py-0 gap-4">
-              <CardBody className="bg-gray-50 relative group/card  dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1]  h-auto rounded-xl p-6 border">
+              <CardBody className="relative group/card bg-gradient-to-br from-secondary to-secondary-dark h-auto rounded-xl p-6 border hover:shadow-lg hover:shadow-blue-500/[0.2] transition-shadow duration-300">
                 <CardItem
                   translateZ="50"
                   className="text-xl font-bold text-neutral-600 dark:text-white"
@@ -112,7 +112,7 @@ export default function Features() {
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {videoFeatures.map((feature, index) => (
             <CardContainer key={index} containerClassName="py-0 gap-4">
-              <CardBody className="bg-gray-50 relative group/card  dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1]  h-auto rounded-xl p-6 border">
+              <CardBody className="relative group/card bg-gradient-to-br from-secondary to-secondary-dark h-auto rounded-xl p-6 border hover:shadow-lg hover:shadow-blue-500/[0.2] transition-shadow duration-300">
                 <CardItem
                   translateZ="50"
                   className="text-xl font-bold text-neutral-600 dark:text-white"
