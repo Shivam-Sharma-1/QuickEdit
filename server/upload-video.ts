@@ -53,7 +53,7 @@ export const uploadVideo = actionClient
           },
           (error, result) => {
             if (error || !result) {
-              console.error("Upload failed:", error);
+              console.error("Upload failed: Video too long", error);
               reject({ error: "Upload failed" });
             } else {
               console.log("Upload successful:", result);
@@ -65,7 +65,7 @@ export const uploadVideo = actionClient
         uploadStream.end(buffer);
       });
     } catch (error) {
-      console.error("Error processing file:", error);
+      console.error("Error processing file: Video too long", error);
       return { error: "Error processing file" };
     }
   });
