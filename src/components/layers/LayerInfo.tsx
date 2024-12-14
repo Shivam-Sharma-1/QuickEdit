@@ -1,8 +1,13 @@
 "use client";
 
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Button } from "../ui/button";
-import { Ellipsis, Trash } from "lucide-react";
+import { Ellipsis, Image, Trash } from "lucide-react";
 import { Layer, useLayerStore } from "@/lib/layer-store";
 import {
   deleteResource,
@@ -10,6 +15,8 @@ import {
 } from "../../../server/delete-resource";
 import { toast } from "sonner";
 import { useImageStore } from "@/lib/image-store";
+import LayerImage from "./LayerImage";
+import { DialogClose } from "@radix-ui/react-dialog";
 
 export default function LayerInfo({
   layer,
@@ -60,29 +67,37 @@ export default function LayerInfo({
         </Button>
       </DialogTrigger>
       <DialogContent className="flex flex-col gap-6 justify-center leading-8">
-        <h3 className="text-[1.2rem] font-medium mt-2 w-full text-wrap overflow-hidden">
-          Layer: {layer.name}
-        </h3>
-        <div className="flex flex-col gap-3 text-wrap w-full">
-          <p className="text-[1rem]">
-            <span className="font-bold">Filename:</span> {layer.name}
-          </p>
-          <p className="text-[1rem]">
-            <span className="font-bold">Format:</span> {layer.format}
-          </p>
-          <p className="text-[1rem]">
-            <span className="font-bold">Size:</span> {layer.width} X{" "}
-            {layer.height}
-          </p>
+        <div className="flex items-center gap-3 w-full">
+          <div className="bg-secondary w-12 h-12 shrink-0 flex justify-center items-center rounded-md">
+            <Image className="w-8 h-8" />
+          </div>
+          <h3 className="text-2xl font-medium w-full text-wrap overflow-hidden">
+            {layer.name}.{layer.format}
+          </h3>
         </div>
-        <Button
-          onClick={handleDeleteLayer}
-          variant={"destructive"}
-          className="flex items-center gap-2 w-full"
-        >
-          <span> Delete Layer</span>
-          <Trash size={14} />
-        </Button>
+        <div className="flex justify-between gap-3 w-full">
+          <div className="flex flex-col gap-1 text-wrap w-full">
+            <p className="text-[1rem]">
+              <span className="font-semibold">Filename:</span> {layer.name}
+            </p>
+            <p className="text-[1rem]">
+              <span className="font-semibold">Format:</span> {layer.format}
+            </p>
+            <p className="text-[1rem]">
+              <span className="font-semibold">Dimensions:</span> {layer.width} X{" "}
+              {layer.height}
+            </p>
+          </div>
+          <LayerImage layer={layer} className="w-32 h-32" />
+        </div>
+        <DialogFooter className="flex justify-end items-center gap-2 mt-4">
+          <DialogClose asChild>
+            <Button variant="outline">Cancel</Button>
+          </DialogClose>
+          <Button onClick={handleDeleteLayer} variant={"destructive"}>
+            <span> Delete Layer</span>
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
