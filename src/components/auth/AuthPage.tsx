@@ -17,8 +17,7 @@ const AuthPage = () => {
 
   useEffect(() => {
     if (session && session.user && session.user.email) {
-      console.log("Authorized access, redirecting");
-      router.push("/");
+      router.push("/editor");
     }
   }, [session, router]);
 
@@ -44,6 +43,15 @@ const AuthPage = () => {
     >
       <div className="flex flex-col items-center justify-center bg-background h-fit px-8 py-12 rounded-xl">
         <div className="mx-auto grid w-[350px] gap-8">
+          <Link href="/">
+            <Image
+              src={"/logo-full.svg"}
+              width={120}
+              height={36}
+              className="object-cover shrink-0"
+              alt="logo-full"
+            />
+          </Link>
           <div className="grid gap-2 text-center">
             <h1 className="text-3xl font-bold">Sign in to your account</h1>
             <p className="text-balance text-sm text-muted-foreground">
