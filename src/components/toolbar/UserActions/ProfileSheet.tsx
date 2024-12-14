@@ -81,11 +81,9 @@ const ProfileSheet = ({
             </div>
           </div>
         </div>
-        <SheetClose asChild>
-          <Button onClick={handleSignOut} className="font-semibold">
-            Log Out
-          </Button>
-        </SheetClose>
+        <Button onClick={handleSignOut} className="font-semibold">
+          Log Out
+        </Button>
       </div>
     </SheetContent>
   );
