@@ -72,16 +72,18 @@ export default function LayerInfo({
             <Image className="w-8 h-8" />
           </div>
           <h3 className="text-2xl font-medium w-full text-wrap overflow-hidden">
-            {layer.name}.{layer.format}
+            {layer.name}.{layer.format ? layer.format : "New Layer"}
           </h3>
         </div>
         <div className="flex justify-between gap-3 w-full">
           <div className="flex flex-col gap-1 text-wrap w-full">
             <p className="text-[1rem]">
-              <span className="font-semibold">Filename:</span> {layer.name}
+              <span className="font-semibold">Filename:</span>{" "}
+              {layer.name ? layer.name : "New Layer"}
             </p>
             <p className="text-[1rem]">
-              <span className="font-semibold">Format:</span> {layer.format}
+              <span className="font-semibold">Format:</span>{" "}
+              {layer.format ? layer.format : "Nil"}
             </p>
             <p className="text-[1rem]">
               <span className="font-semibold">Dimensions:</span> {layer.width} X{" "}
