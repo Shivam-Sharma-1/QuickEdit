@@ -73,12 +73,12 @@ export default function Features() {
         className="text-3xl font-medium sm:text-4xl md:text-5xl text-center mb-12"
       />
 
-      <div className="mb-16 px-16">
+      <div className="mb-16 px-8 lg:px-16">
         <WordPullUp
           words="Image Editing Tools"
-          className="text-2xl font-bold mb-8 text-left"
+          className="text-2xl font-bold mb-8 sm:text-left"
         />
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3 auto-cols-fr">
+        <div className="grid gap-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 auto-cols-fr">
           {imageFeatures.map((feature, index) => (
             <CardContainer key={index} containerClassName="py-0 gap-4">
               <CardBody className="relative group/card bg-gradient-to-br from-secondary to-secondary-dark h-auto rounded-xl p-6 border hover:shadow-lg hover:shadow-blue-500/[0.2] transition-shadow duration-300">
@@ -92,7 +92,7 @@ export default function Features() {
                   translateZ="60"
                   className="text-neutral-500 text-sm max-w-sm mt-3 dark:text-neutral-300"
                 >
-                  <CardTitle>{feature.title}</CardTitle>
+                  <CardTitle className="text-lg">{feature.title}</CardTitle>
                 </CardItem>
 
                 <CardItem translateZ="100" className="w-full mt-1">
@@ -104,12 +104,12 @@ export default function Features() {
         </div>
       </div>
 
-      <div className="px-16">
+      <div className="px-8 lg:px-16">
         <WordPullUp
           words="Video Editing Tools"
-          className="text-2xl font-bold mb-8 text-left"
+          className="text-2xl font-bold mb-8 sm:text-left"
         />
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
           {videoFeatures.map((feature, index) => (
             <CardContainer key={index} containerClassName="py-0 gap-4">
               <CardBody className="relative group/card bg-gradient-to-br from-secondary to-secondary-dark h-auto rounded-xl p-6 border hover:shadow-lg hover:shadow-blue-500/[0.2] transition-shadow duration-300">
