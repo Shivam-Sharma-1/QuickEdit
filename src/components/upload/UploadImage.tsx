@@ -9,6 +9,7 @@ import { useImageStore } from "@/lib/image-store";
 import { useLayerStore } from "@/lib/layer-store";
 import { toast } from "sonner";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import { useResponsive } from "@/lib/hooks/useResponsive";
 
 function UploadImage() {
   const setTags = useImageStore((state) => state.setTags);
@@ -80,6 +81,8 @@ function UploadImage() {
     },
   });
 
+  const isMobile = useResponsive(768);
+
   return (
     <Card
       {...getRootProps()}
@@ -88,22 +91,26 @@ function UploadImage() {
         `${isDragActive ? "animate-pulse border-primary bg-secondary" : ""}`
       )}
     >
-      <CardContent className="flex flex-col h-full items-center justify-center px-2 py-20 text-xs">
+      <CardContent className="flex flex-col h-full items-center justify-center px-2 pb-6 md:py-20 text-xs">
         <input {...getInputProps()} />
         <div className="flex items-center flex-col justify-center gap-4">
           <DotLottieReact
             src="https://lottie.host/30e9f05e-3210-4c2e-8ba9-922adcd19e68/GYV05tEM5s.lottie"
             loop
             autoplay
-            style={{ width: 300, height: 300, objectFit: "contain" }}
+            style={{
+              width: isMobile ? 200 : 300,
+              height: isMobile ? 200 : 300,
+              objectFit: "contain",
+            }}
           />
-          <p className="text-muted-foreground text-2xl">
+          <p className="text-muted-foreground text-xl md:text-2xl">
             {isDragActive
               ? "Drop your image here!"
               : "Start by uploading an image"}
           </p>
           <p className="text-muted-foreground">
-            Supported formats .jpeg .jpg .webp .png
+            Supported formats: .jpeg .jpg .webp .png
           </p>
         </div>
       </CardContent>
