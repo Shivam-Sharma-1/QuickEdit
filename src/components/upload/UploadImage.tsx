@@ -7,10 +7,8 @@ import { uploadImage, uploadImageToDB } from "../../../server/upload-image";
 import { cn } from "@/lib/utils";
 import { useImageStore } from "@/lib/image-store";
 import { useLayerStore } from "@/lib/layer-store";
-import * as imageAnimation from "../../../public/animations/image-upload.json";
-import dynamic from "next/dynamic";
 import { toast } from "sonner";
-const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 function UploadImage() {
   const setTags = useImageStore((state) => state.setTags);
@@ -86,14 +84,19 @@ function UploadImage() {
     <Card
       {...getRootProps()}
       className={cn(
-        "hover:cursor-pointer hover:bg-primary/[0.1] hover:border-primary transition-all ease-in-out",
+        "hover:cursor-pointer hover:bg-[#0d1c41] hover:border-primary transition-all ease-in-out",
         `${isDragActive ? "animate-pulse border-primary bg-secondary" : ""}`
       )}
     >
-      <CardContent className="flex flex-col h-full items-center justify-center px-2 py-24 text-xs">
+      <CardContent className="flex flex-col h-full items-center justify-center px-2 py-20 text-xs">
         <input {...getInputProps()} />
         <div className="flex items-center flex-col justify-center gap-4">
-          <Lottie className="h-48" animationData={imageAnimation} />
+          <DotLottieReact
+            src="https://lottie.host/30e9f05e-3210-4c2e-8ba9-922adcd19e68/GYV05tEM5s.lottie"
+            loop
+            autoplay
+            style={{ width: 300, height: 300, objectFit: "contain" }}
+          />
           <p className="text-muted-foreground text-2xl">
             {isDragActive
               ? "Drop your image here!"
