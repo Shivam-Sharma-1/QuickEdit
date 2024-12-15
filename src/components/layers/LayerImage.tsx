@@ -25,7 +25,7 @@ function LayerImage({ layer, className }: LayerImageProps) {
         <Image
           className="w-full object-cover h-full rounded-sm opacity-60"
           alt={"layer"}
-          src="/layer-placeholder.jpg"
+          src="/images/layer-placeholder.jpg"
           fill
         />
       </div>
