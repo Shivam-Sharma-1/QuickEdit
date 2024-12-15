@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.7.4",
+    "@lottiefiles/dotlottie-react": "^0.11.1",
     "@prisma/client": "^6.0.1",
     "@radix-ui/react-checkbox": "^1.1.1",
     "@radix-ui/react-dialog": "^1.1.2",
