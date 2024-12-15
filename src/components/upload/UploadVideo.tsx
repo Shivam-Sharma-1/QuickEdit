@@ -10,6 +10,7 @@ import { useImageStore } from "@/lib/image-store";
 import { uploadVideo, uploadVideoToDB } from "../../../server/upload-video";
 import dynamic from "next/dynamic";
 import { toast } from "sonner";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 export default function UploadVideo() {
   const setTags = useImageStore((state) => state.setTags);
@@ -80,14 +81,19 @@ export default function UploadVideo() {
     <Card
       {...getRootProps()}
       className={cn(
-        "hover:cursor-pointer hover:bg-primary/[0.1] hover:border-primary transition-all ease-in-out",
+        "hover:cursor-pointer hover:bg-[#0d1c41] hover:border-primary transition-all ease-in-out",
         `${isDragActive ? "animate-pulse border-primary bg-secondary" : ""}`
       )}
     >
-      <CardContent className="flex flex-col h-full items-center justify-center px-2 py-24 text-xs">
+      <CardContent className="flex flex-col h-full items-center justify-center px-2 py-20 text-xs">
         <input {...getInputProps()} />
         <div className="flex items-center flex-col justify-center gap-4">
-          <Lottie className="h-48" animationData={videoAnimation} />
+          <DotLottieReact
+            src="https://lottie.host/71d873ae-aee8-43a1-9d18-2009297f99b7/Ijxe9AlLzc.lottie"
+            loop
+            autoplay
+            style={{ width: 300, height: 300, objectFit: "contain" }}
+          />
           <p className="text-muted-foreground text-2xl">
             {isDragActive
               ? "Drop your video here!"
