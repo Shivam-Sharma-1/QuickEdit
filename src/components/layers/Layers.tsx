@@ -14,7 +14,7 @@ import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 import LayerImage from "./LayerImage";
 import LayerInfo from "./LayerInfo";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import {
   Tooltip,
@@ -22,9 +22,15 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
+import { useResponsive } from "@/lib/hooks/useResponsive";
 
 export default function Layers() {
+  const isMobile = useResponsive(1024);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    setIsOpen(isMobile ? false : true);
+  }, [isMobile]);
 
   const {
     layers,
