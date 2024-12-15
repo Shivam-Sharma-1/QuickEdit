@@ -67,7 +67,7 @@ const videoFeatures = [
 
 export default function Features() {
   return (
-    <section id="features" className="pb-24 px-6">
+    <section id="features" className="pb-20 sm:pb-24 px-6">
       <SparklesText
         text="Powerful AI Features"
         className="text-3xl font-medium sm:text-4xl md:text-5xl text-center mb-12"
