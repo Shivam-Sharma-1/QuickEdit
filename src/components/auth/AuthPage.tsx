@@ -33,7 +33,7 @@ const AuthPage = () => {
 
   return (
     <div
-      className="w-full flex justify-center items-center min-h-screen max-h-screen px-2"
+      className="w-full flex justify-center items-center min-h-[100svh] max-h-[100svh] px-2"
       style={{
         backgroundImage: "url('/images/background.jpg')",
         backgroundSize: "cover",
