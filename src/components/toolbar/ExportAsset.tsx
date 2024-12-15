@@ -84,7 +84,7 @@ export default function ExportAsset({ resource }: { resource: string }) {
                   Export assets efficiently for use in your projects.
                 </p>
               </div>
-              <div className="flex justify-center gap-4">
+              <div className="flex justify-center gap-4 flex-wrap">
                 <Card
                   onClick={() => setSelected("original")}
                   className={cn(

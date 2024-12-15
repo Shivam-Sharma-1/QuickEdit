@@ -134,7 +134,7 @@ function ExtractPart() {
                 <Button
                   onClick={addPrompt}
                   size="sm"
-                  className="flex justify-center items-center gap-2"
+                  className="flex justify-center items-center gap-2 my-2 sm:my-0"
                 >
                   Add Prompt
                   <ChevronRight size={16} />

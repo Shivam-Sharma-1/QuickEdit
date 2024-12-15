@@ -201,7 +201,7 @@ function GenFill() {
                   </div>
                 ) : null}
               </div>
-              <div className="flex gap-4 items-center justify-center">
+              <div className="flex flex-col sm:flex-row mt-2 sm:mt-0 gap-4 items-center justify-center">
                 <div className="text-center">
                   <Label htmlFor="width">Modify Width</Label>
                   <Slider

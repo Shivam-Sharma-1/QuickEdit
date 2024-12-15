@@ -87,7 +87,7 @@ function BgReplace() {
           <PopoverContent className="w-full p-6" side="right" sideOffset={16}>
             <div className="grid gap-4">
               <div className="space-y-2">
-                <h4 className="font-medium leading-none">
+                <h4 className="font-medium leading-relaxed">
                   Generative Background Replace
                 </h4>
                 <p className="text-sm text-muted-foreground">
@@ -118,9 +118,7 @@ function BgReplace() {
               disabled={!activeLayer?.url || generating}
               onClick={handleReplace}
             >
-              {generating
-                ? "Generating..."
-                : "Replace Background Cost 5 Credits"}
+              {generating ? "Generating..." : "Replace Background"}
               <WandSparkles size={16} />
             </Button>
           </PopoverContent>

@@ -108,9 +108,16 @@ export default function SmartCrop() {
                 <h3 className="font-medium text-center py-2 leading-none">
                   Smart Recrop
                 </h3>
+                <p className="text-sm text-muted-foreground">
+                  Smart crop the video to fit the aspect ratio.
+                </p>
               </div>
               <h4 className="text-md font-medium pb-2">Format</h4>
-              <div className={"flex gap-4 items-center justify-center pb-2"}>
+              <div
+                className={
+                  "flex gap-4 items-center justify-center pb-2 flex-wrap"
+                }
+              >
                 <Card
                   className={cn(
                     aspectRatio === "16:9" ? " border-primary" : "",
