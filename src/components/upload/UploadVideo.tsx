@@ -11,6 +11,7 @@ import { uploadVideo, uploadVideoToDB } from "../../../server/upload-video";
 import dynamic from "next/dynamic";
 import { toast } from "sonner";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import { useResponsive } from "@/lib/hooks/useResponsive";
 
 export default function UploadVideo() {
   const setTags = useImageStore((state) => state.setTags);
@@ -77,6 +78,8 @@ export default function UploadVideo() {
     },
   });
 
+  const isMobile = useResponsive(768);
+
   return (
     <Card
       {...getRootProps()}
@@ -85,16 +88,20 @@ export default function UploadVideo() {
         `${isDragActive ? "animate-pulse border-primary bg-secondary" : ""}`
       )}
     >
-      <CardContent className="flex flex-col h-full items-center justify-center px-2 py-20 text-xs">
+      <CardContent className="flex flex-col h-full items-center justify-center px-2 pt-4 pb-6 md:py-20 text-xs">
         <input {...getInputProps()} />
         <div className="flex items-center flex-col justify-center gap-4">
           <DotLottieReact
             src="https://lottie.host/71d873ae-aee8-43a1-9d18-2009297f99b7/Ijxe9AlLzc.lottie"
             loop
             autoplay
-            style={{ width: 300, height: 300, objectFit: "contain" }}
+            style={{
+              width: isMobile ? 150 : 300,
+              height: isMobile ? 150 : 300,
+              objectFit: "contain",
+            }}
           />
-          <p className="text-muted-foreground text-2xl">
+          <p className="text-muted-foreground text-xl md:text-2xl">
             {isDragActive
               ? "Drop your video here!"
               : "Start by uploading a video"}
