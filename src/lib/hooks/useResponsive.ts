@@ -7,9 +7,9 @@ export function useResponsive(mobileBreakpoint: number = 640) {
 
   useEffect(() => {
     // Scroll to top on mount
-    if (typeof window !== "undefined") {
-      window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-    }
+    // if (typeof window !== "undefined") {
+    //   window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+    // }
 
     // Check if window is available (client-side)
     if (typeof window !== "undefined") {
