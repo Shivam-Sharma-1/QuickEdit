@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 
 export default function CTA() {
   return (
-    <section className="py-24 px-6 bg-background bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 bg-[cubic-bezier(0.4, 0, 0.2, 1)]">
+    <section className="py-10 sm:py-24 px-6 bg-background bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 bg-[cubic-bezier(0.4, 0, 0.2, 1)]">
       <div className="max-w-4xl mx-auto text-center">
         <SparklesText
           text="Ready to Transform Your Content?"
@@ -23,7 +23,7 @@ export default function CTA() {
           <AnimatedGradientText className="bg-white rounded-[inherit] w-fit">
             <span
               className={cn(
-                `inline animate-gradient bg-gradient-to-r from-[#ffaa40] via-[#9c40ff] to-[#ffaa40] bg-[length:var(--bg-size)_100%] bg-clip-text text-transparent rounded-[inherit] px-4 py-1 text-lg`
+                `inline animate-gradient bg-gradient-to-r from-[#ffaa40] via-[#9c40ff] to-[#ffaa40] bg-[length:var(--bg-size)_100%] bg-clip-text text-transparent rounded-[inherit] px-4 py-1 text-md lg:text-lg`
               )}
             >
               Get Started For Free
