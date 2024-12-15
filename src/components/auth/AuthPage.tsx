@@ -33,7 +33,7 @@ const AuthPage = () => {
 
   return (
     <div
-      className="w-full flex justify-center items-center min-h-screen max-h-screen"
+      className="w-full flex justify-center items-center min-h-screen max-h-screen px-2"
       style={{
         backgroundImage: "url('/images/background.jpg')",
         backgroundSize: "cover",
@@ -41,19 +41,21 @@ const AuthPage = () => {
         backgroundColor: "transparent",
       }}
     >
-      <div className="flex flex-col items-center justify-center bg-background h-fit px-8 py-12 rounded-xl">
-        <div className="mx-auto grid w-[350px] gap-8">
-          <Link href="/">
+      <div className="flex flex-col items-center justify-center bg-background/50 shadow-xl backdrop-blur-lg h-fit px-6 py-8 sm:px-8 sm:py-12 rounded-xl">
+        <div className="mx-auto grid w-full sm:w-[350px] gap-3 sm:gap-6">
+          <Link href="/" className="mx-auto">
             <Image
               src={"/images/logo-full.svg"}
-              width={120}
+              width={180}
               height={36}
               className="object-cover shrink-0"
               alt="logo-full"
             />
           </Link>
           <div className="grid gap-2 text-center">
-            <h1 className="text-3xl font-bold">Sign in to your account</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold">
+              Sign in to your account
+            </h1>
             <p className="text-balance text-sm text-muted-foreground">
               Continue with Google Sign In Below
             </p>
@@ -61,7 +63,7 @@ const AuthPage = () => {
           <Button
             onClick={handleSignIn}
             variant="default"
-            className="w-full flex flex-row gap-2"
+            className="w-full flex flex-row gap-2 mt-4"
           >
             Sign In with Google
             <FaGoogle />
