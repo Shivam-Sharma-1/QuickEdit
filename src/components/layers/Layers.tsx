@@ -24,7 +24,7 @@ import {
 } from "../ui/tooltip";
 
 export default function Layers() {
-  const [isOpen, setIsOpen] = useState<boolean>(true);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const {
     layers,
