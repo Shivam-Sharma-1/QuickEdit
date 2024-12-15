@@ -24,7 +24,6 @@ const AuthPage = () => {
   const handleSignIn = async () => {
     try {
       const { layers } = await getLayers();
-      console.log("handle sign in layers", layers);
       setLayers(layers as Layer[]);
       await signIn("google");
     } catch (error) {

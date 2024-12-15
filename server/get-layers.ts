@@ -13,7 +13,6 @@ const getLayers = async () => {
       },
     });
 
-    console.log(layers);
     return { layers };
   } catch (error) {
     console.error("Error in fetching layers:", error);
