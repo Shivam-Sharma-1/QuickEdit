@@ -7,10 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "./ui/dialog";
-
-const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
-import * as loadingAnimation from "../../public/animations/loading.json";
-import dynamic from "next/dynamic";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 function LoadingScreen() {
   const generating = useImageStore((state) => state.generating);
@@ -32,7 +29,12 @@ function LoadingScreen() {
             seconds.
           </DialogDescription>
         </DialogHeader>
-        <Lottie className="w-36" animationData={loadingAnimation} />
+        <DotLottieReact
+          src="https://lottie.host/0a047b9a-7710-4f20-a0ca-eee4f042e55c/zZS4zvJxH9.lottie"
+          loop
+          autoplay
+          style={{ width: 300, height: 300, objectFit: "contain", zIndex: 10 }}
+        />
       </DialogContent>
     </Dialog>
   );
