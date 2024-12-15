@@ -53,7 +53,7 @@ export default function ActiveImage() {
   }
 
   return (
-    <div className="flex-1 relative h-svh p-24 bg-secondary flex flex-col items-center justify-center">
+    <div className="flex-1 relative h-svh p-10 pl-0 lg:p-24 bg-secondary flex flex-col items-center justify-center">
       {renderLayer(activeLayer)}
     </div>
   );
