@@ -32,7 +32,7 @@ export default function Hero() {
           <h1 className="mb-3 md:mb-8 mt-8 flex justify-center items-center">
             <TypewriterEffectSmooth words={words} className="font-bold" />
           </h1>
-          <p className="mx-auto max-w-[70%] text-wrap sm:max-w-[700px] text-gray-400 text-lg md:text-xl tracking-normal">
+          <p className="mx-auto max-w-[70%] text-wrap sm:max-w-[700px] text-gray-400 text-md sm:text-lg md:text-xl tracking-normal">
             Transform your content with QuickEdit&apos;s advanced AI tools. Edit
             images and videos with ease, powered by Cloudinary AI.
           </p>
