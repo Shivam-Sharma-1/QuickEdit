@@ -75,7 +75,7 @@ function UserActions() {
   };
 
   return (
-    <div className="p-2 px-4 rounded-2xl text-center flex justify-center items-center gap-4 bg-background w-fit absolute top-4 z-10">
+    <div className="ml-4 p-2 px-4 rounded-2xl text-center flex justify-center items-center gap-4 bg-background w-fit absolute top-4 z-10">
       <Logo />
       <ModeToggle />
       <Sheet open={isProfileOpen} onOpenChange={setIsProfileOpen}>
