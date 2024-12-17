@@ -66,7 +66,7 @@ export default function LayerInfo({
           <Ellipsis size={18} />
         </Button>
       </DialogTrigger>
-      <DialogContent className="flex flex-col gap-6 justify-center leading-8">
+      <DialogContent className="flex flex-col gap-6 justify-center leading-8 w-[500px]">
         <div className="flex items-center gap-3 w-full">
           <div className="bg-secondary w-12 h-12 shrink-0 flex justify-center items-center rounded-md">
             <Image className="w-8 h-8" />
