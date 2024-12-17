@@ -160,7 +160,7 @@ export default function Layers() {
         size="sm"
         variant="ghost"
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed right-6 top-9 z-50 lg:hidden bg-background"
+        className="fixed right-6 top-9 z-50 lg:hidden bg-background active:bg-background focus:bg-background"
       >
         <PanelRightClose
           className={cn("h-4 w-4 transition-transform", {
