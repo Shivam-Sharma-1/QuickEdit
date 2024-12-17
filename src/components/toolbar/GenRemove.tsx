@@ -19,6 +19,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { uploadImageToDB } from "../../../server/upload-image";
 
 function GenRemove() {
   const { setActiveTag, generating, activeTag, activeColor, setGenerating } =
@@ -41,7 +42,17 @@ function GenRemove() {
 
     try {
       await decreaseCredits(5, session?.user?.email!);
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(`Operation too expensive, upgrade your plan`);
+        console.error(
+          "Operation too expensive, upgrade your plan",
+          error.message
+        );
+      }
+    }
 
+    try {
       const res = await genRemove({
         activeImage: activeLayer.url!,
         activeImageName: activeLayer.name!,
@@ -49,6 +60,12 @@ function GenRemove() {
       });
       if (res?.data?.success) {
         const newLayerId = crypto.randomUUID();
+
+        await uploadImageToDB({
+          newData: res.data.success,
+          layerId: newLayerId,
+        });
+
         addLayer({
           id: newLayerId,
           url: res.data.success.secure_url,
