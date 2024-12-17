@@ -1,19 +1,16 @@
 "use client";
 
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Layer, useLayerStore } from "@/lib/layer-store";
 import { FaGoogle } from "react-icons/fa";
 import Image from "next/image";
-import getLayers from "../../../server/get-layers";
 import { Button } from "@/components/ui/button";
 
 const AuthPage = () => {
   const { data: session } = useSession();
   const router = useRouter();
-  const setLayers = useLayerStore((state) => state.setLayers);
 
   useEffect(() => {
     if (session && session.user && session.user.email) {
@@ -24,8 +21,6 @@ const AuthPage = () => {
   const handleSignIn = async () => {
     try {
       await signIn("google");
-      const { layers } = await getLayers();
-      setLayers(layers as Layer[]);
     } catch (error) {
       console.error("Error during sign in:", error);
     }
