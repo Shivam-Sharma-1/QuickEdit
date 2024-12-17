@@ -1,23 +1,15 @@
 import { useEffect, useState } from "react";
 import { signOut, useSession } from "next-auth/react";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 import Image from "next/image";
 import getUser from "../../../../server/get-user";
 import { Plan } from "@prisma/client";
-import { Button } from "../../ui/button";
 import { ModeToggle } from "../../theme/ModeToggle";
 import { useLayerStore } from "@/lib/layer-store";
 import { useTheme } from "next-themes";
 import ProfileSheet from "./ProfileSheet";
-import Link from "next/link";
 import Logo from "@/components/Logo";
+import { toast } from "sonner";
 
 export interface User {
   name: string | null;
@@ -32,19 +24,23 @@ export interface User {
 }
 
 function UserActions() {
-  const { data: session } = useSession();
-  const { name, image, email } = session?.user || {};
+  const { data: session, status } = useSession();
   const removeAllLayers = useLayerStore((state) => state.removeAllLayers);
   const { theme } = useTheme();
 
   const [user, setUser] = useState<User>();
+  const [authUser, setAuthUser] = useState<{
+    name: string;
+    email: string;
+    image: string;
+  }>();
   const [isProfileOpen, setIsProfileOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        if (email) {
-          const userData = await getUser(email);
+        if (authUser?.email) {
+          const userData = await getUser(authUser?.email);
           if (userData) {
             if (!("error" in userData)) {
               setUser(userData);
@@ -58,7 +54,20 @@ function UserActions() {
       }
     };
     fetchUser();
-  }, [email, isProfileOpen]);
+  }, [authUser?.email, isProfileOpen]);
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      toast.error("You have been signed out");
+    }
+    if (status === "authenticated") {
+      setAuthUser({
+        name: session!.user!.name || "",
+        email: session!.user!.email || "",
+        image: session!.user!.image || "",
+      });
+    }
+  }, [status]);
 
   const handleSignOut = () => {
     signOut({ redirectTo: "/auth" });
@@ -73,7 +82,7 @@ function UserActions() {
         <SheetTrigger className="shrink-0">
           <Image
             className="rounded-full object-cover shrink-0"
-            src={image || "/default-avatar.png"}
+            src={authUser?.image || "/default-avatar.png"}
             width={36}
             height={36}
             alt="Avatar"
@@ -82,9 +91,9 @@ function UserActions() {
         <ProfileSheet
           user={user!}
           handleSignOut={handleSignOut}
-          name={name!}
-          image={image!}
-          email={email!}
+          name={authUser?.name!}
+          image={authUser?.image!}
+          email={authUser?.email!}
           theme={theme}
         />
       </Sheet>
