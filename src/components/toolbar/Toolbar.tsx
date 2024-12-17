@@ -8,11 +8,11 @@ function Toolbar() {
   const activeLayer = useLayerStore((state) => state.activeLayer);
 
   return (
-    <div className="p-4 mt-16 flex flex-col gap-2">
+    <div className="mt-16 flex flex-col gap-2">
       <UserActions />
       <div
         className={cn(
-          "flex flex-col gap-2 bg-background items-center rounded-2xl p-2 w-fit",
+          "flex ml-4 mt-4 flex-col gap-2 bg-background items-center rounded-2xl p-2 w-fit",
           {
             hidden:
               activeLayer.resourceType !== "image" &&
