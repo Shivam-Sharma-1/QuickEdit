@@ -4,12 +4,16 @@ import { auth } from "@/lib/auth";
 import { prisma } from "../prisma/prisma";
 
 const getLayers = async () => {
-  try {
-    const session = await auth();
+  const session = await auth();
 
+  if (!session || !session.user) {
+    throw new Error("Unauthorized");
+  }
+
+  try {
     const layers = await prisma.layer.findMany({
       where: {
-        userId: session?.user?.id,
+        userId: session.user.id,
       },
     });
 
