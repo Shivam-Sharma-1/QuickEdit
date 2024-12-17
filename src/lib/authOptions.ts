@@ -14,9 +14,9 @@ export const authOptions: NextAuthConfig = {
   ],
   adapter: PrismaAdapter(prisma),
   callbacks: {
-    authorized: async ({ auth }: { auth: any }) => {
-      return !!auth;
-    },
+    // authorized: async ({ auth }: { auth: any }) => {
+    //   return !!auth;
+    // },
     jwt({ token, user }: { token: any; user?: any }) {
       if (user) {
         token.id = user.id;
