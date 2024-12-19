@@ -144,11 +144,7 @@ function GenRemove({ user }: { user: User }) {
             <Button
               className="w-full mt-2 flex items-center justify-center gap-2"
               disabled={
-                (user as any).credits < 5 ||
-                !activeTag ||
-                !activeColor ||
-                !activeLayer.url ||
-                generating
+                !activeTag || !activeColor || !activeLayer.url || generating
               }
               onClick={handleRemove}
             >
