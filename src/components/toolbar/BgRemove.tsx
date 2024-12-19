@@ -17,8 +17,10 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { User } from "next-auth";
+import { uploadImageToDB } from "../../../server/upload-image";
 
-function BgRemove() {
+function BgRemove({ user }: { user: User }) {
   const { generating, setGenerating } = useImageStore((state) => ({
     generating: state.generating,
     setGenerating: state.setGenerating,
@@ -28,14 +30,13 @@ function BgRemove() {
     addLayer: state.addLayer,
     setActiveLayer: state.setActiveLayer,
   }));
-  const { data: session } = useSession();
 
   const handleRemove = async () => {
     setGenerating(true);
 
     try {
       const quotaExisting = await checkBgRemoval();
-      if (quotaExisting) await decreaseCredits(12, session?.user?.email!);
+      if (quotaExisting) await decreaseCredits(12, user.email!);
 
       const res = await bgRemove({
         activeImage: activeLayer.url!,
@@ -46,6 +47,12 @@ function BgRemove() {
       if (res?.data?.success) {
         const newLayerId = crypto.randomUUID();
         const newData = res.data.success;
+
+        await uploadImageToDB({
+          newData: newData,
+          layerId: newLayerId,
+        });
+
         addLayer({
           id: newLayerId,
           url: res.data.success.secure_url,

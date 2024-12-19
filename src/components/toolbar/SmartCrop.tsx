@@ -28,8 +28,10 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { User } from "next-auth";
+import { uploadVideoToDB } from "../../../server/upload-video";
 
-export default function SmartCrop() {
+function SmartCrop({ user }: { user: User }) {
   const { setGenerating, generating } = useImageStore((state) => ({
     setGenerating: state.setGenerating,
     generating: state.generating,
@@ -39,7 +41,6 @@ export default function SmartCrop() {
     addLayer: state.addLayer,
     setActiveLayer: state.setActiveLayer,
   }));
-  const { data: session } = useSession();
 
   const [aspectRatio, setAspectRatio] = useState("16:9");
 
@@ -47,7 +48,7 @@ export default function SmartCrop() {
     setGenerating(true);
 
     try {
-      await decreaseCredits(8, session?.user?.email!);
+      await decreaseCredits(8, user.email!);
 
       const res = await genCrop({
         height: activeLayer.height!.toString(),
@@ -63,6 +64,13 @@ export default function SmartCrop() {
         const newData = res?.data.success;
         const videoUrl = res?.data.cropUrl;
         const thumbnailUrl = res?.data.cropUrl.replace(/\.[^/.]+$/, ".jpg");
+
+        await uploadVideoToDB({
+          newData: newData,
+          layerId: newLayerId,
+          thumbnailUrl: thumbnailUrl,
+          videoUrl: videoUrl,
+        });
 
         addLayer({
           id: newLayerId,
@@ -188,3 +196,5 @@ export default function SmartCrop() {
     </TooltipProvider>
   );
 }
+
+export default SmartCrop;

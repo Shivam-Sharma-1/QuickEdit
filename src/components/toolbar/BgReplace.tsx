@@ -18,8 +18,10 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { uploadImageToDB } from "../../../server/upload-image";
+import { User } from "next-auth";
 
-function BgReplace() {
+function BgReplace({ user }: { user: User }) {
   const { generating, setGenerating } = useImageStore((state) => ({
     generating: state.generating,
     setGenerating: state.setGenerating,
@@ -29,7 +31,6 @@ function BgReplace() {
     addLayer: state.addLayer,
     setActiveLayer: state.setActiveLayer,
   }));
-  const { data: session } = useSession();
 
   const [prompt, setPrompt] = useState("");
 
@@ -37,7 +38,7 @@ function BgReplace() {
     setGenerating(true);
 
     try {
-      await decreaseCredits(5, session?.user?.email!);
+      await decreaseCredits(5, user.email!);
 
       const res = await bgReplace({
         activeImage: activeLayer.url!,
@@ -47,14 +48,21 @@ function BgReplace() {
 
       if (res?.data?.success) {
         const newLayerId = crypto.randomUUID();
+        const newData = res.data.success;
+
+        await uploadImageToDB({
+          newData: newData,
+          layerId: newLayerId,
+        });
+
         addLayer({
           id: newLayerId,
-          url: res.data.success.secure_url,
+          url: newData.secure_url,
           format: activeLayer.format,
           height: activeLayer.height,
           width: activeLayer.width,
           name: "bgreplaced-" + activeLayer.name,
-          publicId: res.data.success.public_id,
+          publicId: newData.public_id,
           resourceType: "image",
         });
         setActiveLayer(newLayerId);

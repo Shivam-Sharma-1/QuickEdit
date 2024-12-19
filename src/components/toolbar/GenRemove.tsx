@@ -20,8 +20,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { uploadImageToDB } from "../../../server/upload-image";
+import { User } from "next-auth";
 
-function GenRemove() {
+function GenRemove({ user }: { user: User }) {
   const { setActiveTag, generating, activeTag, activeColor, setGenerating } =
     useImageStore((state) => ({
       setActiveTag: state.setActiveTag,
@@ -35,24 +36,13 @@ function GenRemove() {
     addLayer: state.addLayer,
     setActiveLayer: state.setActiveLayer,
   }));
-  const { data: session } = useSession();
 
   const handleRemove = async () => {
     setGenerating(true);
 
     try {
-      await decreaseCredits(5, session?.user?.email!);
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(`Operation too expensive, upgrade your plan`);
-        console.error(
-          "Operation too expensive, upgrade your plan",
-          error.message
-        );
-      }
-    }
+      await decreaseCredits(5, user.email!);
 
-    try {
       const res = await genRemove({
         activeImage: activeLayer.url!,
         activeImageName: activeLayer.name!,
@@ -60,6 +50,7 @@ function GenRemove() {
       });
       if (res?.data?.success) {
         const newLayerId = crypto.randomUUID();
+        const newData = res.data.success;
 
         await uploadImageToDB({
           newData: res.data.success,
@@ -68,12 +59,12 @@ function GenRemove() {
 
         addLayer({
           id: newLayerId,
-          url: res.data.success.secure_url,
+          url: newData.secure_url,
           format: activeLayer.format,
           height: activeLayer.height,
           width: activeLayer.width,
           name: "genremove-" + activeLayer.name,
-          publicId: res.data.success.public_id,
+          publicId: newData.public_id,
           resourceType: "image",
         });
         setActiveLayer(newLayerId);
@@ -153,7 +144,11 @@ function GenRemove() {
             <Button
               className="w-full mt-2 flex items-center justify-center gap-2"
               disabled={
-                !activeTag || !activeColor || !activeLayer.url || generating
+                (user as any).credits < 5 ||
+                !activeTag ||
+                !activeColor ||
+                !activeLayer.url ||
+                generating
               }
               onClick={handleRemove}
             >

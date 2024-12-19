@@ -20,8 +20,10 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { User } from "next-auth";
+import { uploadImageToDB } from "../../../server/upload-image";
 
-function ExtractPart() {
+function ExtractPart({ user }: { user: User }) {
   const { generating, setGenerating } = useImageStore((state) => ({
     generating: state.generating,
     setGenerating: state.setGenerating,
@@ -31,7 +33,6 @@ function ExtractPart() {
     addLayer: state.addLayer,
     setActiveLayer: state.setActiveLayer,
   }));
-  const { data: session } = useSession();
 
   const [prompts, setPrompts] = useState([""]);
   const [multiple, setMultiple] = useState(false);
@@ -52,7 +53,7 @@ function ExtractPart() {
     setGenerating(true);
 
     try {
-      await decreaseCredits(5, session?.user?.email!);
+      await decreaseCredits(5, user.email!);
 
       const res = await extractPart({
         prompts: prompts.filter((p) => p.trim() !== ""),
@@ -67,6 +68,12 @@ function ExtractPart() {
       if (res?.data?.success) {
         const newLayerId = crypto.randomUUID();
         const newData = res.data.success;
+
+        await uploadImageToDB({
+          newData: newData,
+          layerId: newLayerId,
+        });
+
         addLayer({
           id: newLayerId,
           name: "extracted-" + activeLayer.name,

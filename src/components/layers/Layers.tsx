@@ -265,7 +265,7 @@ export default function Layers() {
               else setComparedLayers([activeLayer.id]);
             }}
           >
-            <span>
+            <span className="text-xs">
               {layerComparisonMode ? "Stop comparing" : "Compare Layers"}
             </span>
             {!layerComparisonMode && (

@@ -18,11 +18,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { User } from "next-auth";
+import { uploadImageToDB } from "../../../server/upload-image";
 
 const PREVIEW_SIZE = 250;
 const EXPANSION_THRESHOLD = 250;
 
-function GenFill() {
+function GenFill({ user }: { user: User }) {
   const { generating, setGenerating } = useImageStore((state) => ({
     generating: state.generating,
     setGenerating: state.setGenerating,
@@ -32,7 +34,6 @@ function GenFill() {
     addLayer: state.addLayer,
     setActiveLayer: state.setActiveLayer,
   }));
-  const { data: session } = useSession();
 
   const [height, setHeight] = useState(0);
   const [width, setWidth] = useState(0);
@@ -88,7 +89,7 @@ function GenFill() {
     setGenerating(true);
 
     try {
-      await decreaseCredits(5, session?.user?.email!);
+      await decreaseCredits(5, user.email!);
 
       const res = await genFill({
         width: (width + activeLayer.width!).toString(),
@@ -100,14 +101,21 @@ function GenFill() {
 
       if (res?.data?.success) {
         const newLayerId = crypto.randomUUID();
+        const newData = res.data.success;
+
+        await uploadImageToDB({
+          newData: newData,
+          layerId: newLayerId,
+        });
+
         addLayer({
           id: newLayerId,
           name: "genfill-" + activeLayer.name,
           format: activeLayer.format,
-          height: res.data.success.height,
-          width: res.data.success.width,
-          url: res.data.success.secure_url,
-          publicId: res.data.success.public_id,
+          height: newData.height,
+          width: newData.width,
+          url: newData.secure_url,
+          publicId: newData.public_id,
           resourceType: "image",
         });
         setActiveLayer(newLayerId);
