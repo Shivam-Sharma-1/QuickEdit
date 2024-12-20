@@ -3,9 +3,25 @@ import ImageTools from "./ImageTools";
 import VideoTools from "./VideoTools";
 import UserActions from "./UserActions";
 import { cn } from "@/lib/utils";
+import { useSession } from "next-auth/react";
+import getUser from "../../../server/get-user";
+import { useEffect, useState } from "react";
+import { User } from "@prisma/client";
 
 function Toolbar() {
   const activeLayer = useLayerStore((state) => state.activeLayer);
+  const { data: session } = useSession();
+  const [userData, setUserData] = useState<User | null>(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (session?.user?.email) {
+        const user = await getUser(session.user.email);
+        setUserData(user);
+      }
+    };
+    fetchUserData();
+  }, [session]);
 
   return (
     <div className="mt-16 flex flex-col gap-2">
@@ -20,8 +36,12 @@ function Toolbar() {
           }
         )}
       >
-        {activeLayer.resourceType === "image" ? <ImageTools /> : null}
-        {activeLayer.resourceType === "video" ? <VideoTools /> : null}
+        {activeLayer.resourceType === "image" ? (
+          <ImageTools user={session?.user!} userData={userData!} />
+        ) : null}
+        {activeLayer.resourceType === "video" ? (
+          <VideoTools user={session?.user!} userData={userData!} />
+        ) : null}
       </div>
     </div>
   );

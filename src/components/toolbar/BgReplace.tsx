@@ -11,7 +11,6 @@ import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { toast } from "sonner";
 import decreaseCredits from "../../../server/decrease-credits";
-import { useSession } from "next-auth/react";
 import {
   Tooltip,
   TooltipContent,
@@ -19,9 +18,10 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { uploadImageToDB } from "../../../server/upload-image";
+import { User as UserData } from "@prisma/client";
 import { User } from "next-auth";
 
-function BgReplace({ user }: { user: User }) {
+function BgReplace({ user, userData }: { user: User; userData: UserData }) {
   const { generating, setGenerating } = useImageStore((state) => ({
     generating: state.generating,
     setGenerating: state.setGenerating,
@@ -123,7 +123,9 @@ function BgReplace({ user }: { user: User }) {
 
             <Button
               className="w-full mt-2 flex items-center justify-center gap-2"
-              disabled={!activeLayer?.url || generating}
+              disabled={
+                userData?.credits < 5 || !activeLayer?.url || generating
+              }
               onClick={handleReplace}
             >
               {generating ? "Generating..." : "Replace Background"}

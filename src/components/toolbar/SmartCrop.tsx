@@ -28,10 +28,11 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { User as UserData } from "@prisma/client";
 import { User } from "next-auth";
 import { uploadVideoToDB } from "../../../server/upload-video";
 
-function SmartCrop({ user }: { user: User }) {
+function SmartCrop({ user, userData }: { user: User; userData: UserData }) {
   const { setGenerating, generating } = useImageStore((state) => ({
     setGenerating: state.setGenerating,
     generating: state.generating,
@@ -184,7 +185,9 @@ function SmartCrop({ user }: { user: User }) {
               <Button
                 onClick={handleGenCrop}
                 className="w-full mt-2 flex items-center justify-center gap-2"
-                disabled={!activeLayer.url || generating}
+                disabled={
+                  userData?.credits < 8 || !activeLayer.url || generating
+                }
               >
                 {generating ? "Cropping..." : "Smart Crop"}
                 <WandSparkles size={16} />

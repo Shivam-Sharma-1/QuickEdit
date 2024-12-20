@@ -20,9 +20,10 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { uploadImageToDB } from "../../../server/upload-image";
+import { User as UserData } from "@prisma/client";
 import { User } from "next-auth";
 
-function GenRemove({ user }: { user: User }) {
+function GenRemove({ user, userData }: { user: User; userData: UserData }) {
   const { setActiveTag, generating, activeTag, activeColor, setGenerating } =
     useImageStore((state) => ({
       setActiveTag: state.setActiveTag,
@@ -144,7 +145,11 @@ function GenRemove({ user }: { user: User }) {
             <Button
               className="w-full mt-2 flex items-center justify-center gap-2"
               disabled={
-                !activeTag || !activeColor || !activeLayer.url || generating
+                userData?.credits < 5 ||
+                !activeTag ||
+                !activeColor ||
+                !activeLayer.url ||
+                generating
               }
               onClick={handleRemove}
             >

@@ -4,18 +4,20 @@ import { useLayerStore } from "@/lib/layer-store";
 import VideoTranscription from "./VideoTranscription";
 import SmartCrop from "./SmartCrop";
 import ExportAsset from "./ExportAsset";
-import { useSession } from "next-auth/react";
+import { User as UserData } from "@prisma/client";
+import { User } from "next-auth";
 
-export default function VideoTools() {
+function VideoTools({ user, userData }: { user: User; userData: UserData }) {
   const activeLayer = useLayerStore((state) => state.activeLayer);
-  const { data: session } = useSession();
 
   if (activeLayer.resourceType === "video")
     return (
       <>
         <VideoTranscription />
-        <SmartCrop user={session?.user!} />
+        <SmartCrop user={user!} userData={userData} />
         <ExportAsset resource="video" />
       </>
     );
 }
+
+export default VideoTools;

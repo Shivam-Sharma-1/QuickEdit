@@ -17,10 +17,11 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { User } from "next-auth";
 import { uploadImageToDB } from "../../../server/upload-image";
+import { User as UserData } from "@prisma/client";
+import { User } from "next-auth";
 
-function BgRemove({ user }: { user: User }) {
+function BgRemove({ user, userData }: { user: User; userData: UserData }) {
   const { generating, setGenerating } = useImageStore((state) => ({
     generating: state.generating,
     setGenerating: state.setGenerating,
@@ -30,6 +31,8 @@ function BgRemove({ user }: { user: User }) {
     addLayer: state.addLayer,
     setActiveLayer: state.setActiveLayer,
   }));
+
+  console.log("userData", userData);
 
   const handleRemove = async () => {
     setGenerating(true);
@@ -104,7 +107,9 @@ function BgRemove({ user }: { user: User }) {
             </div>
             <Button
               className="w-full mt-2 flex items-center justify-center gap-2"
-              disabled={!activeLayer?.url || generating}
+              disabled={
+                userData?.credits < 12 || !activeLayer?.url || generating
+              }
               onClick={handleRemove}
             >
               {generating ? "Removing..." : "Remove Background"}

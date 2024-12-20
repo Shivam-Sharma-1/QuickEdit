@@ -20,10 +20,11 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { User as UserData } from "@prisma/client";
 import { User } from "next-auth";
 import { uploadImageToDB } from "../../../server/upload-image";
 
-function ExtractPart({ user }: { user: User }) {
+function ExtractPart({ user, userData }: { user: User; userData: UserData }) {
   const { generating, setGenerating } = useImageStore((state) => ({
     generating: state.generating,
     setGenerating: state.setGenerating,
@@ -186,6 +187,7 @@ function ExtractPart({ user }: { user: User }) {
             </div>
             <Button
               disabled={
+                userData?.credits < 5 ||
                 !activeLayer?.url ||
                 generating ||
                 prompts.every((p) => p.trim() === "")

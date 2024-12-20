@@ -18,13 +18,14 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { User as UserData } from "@prisma/client";
 import { User } from "next-auth";
 import { uploadImageToDB } from "../../../server/upload-image";
 
 const PREVIEW_SIZE = 250;
 const EXPANSION_THRESHOLD = 250;
 
-function GenFill({ user }: { user: User }) {
+function GenFill({ user, userData }: { user: User; userData: UserData }) {
   const { generating, setGenerating } = useImageStore((state) => ({
     generating: state.generating,
     setGenerating: state.setGenerating,
@@ -257,7 +258,12 @@ function GenFill({ user }: { user: User }) {
               </p>
               <Button
                 className="w-full mt-2 flex items-center justify-center gap-2"
-                disabled={!activeLayer.url || (!width && !height) || generating}
+                disabled={
+                  userData?.credits < 5 ||
+                  !activeLayer.url ||
+                  (!width && !height) ||
+                  generating
+                }
                 onClick={handleGenFill}
               >
                 {generating ? "Generating ..." : "Generative Fill"}

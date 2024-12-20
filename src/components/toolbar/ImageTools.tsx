@@ -5,18 +5,18 @@ import BgReplace from "./BgReplace";
 import GenFill from "./GenFill";
 import ExtractPart from "./ExtractPart";
 import ExportAsset from "./ExportAsset";
-import { useSession } from "next-auth/react";
+import { User as UserData } from "@prisma/client";
+import { User } from "next-auth";
 
-function ImageTools() {
-  const { data: session } = useSession();
-
+function ImageTools({ user, userData }: { user: User; userData: UserData }) {
+  console.log("imageTools", userData);
   return (
     <>
-      <GenRemove user={session?.user!} />
-      <BgRemove user={session?.user!} />
-      <BgReplace user={session?.user!} />
-      <GenFill user={session?.user!} />
-      <ExtractPart user={session?.user!} />
+      <GenRemove user={user!} userData={userData} />
+      <BgRemove user={user!} userData={userData} />
+      <BgReplace user={user!} userData={userData} />
+      <GenFill user={user!} userData={userData} />
+      <ExtractPart user={user!} userData={userData} />
       <ExportAsset resource="image" />
     </>
   );
