@@ -185,19 +185,37 @@ function ExtractPart({ user, userData }: { user: User; userData: UserData }) {
                 Costs: 5 Credits <Sparkles size={14} />
               </p>
             </div>
-            <Button
-              disabled={
-                userData?.credits < 5 ||
-                !activeLayer?.url ||
-                generating ||
-                prompts.every((p) => p.trim() === "")
-              }
-              className="w-full mt-2 flex items-center justify-center gap-2"
-              onClick={handleExtract}
-            >
-              {generating ? "Extracting..." : "Extract Object"}
-              <WandSparkles size={16} />
-            </Button>
+            {userData?.credits < 5 ? (
+              <TooltipProvider delayDuration={0}>
+                <Tooltip>
+                  <TooltipTrigger className="w-full">
+                    <Button
+                      className="w-full mt-2 flex items-center justify-center gap-2"
+                      disabled
+                    >
+                      Insufficient Credits <Sparkles size={16} />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="top" sideOffset={10}>
+                    You need at least 5 credits to extract the object.
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            ) : (
+              <Button
+                disabled={
+                  userData?.credits < 5 ||
+                  !activeLayer?.url ||
+                  generating ||
+                  prompts.every((p) => p.trim() === "")
+                }
+                className="w-full mt-2 flex items-center justify-center gap-2"
+                onClick={handleExtract}
+              >
+                {generating ? "Extracting..." : "Extract Object"}
+                <WandSparkles size={16} />
+              </Button>
+            )}
           </PopoverContent>
         </Popover>
       </Tooltip>

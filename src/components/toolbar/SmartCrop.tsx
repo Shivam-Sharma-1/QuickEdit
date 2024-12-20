@@ -182,16 +182,34 @@ function SmartCrop({ user, userData }: { user: User; userData: UserData }) {
               <p className="text-xs flex  items-center gap-1 mt-2">
                 Costs: 8 Credits <Sparkles size={14} />
               </p>
-              <Button
-                onClick={handleGenCrop}
-                className="w-full mt-2 flex items-center justify-center gap-2"
-                disabled={
-                  userData?.credits < 8 || !activeLayer.url || generating
-                }
-              >
-                {generating ? "Cropping..." : "Smart Crop"}
-                <WandSparkles size={16} />
-              </Button>
+              {userData?.credits < 8 ? (
+                <TooltipProvider delayDuration={0}>
+                  <Tooltip>
+                    <TooltipTrigger className="w-full">
+                      <Button
+                        className="w-full mt-2 flex items-center justify-center gap-2"
+                        disabled
+                      >
+                        Insufficient Credits <Sparkles size={16} />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" sideOffset={10}>
+                      You need at least 8 credits to crop the video.
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              ) : (
+                <Button
+                  onClick={handleGenCrop}
+                  className="w-full mt-2 flex items-center justify-center gap-2"
+                  disabled={
+                    userData?.credits < 8 || !activeLayer.url || generating
+                  }
+                >
+                  {generating ? "Cropping..." : "Smart Crop"}
+                  <WandSparkles size={16} />
+                </Button>
+              )}
             </div>
           </PopoverContent>
         </Popover>

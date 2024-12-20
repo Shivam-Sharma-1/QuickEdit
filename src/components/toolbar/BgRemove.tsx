@@ -105,16 +105,34 @@ function BgRemove({ user, userData }: { user: User; userData: UserData }) {
                 Costs: 12 Credits <Sparkles size={14} />
               </p>
             </div>
-            <Button
-              className="w-full mt-2 flex items-center justify-center gap-2"
-              disabled={
-                userData?.credits < 12 || !activeLayer?.url || generating
-              }
-              onClick={handleRemove}
-            >
-              {generating ? "Removing..." : "Remove Background"}
-              <WandSparkles size={16} />
-            </Button>
+            {userData?.credits < 12 ? (
+              <TooltipProvider delayDuration={0}>
+                <Tooltip>
+                  <TooltipTrigger className="w-full">
+                    <Button
+                      className="w-full mt-2 flex items-center justify-center gap-2"
+                      disabled
+                    >
+                      Insufficient Credits <Sparkles size={16} />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="top" sideOffset={10}>
+                    You need at least 12 credits to remove the background.
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            ) : (
+              <Button
+                className="w-full mt-2 flex items-center justify-center gap-2"
+                disabled={
+                  userData?.credits < 12 || !activeLayer?.url || generating
+                }
+                onClick={handleRemove}
+              >
+                {generating ? "Removing..." : "Remove Background"}
+                <WandSparkles size={16} />
+              </Button>
+            )}
           </PopoverContent>
         </Popover>
       </Tooltip>

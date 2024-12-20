@@ -121,16 +121,34 @@ function BgReplace({ user, userData }: { user: User; userData: UserData }) {
               </p>
             </div>
 
-            <Button
-              className="w-full mt-2 flex items-center justify-center gap-2"
-              disabled={
-                userData?.credits < 5 || !activeLayer?.url || generating
-              }
-              onClick={handleReplace}
-            >
-              {generating ? "Generating..." : "Replace Background"}
-              <WandSparkles size={16} />
-            </Button>
+            {userData?.credits < 5 ? (
+              <TooltipProvider delayDuration={0}>
+                <Tooltip>
+                  <TooltipTrigger className="w-full">
+                    <Button
+                      className="w-full mt-2 flex items-center justify-center gap-2"
+                      disabled
+                    >
+                      Insufficient Credits <Sparkles size={16} />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="top" sideOffset={10}>
+                    You need at least 5 credits to replace the background.
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            ) : (
+              <Button
+                className="w-full mt-2 flex items-center justify-center gap-2"
+                disabled={
+                  userData?.credits < 5 || !activeLayer?.url || generating
+                }
+                onClick={handleReplace}
+              >
+                {generating ? "Generating..." : "Replace Background"}
+                <WandSparkles size={16} />
+              </Button>
+            )}
           </PopoverContent>
         </Popover>
       </Tooltip>
