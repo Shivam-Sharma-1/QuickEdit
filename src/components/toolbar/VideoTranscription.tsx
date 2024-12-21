@@ -39,7 +39,6 @@ export default function VideoTranscription() {
         publicId: activeLayer.publicId,
         activeVideoName: activeLayer.name!,
       });
-
       if (result) {
         if (result.data && "success" in result.data) {
           if (result.data.url) {
