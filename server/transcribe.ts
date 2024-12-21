@@ -36,18 +36,20 @@ async function checkTranscriptionStatus(publicId: string): Promise<string> {
 }
 
 function generateSubtitledVideoUrl(publicId: string): string {
-  return cloudinary.url(publicId, {
+  const res = cloudinary.url(publicId, {
     resource_type: "video",
     transformation: [
       {
         overlay: {
           resource_type: "subtitles",
-          public_id: `${publicId}.srt`,
+          public_id: `${publicId}.transcript`,
         },
       },
       { flags: "layer_apply" },
     ],
   });
+
+  return res;
 }
 
 export const initiateTranscription = actionClient
@@ -56,13 +58,27 @@ export const initiateTranscription = actionClient
     console.log("Initiating transcription for:", publicId);
     try {
       // Initiate transcription
-      await cloudinary.api.update(publicId, {
-        resource_type: "video",
-        raw_convert: "google_speech:srt",
-      });
+      const res = await cloudinary.api
+        .update(
+          publicId,
+          {
+            resource_type: "video",
+            raw_convert: "google_speech",
+          },
+          function (error, result) {
+            if (result) {
+              return result;
+            }
+            return error;
+          }
+        )
+        .catch((error) => {
+          console.error("Error initiating transcription:", error);
+          throw new Error("Failed to initiate transcription");
+        });
 
       // Poll for completion
-      const maxAttempts = 20;
+      const maxAttempts = 30;
       const delay = 5000;
       let status = "pending";
 
@@ -70,23 +86,25 @@ export const initiateTranscription = actionClient
         status = await checkTranscriptionStatus(publicId);
         console.log(`Attempt ${attempt + 1}: Transcription status - ${status}`);
 
-        if (status === "complete") {
-          const subtitledVideoUrl = generateSubtitledVideoUrl(publicId);
-
-          const uploadResult = await uploadModifiedVideo({
-            activeVideoName: "transcribed-" + activeVideoName,
-            removeUrl: subtitledVideoUrl,
-          });
-
-          return {
-            success: uploadResult?.data?.result,
-            url: subtitledVideoUrl,
-          };
-        } else if (status === "failed") {
-          return { error: "Transcription failed" };
-        }
+        if (status === "complete" || status === "failed") break;
 
         await new Promise((resolve) => setTimeout(resolve, delay));
+      }
+
+      if (status === "complete") {
+        const subtitledVideoUrl = generateSubtitledVideoUrl(publicId);
+
+        const uploadResult = await uploadModifiedVideo({
+          activeVideoName: "transcribed-" + activeVideoName,
+          removeUrl: subtitledVideoUrl,
+        });
+
+        return {
+          success: uploadResult?.data?.result,
+          url: subtitledVideoUrl,
+        };
+      } else if (status === "failed") {
+        return { error: "Transcription failed" };
       }
 
       return { error: "Transcription timed out" };
