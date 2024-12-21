@@ -1,3 +1,8 @@
+import { Gem } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+
+import Logo from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import {
   SheetClose,
@@ -6,11 +11,10 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import Image from "next/image";
+
 import { User } from ".";
-import { Gem } from "lucide-react";
-import Link from "next/link";
-import Logo from "@/components/Logo";
+
+
 
 interface ProfileSheetProps {
   user: User;

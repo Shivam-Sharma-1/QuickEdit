@@ -1,22 +1,25 @@
 "use client";
 
+import { DialogClose } from "@radix-ui/react-dialog";
+import { Ellipsis, Image, Trash } from "lucide-react";
+import { toast } from "sonner";
+
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "../ui/button";
-import { Ellipsis, Image, Trash } from "lucide-react";
+import { useImageStore } from "@/lib/image-store";
 import { Layer, useLayerStore } from "@/lib/layer-store";
+
+import LayerImage from "./LayerImage";
 import {
   deleteResource,
   deleteResourceFromDB,
 } from "../../../server/delete-resource";
-import { toast } from "sonner";
-import { useImageStore } from "@/lib/image-store";
-import LayerImage from "./LayerImage";
-import { DialogClose } from "@radix-ui/react-dialog";
+import { Button } from "../ui/button";
+
 
 export default function LayerInfo({
   layer,

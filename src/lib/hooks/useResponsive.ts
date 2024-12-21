@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export function useResponsive(mobileBreakpoint: number = 640) {
   const [isMobile, setIsMobile] = useState(false);

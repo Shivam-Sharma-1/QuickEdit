@@ -1,25 +1,30 @@
 "use client";
 
-import { useImageStore } from "@/lib/image-store";
-import { useLayerStore } from "@/lib/layer-store";
-import React, { useState } from "react";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { Button } from "../ui/button";
+import { User as UserData } from "@prisma/client";
 import { ImageOff, Sparkles, WandSparkles } from "lucide-react";
-import { bgReplace } from "../../../server/bg-replace";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
+import { User } from "next-auth";
+import React, { useState } from "react";
 import { toast } from "sonner";
-import decreaseCredits from "../../../server/decrease-credits";
+
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useImageStore } from "@/lib/image-store";
+import { useLayerStore } from "@/lib/layer-store";
+
+
+
+import { bgReplace } from "../../../server/bg-replace";
+import decreaseCredits from "../../../server/decrease-credits";
 import { uploadImageToDB } from "../../../server/upload-image";
-import { User as UserData } from "@prisma/client";
-import { User } from "next-auth";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+
 
 function BgReplace({ user, userData }: { user: User; userData: UserData }) {
   const { generating, setGenerating } = useImageStore((state) => ({

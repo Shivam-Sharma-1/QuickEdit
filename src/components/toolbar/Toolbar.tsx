@@ -1,12 +1,15 @@
-import { useLayerStore } from "@/lib/layer-store";
-import ImageTools from "./ImageTools";
-import VideoTools from "./VideoTools";
-import UserActions from "./UserActions";
-import { cn } from "@/lib/utils";
-import { useSession } from "next-auth/react";
-import getUser from "../../../server/get-user";
-import { useEffect, useState } from "react";
 import { User } from "@prisma/client";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+
+import { useLayerStore } from "@/lib/layer-store";
+import { cn } from "@/lib/utils";
+
+import ImageTools from "./ImageTools";
+import UserActions from "./UserActions";
+import VideoTools from "./VideoTools";
+import getUser from "../../../server/get-user";
+
 
 function Toolbar() {
   const activeLayer = useLayerStore((state) => state.activeLayer);

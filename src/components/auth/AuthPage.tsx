@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect } from "react";
-import { signIn, useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { FaGoogle } from "react-icons/fa";
 import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { signIn, useSession } from "next-auth/react";
+import { useEffect } from "react";
+import { FaGoogle } from "react-icons/fa";
+
 import { Button } from "@/components/ui/button";
 
 const AuthPage = () => {

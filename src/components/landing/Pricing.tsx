@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -7,10 +9,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import SparklesText from "../ui/sparkles-text";
-import { CardSpotlight } from "../ui/card-spotlight";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
+
+import { CardSpotlight } from "../ui/card-spotlight";
+import SparklesText from "../ui/sparkles-text";
 
 const tiers = [
   {

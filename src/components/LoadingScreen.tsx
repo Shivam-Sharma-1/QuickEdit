@@ -1,5 +1,8 @@
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+
 import { useImageStore } from "@/lib/image-store";
 import { useLayerStore } from "@/lib/layer-store";
+
 import {
   Dialog,
   DialogContent,
@@ -7,7 +10,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "./ui/dialog";
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 function LoadingScreen() {
   const generating = useImageStore((state) => state.generating);

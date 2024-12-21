@@ -1,7 +1,9 @@
+import Image from "next/image";
+
 import { useImageStore } from "@/lib/image-store";
 import { Layer, useLayerStore } from "@/lib/layer-store";
 import { cn } from "@/lib/utils";
-import Image from "next/image";
+
 import ImageComparison from "./layers/ImageComparison";
 
 export default function ActiveImage() {

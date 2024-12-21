@@ -1,8 +1,8 @@
-import Layers from "./layers/Layers";
 import ActiveImage from "./ActiveImage";
-import UploadForm from "./upload/UploadForm";
+import Layers from "./layers/Layers";
 import LoadingScreen from "./LoadingScreen";
 import Toolbar from "./toolbar/Toolbar";
+import UploadForm from "./upload/UploadForm";
 
 function Editor() {
   return (

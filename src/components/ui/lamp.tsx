@@ -1,8 +1,9 @@
 "use client";
-import React from "react";
 import { motion } from "framer-motion";
-import { cn } from "@/lib/utils";
+import React from "react";
+
 import { useResponsive } from "@/lib/hooks/useResponsive";
+import { cn } from "@/lib/utils";
 
 export default function LampDemo() {
   return (

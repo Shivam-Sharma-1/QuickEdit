@@ -1,13 +1,15 @@
 "use client";
 
-import { TypewriterEffectSmooth } from "../ui/typewriter-effect";
-import { LampContainer } from "../ui/lamp";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import Particles from "../ui/particles";
 import Link from "next/link";
-import AnimatedGradientText from "../ui/animated-gradient-text";
+
 import { cn } from "@/lib/utils";
+
+import AnimatedGradientText from "../ui/animated-gradient-text";
+import { LampContainer } from "../ui/lamp";
+import Particles from "../ui/particles";
+import { TypewriterEffectSmooth } from "../ui/typewriter-effect";
 
 export default function Hero() {
   const words = [

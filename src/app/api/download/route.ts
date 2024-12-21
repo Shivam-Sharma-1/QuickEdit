@@ -1,5 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
+import { NextRequest, NextResponse } from "next/server";
+
 import checkImageProcessing from "@/lib/check-processing";
 
 cloudinary.config({

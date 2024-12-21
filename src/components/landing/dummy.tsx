@@ -1,16 +1,26 @@
 "use client";
 
-import { useEffect } from "react";
 import { motion } from "framer-motion";
-import { LampContainer } from "@/components/ui/lamp";
+import {
+  Crop,
+  Eraser,
+  FileOutput,
+  FileVideo,
+  ImageIcon,
+  Replace,
+  Subtitles,
+  VideoIcon,
+} from "lucide-react";
+import { useEffect } from "react";
+import React from "react";
+
+import { CardBody, CardContainer, CardItem } from "@/components/ui/3d-card";
 import { BackgroundBeams } from "@/components/ui/background-beams";
+import { BentoGrid, BentoGridItem } from "@/components/ui/bento-grid";
+import { Button } from "@/components/ui/button";
+import { LampContainer } from "@/components/ui/lamp";
 import { SparklesCore } from "@/components/ui/sparkles";
 import { TypewriterEffect } from "@/components/ui/typewriter-effect";
-import { Button } from "@/components/ui/button";
-import { CardBody, CardContainer, CardItem } from "@/components/ui/3d-card";
-import { BentoGrid, BentoGridItem } from "@/components/ui/bento-grid";
-
-import React from "react";
 import { cn } from "@/lib/utils";
 
 const tiers = [
@@ -115,16 +125,6 @@ export function PricingCards() {
   );
 }
 
-import {
-  ImageIcon,
-  VideoIcon,
-  Eraser,
-  Replace,
-  FileOutput,
-  Crop,
-  FileVideo,
-  Subtitles,
-} from "lucide-react";
 
 export default function Dummy() {
   const words = [

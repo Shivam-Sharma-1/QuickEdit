@@ -1,7 +1,24 @@
 "use client";
 
+import {
+  ArrowRight,
+  Frown,
+  Images,
+  Layers2,
+  PanelRightClose,
+} from "lucide-react";
+import Image from "next/image";
+import { useEffect, useMemo, useState } from "react";
+
+import { useResponsive } from "@/lib/hooks/useResponsive";
 import { useImageStore } from "@/lib/image-store";
 import { Layer, useLayerStore } from "@/lib/layer-store";
+import { cn } from "@/lib/utils";
+
+import LayerImage from "./LayerImage";
+import LayerInfo from "./LayerInfo";
+import getLayers from "../../../server/get-layers";
+import { Button } from "../ui/button";
 import {
   Card,
   CardContent,
@@ -10,26 +27,11 @@ import {
   CardTitle,
 } from "../ui/card";
 import {
-  ArrowRight,
-  Frown,
-  Images,
-  Layers2,
-  PanelRightClose,
-} from "lucide-react";
-import { Button } from "../ui/button";
-import { cn } from "@/lib/utils";
-import LayerImage from "./LayerImage";
-import LayerInfo from "./LayerInfo";
-import { useEffect, useMemo, useState } from "react";
-import Image from "next/image";
-import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
-import { useResponsive } from "@/lib/hooks/useResponsive";
-import getLayers from "../../../server/get-layers";
 
 export default function Layers() {
   const isMobile = useResponsive(1024);

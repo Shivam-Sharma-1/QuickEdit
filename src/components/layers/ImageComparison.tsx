@@ -1,11 +1,11 @@
 "use client";
 
-import { Layer } from "@/lib/layer-store";
-import React from "react";
 import {
   ReactCompareSlider,
   ReactCompareSliderImage,
 } from "react-compare-slider";
+
+import { Layer } from "@/lib/layer-store";
 
 function ImageComparison({ layers }: { layers: Layer[] }) {
   if (layers.length === 0) return <div>No layers selected for comparison</div>;

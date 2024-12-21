@@ -1,25 +1,30 @@
 "use client";
 
-import { useImageStore } from "@/lib/image-store";
-import { useLayerStore } from "@/lib/layer-store";
-import React from "react";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { Button } from "../ui/button";
+import { User as UserData } from "@prisma/client";
 import { Image, Sparkles, WandSparkles } from "lucide-react";
-import { bgRemove } from "../../../server/bg-remove";
-import { toast } from "sonner";
+import { User } from "next-auth";
 import { useSession } from "next-auth/react";
-import decreaseCredits from "../../../server/decrease-credits";
-import checkBgRemoval from "../../../server/check-bgRemoval";
+import React from "react";
+import { toast } from "sonner";
+
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useImageStore } from "@/lib/image-store";
+import { useLayerStore } from "@/lib/layer-store";
+
+
+
+import { bgRemove } from "../../../server/bg-remove";
+import checkBgRemoval from "../../../server/check-bgRemoval";
+import decreaseCredits from "../../../server/decrease-credits";
 import { uploadImageToDB } from "../../../server/upload-image";
-import { User as UserData } from "@prisma/client";
-import { User } from "next-auth";
+import { Button } from "../ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+
 
 function BgRemove({ user, userData }: { user: User; userData: UserData }) {
   const { generating, setGenerating } = useImageStore((state) => ({

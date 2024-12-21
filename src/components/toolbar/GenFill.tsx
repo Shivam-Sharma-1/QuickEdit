@@ -1,26 +1,28 @@
 "use client";
 
-import { useImageStore } from "@/lib/image-store";
-import { useLayerStore } from "@/lib/layer-store";
-import React, { useMemo, useState } from "react";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { Button } from "../ui/button";
+import { User as UserData } from "@prisma/client";
 import { Crop, Sparkles, WandSparkles } from "lucide-react";
-import { Label } from "../ui/label";
-import { genFill } from "../../../server/gen-fill";
-import { Slider } from "../ui/slider";
-import { toast } from "sonner";
+import { User } from "next-auth";
 import { useSession } from "next-auth/react";
-import decreaseCredits from "../../../server/decrease-credits";
+import React, { useMemo, useState } from "react";
+import { toast } from "sonner";
+
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { User as UserData } from "@prisma/client";
-import { User } from "next-auth";
+import { useImageStore } from "@/lib/image-store";
+import { useLayerStore } from "@/lib/layer-store";
+
+import decreaseCredits from "../../../server/decrease-credits";
+import { genFill } from "../../../server/gen-fill";
 import { uploadImageToDB } from "../../../server/upload-image";
+import { Button } from "../ui/button";
+import { Label } from "../ui/label";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Slider } from "../ui/slider";
 
 const PREVIEW_SIZE = 250;
 const EXPANSION_THRESHOLD = 250;

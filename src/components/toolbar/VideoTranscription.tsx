@@ -1,23 +1,28 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { useLayerStore } from "@/lib/layer-store";
-import { useState } from "react";
+import { User as UserData } from "@prisma/client";
 import { Captions, Sparkles, WandSparkles } from "lucide-react";
-import { useImageStore } from "@/lib/image-store";
+import { User } from "next-auth";
+import { useState } from "react";
 import { toast } from "sonner";
-import { initiateTranscription } from "../../../server/transcribe";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
+import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { User as UserData } from "@prisma/client";
-import { User } from "next-auth";
+import { useImageStore } from "@/lib/image-store";
+import { useLayerStore } from "@/lib/layer-store";
+
+
+
 import decreaseCredits from "../../../server/decrease-credits";
+import { initiateTranscription } from "../../../server/transcribe";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+
+
 
 export default function VideoTranscription({
   user,

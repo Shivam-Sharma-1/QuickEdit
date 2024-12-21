@@ -1,15 +1,21 @@
-import { useEffect, useState } from "react";
-import { signOut, useSession } from "next-auth/react";
-import { Sheet, SheetTrigger } from "@/components/ui/sheet";
-import Image from "next/image";
-import getUser from "../../../../server/get-user";
 import { Plan } from "@prisma/client";
-import { ModeToggle } from "../../theme/ModeToggle";
-import { useLayerStore } from "@/lib/layer-store";
+import Image from "next/image";
+import { signOut, useSession } from "next-auth/react";
 import { useTheme } from "next-themes";
-import ProfileSheet from "./ProfileSheet";
-import Logo from "@/components/Logo";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
+
+import Logo from "@/components/Logo";
+import { Sheet, SheetTrigger } from "@/components/ui/sheet";
+import { useLayerStore } from "@/lib/layer-store";
+
+import ProfileSheet from "./ProfileSheet";
+import getUser from "../../../../server/get-user";
+import { ModeToggle } from "../../theme/ModeToggle";
+
+
+
+
 
 export interface User {
   name: string | null;

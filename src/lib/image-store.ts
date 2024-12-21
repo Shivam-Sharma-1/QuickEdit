@@ -1,7 +1,8 @@
+import { useContext } from "react";
 import { createStore, useStore } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
+
 import { createZustandContext } from "./zustand-context";
-import { useContext } from "react";
 
 type State = {
   generating: boolean;

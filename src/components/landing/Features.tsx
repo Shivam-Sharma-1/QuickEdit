@@ -1,23 +1,25 @@
 import {
+  Crop,
+  Download,
+  Eraser,
+  FileText,
+  ImageIcon,
+  Scissors,
+  VideoIcon,
+  Wand2,
+} from "lucide-react";
+
+import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  ImageIcon,
-  VideoIcon,
-  Eraser,
-  Wand2,
-  Scissors,
-  Download,
-  FileText,
-  Crop,
-} from "lucide-react";
+
+import { CardBody, CardContainer, CardItem } from "../ui/3d-card";
 import SparklesText from "../ui/sparkles-text";
 import WordPullUp from "../ui/word-pull-up";
-import { CardBody, CardContainer, CardItem } from "../ui/3d-card";
 
 const imageFeatures = [
   {

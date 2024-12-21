@@ -1,15 +1,17 @@
 "use client";
 
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import React from "react";
 import { useDropzone } from "react-dropzone";
-import { Card, CardContent } from "../ui/card";
-import { uploadImage, uploadImageToDB } from "../../../server/upload-image";
-import { cn } from "@/lib/utils";
+import { toast } from "sonner";
+
+import { useResponsive } from "@/lib/hooks/useResponsive";
 import { useImageStore } from "@/lib/image-store";
 import { useLayerStore } from "@/lib/layer-store";
-import { toast } from "sonner";
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
-import { useResponsive } from "@/lib/hooks/useResponsive";
+import { cn } from "@/lib/utils";
+
+import { uploadImage, uploadImageToDB } from "../../../server/upload-image";
+import { Card, CardContent } from "../ui/card";
 
 function UploadImage() {
   const setTags = useImageStore((state) => state.setTags);

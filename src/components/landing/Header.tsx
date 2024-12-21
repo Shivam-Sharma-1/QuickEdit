@@ -1,12 +1,16 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import Logo from "../Logo";
-import { useSession } from "next-auth/react";
-import ShineBorder from "../ui/shine-border";
 import Image from "next/image";
+import Link from "next/link";
+import { useSession } from "next-auth/react";
+
+import { Button } from "@/components/ui/button";
 import { useResponsive } from "@/lib/hooks/useResponsive";
+
+import Logo from "../Logo";
+import ShineBorder from "../ui/shine-border";
+
+
 
 export default function Header() {
   const { data: session } = useSession();

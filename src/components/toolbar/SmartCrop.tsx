@@ -1,13 +1,31 @@
+import { User as UserData } from "@prisma/client";
+import { Crop, ScanFace, Sparkles, Square, WandSparkles } from "lucide-react";
+import { User } from "next-auth";
+import { useSession } from "next-auth/react";
 import React, { useState } from "react";
+import { toast } from "sonner";
+
 import { Button } from "@/components/ui/button";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Crop, ScanFace, Sparkles, Square, WandSparkles } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { useImageStore } from "@/lib/image-store";
 import { useLayerStore } from "@/lib/layer-store";
-import { toast } from "sonner";
+import { cn } from "@/lib/utils";
+
+import decreaseCredits from "../../../server/decrease-credits";
+import { genCrop } from "../../../server/smart-crop";
+import { uploadVideoToDB } from "../../../server/upload-video";
+import TikTok from "../icons/TikTok";
+import Youtube from "../icons/Youtube";
 import {
   Card,
   CardContent,
@@ -15,22 +33,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import { cn } from "@/lib/utils";
-import { useImageStore } from "@/lib/image-store";
-import Youtube from "../icons/Youtube";
-import TikTok from "../icons/TikTok";
-import { genCrop } from "../../../server/smart-crop";
-import { useSession } from "next-auth/react";
-import decreaseCredits from "../../../server/decrease-credits";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { User as UserData } from "@prisma/client";
-import { User } from "next-auth";
-import { uploadVideoToDB } from "../../../server/upload-video";
+
 
 function SmartCrop({ user, userData }: { user: User; userData: UserData }) {
   const { setGenerating, generating } = useImageStore((state) => ({

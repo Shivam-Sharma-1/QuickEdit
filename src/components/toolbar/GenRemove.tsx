@@ -1,27 +1,30 @@
 "use client";
 
-import { useImageStore } from "@/lib/image-store";
-import { useLayerStore } from "@/lib/layer-store";
-import React from "react";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { Button } from "../ui/button";
+import { User as UserData } from "@prisma/client";
 import { Badge, Eraser, Sparkles, WandSparkles } from "lucide-react";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
-import { cn } from "@/lib/utils";
-import { genRemove } from "../../../server/gen-remove";
-import { toast } from "sonner";
+import { User } from "next-auth";
 import { useSession } from "next-auth/react";
-import decreaseCredits from "../../../server/decrease-credits";
+import React from "react";
+import { toast } from "sonner";
+
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useImageStore } from "@/lib/image-store";
+import { useLayerStore } from "@/lib/layer-store";
+import { cn } from "@/lib/utils";
+
+import decreaseCredits from "../../../server/decrease-credits";
+import { genRemove } from "../../../server/gen-remove";
 import { uploadImageToDB } from "../../../server/upload-image";
-import { User as UserData } from "@prisma/client";
-import { User } from "next-auth";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+
 
 function GenRemove({ user, userData }: { user: User; userData: UserData }) {
   const { setActiveTag, generating, activeTag, activeColor, setGenerating } =

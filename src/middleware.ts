@@ -1,5 +1,6 @@
-import { auth } from "@/lib/auth";
 import { NextResponse } from "next/server";
+
+import { auth } from "@/lib/auth";
 
 const publicRoutes = ["/auth", "/"];
 const imageExtensions = [".svg", ".jpg", ".png", ".webp", ".ico"];

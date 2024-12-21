@@ -1,9 +1,8 @@
 "use client";
 
-import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import { useTheme } from "next-themes";
 
 interface LogoProps {
   className?: string;

@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
+
 import "./globals.css";
-import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { Toaster } from "sonner";
+
 import AuthContext from "@/components/auth/AuthContext";
+import { ThemeProvider } from "@/components/theme/ThemeProvider";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],

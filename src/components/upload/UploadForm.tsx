@@ -1,12 +1,14 @@
+import { ImageIcon, VideoIcon } from "lucide-react";
 import React, { useState } from "react";
-import UploadImage from "./UploadImage";
+
 import { useLayerStore } from "@/lib/layer-store";
-import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
+import { cn } from "@/lib/utils";
+
+import UploadImage from "./UploadImage";
+import UploadVideo from "./UploadVideo";
 import { Card, CardContent } from "../ui/card";
 import { Label } from "../ui/label";
-import { ImageIcon, VideoIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
-import UploadVideo from "./UploadVideo";
+import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 
 function UploadForm() {
   const activeLayer = useLayerStore((state) => state.activeLayer);

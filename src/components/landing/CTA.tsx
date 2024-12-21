@@ -1,8 +1,10 @@
-import { Button } from "@/components/ui/button";
-import SparklesText from "../ui/sparkles-text";
-import AnimatedGradientText from "../ui/animated-gradient-text";
 import Link from "next/link";
+
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+
+import AnimatedGradientText from "../ui/animated-gradient-text";
+import SparklesText from "../ui/sparkles-text";
 
 export default function CTA() {
   return (

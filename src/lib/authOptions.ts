@@ -1,9 +1,11 @@
-import { GOOGLE_CLIENT_SECRET } from "./constants/index";
-import NextAuth, { NextAuthConfig } from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { prisma } from "../../prisma/prisma";
-import { GOOGLE_CLIENT_ID } from "./constants";
+import NextAuth, { NextAuthConfig } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+
+import { GOOGLE_CLIENT_ID } from "./constants";
+import { GOOGLE_CLIENT_SECRET } from "./constants/index";
+import { prisma } from "../../prisma/prisma";
+
 
 export const authOptions: NextAuthConfig = {
   providers: [

@@ -1,11 +1,13 @@
 "use client";
 
-import { useLayerStore } from "@/lib/layer-store";
-import VideoTranscription from "./VideoTranscription";
-import SmartCrop from "./SmartCrop";
-import ExportAsset from "./ExportAsset";
 import { User as UserData } from "@prisma/client";
 import { User } from "next-auth";
+
+import { useLayerStore } from "@/lib/layer-store";
+
+import ExportAsset from "./ExportAsset";
+import SmartCrop from "./SmartCrop";
+import VideoTranscription from "./VideoTranscription";
 
 function VideoTools({ user, userData }: { user: User; userData: UserData }) {
   const activeLayer = useLayerStore((state) => state.activeLayer);
