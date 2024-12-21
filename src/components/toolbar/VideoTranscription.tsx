@@ -3,18 +3,29 @@
 import { Button } from "@/components/ui/button";
 import { useLayerStore } from "@/lib/layer-store";
 import { useState } from "react";
-import { Captions } from "lucide-react";
+import { Captions, Sparkles, WandSparkles } from "lucide-react";
 import { useImageStore } from "@/lib/image-store";
 import { toast } from "sonner";
 import { initiateTranscription } from "../../../server/transcribe";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { User as UserData } from "@prisma/client";
+import { User } from "next-auth";
+import decreaseCredits from "../../../server/decrease-credits";
 
-export default function VideoTranscription() {
+export default function VideoTranscription({
+  user,
+  userData,
+}: {
+  user: User;
+  userData: UserData;
+}) {
   const { activeLayer, updateLayer, setActiveLayer } = useLayerStore(
     (state) => ({
       activeLayer: state.activeLayer,
@@ -22,7 +33,10 @@ export default function VideoTranscription() {
       setActiveLayer: state.setActiveLayer,
     })
   );
-  const setGenerating = useImageStore((state) => state.setGenerating);
+  const { generating, setGenerating } = useImageStore((state) => ({
+    generating: state.generating,
+    setGenerating: state.setGenerating,
+  }));
   const [transcribing, setTranscribing] = useState(false);
 
   const handleTranscribe = async () => {
@@ -35,6 +49,8 @@ export default function VideoTranscription() {
     setGenerating(true);
 
     try {
+      decreaseCredits(20, user.email!);
+
       const result = await initiateTranscription({
         publicId: activeLayer.publicId,
         activeVideoName: activeLayer.name!,
@@ -70,21 +86,77 @@ export default function VideoTranscription() {
       {!activeLayer.transcriptionURL && (
         <TooltipProvider delayDuration={0}>
           <Tooltip>
-            <TooltipTrigger>
-              <Button
-                variant="ghost"
-                className="p-3 h-fit w-min"
-                onClick={handleTranscribe}
-                disabled={transcribing || activeLayer.resourceType !== "video"}
+            <Popover>
+              <TooltipTrigger>
+                <PopoverTrigger disabled={!activeLayer?.url} asChild>
+                  <Button variant="ghost" className="p-3 h-fit w-min">
+                    <Captions size={20} />
+                  </Button>
+                </PopoverTrigger>
+                {/* <Button
+                  variant="ghost"
+                  className="p-3 h-fit w-min"
+                  onClick={handleTranscribe}
+                  disabled={
+                    transcribing || activeLayer.resourceType !== "video"
+                  }
+                >
+                  <span className="flex gap-1 items-center justify-center flex-col text-xs font-medium">
+                    <Captions size={18} />
+                  </span>
+                </Button> */}
+              </TooltipTrigger>
+              <TooltipContent side="right" sideOffset={10}>
+                Video Transcription
+              </TooltipContent>
+              <PopoverContent
+                className="w-full p-6"
+                side="right"
+                sideOffset={16}
               >
-                <span className="flex gap-1 items-center justify-center flex-col text-xs font-medium">
-                  <Captions size={18} />
-                </span>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="right" sideOffset={10}>
-              Video Transcription
-            </TooltipContent>
+                <div className="grid gap-4">
+                  <div className="space-y-2">
+                    <h4 className="font-medium leading-none">
+                      AI Video Transcriber
+                    </h4>
+                    <p className="text-sm text-muted-foreground">
+                      Generate subtitles for the video.
+                    </p>
+                  </div>
+                  <p className="text-xs flex  items-center gap-1">
+                    Costs: 20 Credits <Sparkles size={14} />
+                  </p>
+                </div>
+                {userData?.credits < 20 ? (
+                  <TooltipProvider delayDuration={0}>
+                    <Tooltip>
+                      <TooltipTrigger className="w-full">
+                        <Button
+                          className="w-full mt-2 flex items-center justify-center gap-2"
+                          disabled
+                        >
+                          Insufficient Credits <Sparkles size={16} />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent side="top" sideOffset={10}>
+                        You need at least 20 credits to transcribe the video.
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                ) : (
+                  <Button
+                    className="w-full mt-2 flex items-center justify-center gap-2"
+                    disabled={
+                      userData?.credits < 20 || !activeLayer?.url || generating
+                    }
+                    onClick={handleTranscribe}
+                  >
+                    {generating ? "Transcribing..." : "Transcribe Video"}
+                    <WandSparkles size={16} />
+                  </Button>
+                )}
+              </PopoverContent>
+            </Popover>
           </Tooltip>
         </TooltipProvider>
       )}
