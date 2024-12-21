@@ -1,7 +1,8 @@
 {
   "name": "quickedit",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
+  "author": "@Shivam-Sharma-1",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
