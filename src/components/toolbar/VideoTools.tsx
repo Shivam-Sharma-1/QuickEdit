@@ -13,7 +13,7 @@ function VideoTools({ user, userData }: { user: User; userData: UserData }) {
   if (activeLayer.resourceType === "video")
     return (
       <>
-        <VideoTranscription />
+        <VideoTranscription user={user!} userData={userData} />
         <SmartCrop user={user!} userData={userData} />
         <ExportAsset resource="video" />
       </>
