@@ -88,7 +88,7 @@ export const uploadModifiedVideo = actionClient
 
       return { result };
     } catch (error) {
-      console.error("Error smatrcrop uploading modified video:", error);
+      console.error("Error in uploading modified video:", error);
     }
   });
 
