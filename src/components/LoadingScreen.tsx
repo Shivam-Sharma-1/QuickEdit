@@ -24,7 +24,7 @@ function LoadingScreen() {
       >
         <DialogHeader>
           <DialogTitle className="leading-8">
-            Uploading/Editing {activeLayer.name ? activeLayer.name : "Asset"}
+            Uploading/Editing {activeLayer?.name ? activeLayer.name : "Asset"}
           </DialogTitle>
           <DialogDescription>
             Please note that this operation might take up to a couple of
