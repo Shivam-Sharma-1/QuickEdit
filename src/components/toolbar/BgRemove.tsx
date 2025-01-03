@@ -16,15 +16,12 @@ import {
 import { useImageStore } from "@/lib/image-store";
 import { useLayerStore } from "@/lib/layer-store";
 
-
-
 import { bgRemove } from "../../../server/bg-remove";
 import checkBgRemoval from "../../../server/check-bgRemoval";
 import decreaseCredits from "../../../server/decrease-credits";
 import { uploadImageToDB } from "../../../server/upload-image";
 import { Button } from "../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-
 
 function BgRemove({ user, userData }: { user: User; userData: UserData }) {
   const { generating, setGenerating } = useImageStore((state) => ({
@@ -36,8 +33,6 @@ function BgRemove({ user, userData }: { user: User; userData: UserData }) {
     addLayer: state.addLayer,
     setActiveLayer: state.setActiveLayer,
   }));
-
-  console.log("userData", userData);
 
   const handleRemove = async () => {
     setGenerating(true);

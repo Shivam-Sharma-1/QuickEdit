@@ -31,7 +31,6 @@ export default function ExportAsset({ resource }: { resource: string }) {
           throw new Error("Failed to fetch image URL");
         }
         const data = await res.json();
-        console.log(data);
         if (data.error) {
           throw new Error(data.error);
         }

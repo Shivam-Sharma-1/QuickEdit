@@ -55,7 +55,6 @@ export const uploadImage = actionClient
               console.error("Upload failed:", error);
               reject({ error: "Upload failed:" });
             } else {
-              console.log("Upload successful:", result);
               resolve({ success: result });
             }
           }

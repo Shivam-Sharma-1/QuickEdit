@@ -16,13 +16,9 @@ import {
 import { useImageStore } from "@/lib/image-store";
 import { useLayerStore } from "@/lib/layer-store";
 
-
-
 import decreaseCredits from "../../../server/decrease-credits";
 import { initiateTranscription } from "../../../server/transcribe";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-
-
 
 export default function VideoTranscription({
   user,
@@ -71,7 +67,6 @@ export default function VideoTranscription({
             toast.success("Video transcripted successfully");
           }
         } else if (result.data && "error" in result.data) {
-          console.log("Error: ", result.data.error);
           toast.error(result.data.error);
         } else {
           toast.error("Unexpected response from server");

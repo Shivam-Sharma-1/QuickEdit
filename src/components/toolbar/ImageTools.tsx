@@ -10,7 +10,6 @@ import GenFill from "./GenFill";
 import GenRemove from "./GenRemove";
 
 function ImageTools({ user, userData }: { user: User; userData: UserData }) {
-  console.log("imageTools", userData);
   return (
     <>
       <GenRemove user={user!} userData={userData} />

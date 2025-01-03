@@ -56,7 +56,6 @@ export const uploadVideo = actionClient
               console.error("Upload failed: Video too long", error);
               reject({ error: "Upload failed" });
             } else {
-              console.log("Upload successful:", result);
               resolve({ success: result });
             }
           }
