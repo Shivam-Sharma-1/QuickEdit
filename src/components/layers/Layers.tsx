@@ -45,6 +45,9 @@ export default function Layers() {
     const fetchLayers = async () => {
       const { layers } = await getLayers();
       setLayers(layers as Layer[]);
+
+      if (layers?.length === 0) handleAddLayer();
+      if (layers && layers[0]) setActiveLayer(layers[0].id);
       // setActiveLayer(layers && layers[0] ? layers[0].id : "");
     };
     fetchLayers();
