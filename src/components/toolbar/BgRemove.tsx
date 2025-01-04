@@ -71,7 +71,9 @@ function BgRemove({ user, userData }: { user: User; userData: UserData }) {
       }
     } catch (error) {
       if (error instanceof Error) {
-        toast.error(`Background removal failed, ${error.message}`);
+        toast.error(
+          `Background removal is not available. Please try again later.`
+        );
         console.error("Error in Background Removal process:", error.message);
       }
     } finally {
