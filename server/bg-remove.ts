@@ -5,6 +5,7 @@ import { actionClient } from "@/lib/safe-action";
 import { v2 as cloudinary } from "cloudinary";
 import { z } from "zod";
 import { uploadModifiedImage } from "./upload-image";
+import disableBgRemoval from "./disable-bgremoval";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_NAME,
@@ -37,7 +38,10 @@ export const bgRemove = actionClient
         await new Promise((resolve) => setTimeout(resolve, delay));
       }
 
-      if (!isProcessed) throw new Error("Image processing timeout out");
+      if (!isProcessed) {
+        disableBgRemoval();
+        throw new Error("Image processing timeout out");
+      }
 
       const uploadResult = await uploadModifiedImage({
         activeImageName: "bgremoved-" + activeImageName,
