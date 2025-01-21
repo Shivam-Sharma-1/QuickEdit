@@ -2,7 +2,12 @@
   "name": "quickedit",
   "version": "1.0.0",
   "private": true,
-  "author": "@Shivam-Sharma-1",
+  "author": {
+    "name": "Shivam Sharma",
+    "email": "shivamsharma77607@gmail.com",
+    "github": "@Shivam-Sharma-1",
+    "linkedin": "https://www.linkedin.com/in/shivamsharma77607"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
